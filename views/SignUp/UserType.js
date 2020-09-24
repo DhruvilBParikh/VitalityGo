@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, ImageBackground } from "react-native";
 import { TextInput, TouchableHighlight, TouchableNativeFeedback, TouchableOpacity } from "react-native-gesture-handler";
+import SignUpHeader from "../../components/Header/SignUpHeader";
 import Colors from '../../constants/colors'
 
 export default function UserType({ navigation }) {
@@ -8,7 +9,8 @@ export default function UserType({ navigation }) {
     <View style={styles.container}>
 
       {/* header */}
-      <View style={styles.headerContainer}>
+      {/* <SignUpHeader /> */}
+      {/* <View style={styles.headerContainer}>
         <View style={styles.backButton} >
           <TouchableOpacity onPress={() => navigation.navigate("GetStarted")} style={{ height: 30, width: 30 }} activeOpacity={0.9}>
             <Image source={require('../../assets/images/back-button.png')} />
@@ -18,7 +20,7 @@ export default function UserType({ navigation }) {
           <Image source={require('../../assets/images/logo.png')} style={{ width: 100, height: 100 }} />
         </View>
         <View style={styles.space} />
-      </View>
+      </View> */}
 
       {/* Input name */}
       <View>
