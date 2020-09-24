@@ -1,21 +1,21 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, ImageBackground, Button, TouchableOpacity } from 'react-native';
-import Colors from '../../constants/colors'
+import Colors from '../constants/colors'
 
-export default function GetStarted({navigation}) {
+export default function GetStarted() {
     return (
         <View style={styles.container}>
-            <Image source={require('../../assets/images/logo-main-screen.png')} style={styles.logo}></Image>
+            <Image source={require('../assets/images/logo-main-screen.png')} style={styles.logo}></Image>
             <Text style={styles.welcomeText}>Welcome to Vitality Go</Text>
-            <ImageBackground source={require('../../assets/images/white-background.png')} style={styles.whiteBackground}>
-                <Image source={require('../../assets/images/get-started.png')} style={styles.getStartedImage}></Image>
+            <ImageBackground source={require('../assets/images/white-background.png')} style={styles.whiteBackground}>
+                <Image source={require('../assets/images/get-started.png')} style={styles.getStartedImage}></Image>
             </ImageBackground>
-            <TouchableOpacity style={styles.getStartedButton} onPress={() => navigation.navigate("UserType")}>
+            <TouchableOpacity style={styles.getStartedButton}>
                 <Text style={styles.buttonText}> Get Started </Text>
             </TouchableOpacity>
             <View style={styles.textContainer}>
                 <Text style={{color: Colors.text, fontSize:18, fontWeight: "bold"}}> Already have an account? </Text>
-                <Text onPress={() => navigation.navigate("Login")} style={{color: Colors.buttonColor, fontSize:18, fontWeight: "bold"}}> Sign in </Text>
+                <Text style={{color: Colors.buttonColor, fontSize:18, fontWeight: "bold"}}> Sign in </Text>
             </View>
         </View>
     );
