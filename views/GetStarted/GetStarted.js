@@ -5,12 +5,12 @@ import Colors from '../../constants/colors'
 export default function GetStarted({navigation}) {
     return (
         <View style={styles.container}>
-            <Image source={require('../../assets/images/logo-main-screen.png')} style={styles.logo}></Image>
+            <Image source={require('../../assets/images/logo-main-screen.png')} style={styles.logo} />
             <Text style={styles.welcomeText}>Welcome to Vitality Go</Text>
             <ImageBackground source={require('../../assets/images/white-background.png')} style={styles.whiteBackground}>
-                <Image source={require('../../assets/images/get-started.png')} style={styles.getStartedImage}></Image>
+                <Image source={require('../../assets/images/get-started.png')} style={styles.getStartedImage} />
             </ImageBackground>
-            <TouchableOpacity style={styles.getStartedButton} onPress={() => navigation.navigate("UserType")}>
+            <TouchableOpacity activeOpacity={0.9} style={styles.getStartedButton} onPress={() => navigation.navigate("UserType")}>
                 <Text style={styles.buttonText}> Get Started </Text>
             </TouchableOpacity>
             <View style={styles.textContainer}>
@@ -66,7 +66,6 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 15,
         fontWeight: 'bold'
-        
     },
     textContainer: {
         marginTop: 20,
