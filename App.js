@@ -5,6 +5,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import GetStarted from "./views/GetStarted/GetStarted";
 import UserType from "./views/SignUp/UserType";
+import Credential from "./views/SignUp/Credential";
 import PersonalInformation from "./views/SignUp/PersonalInformation";
 import Gender from "./views/SignUp/Gender";
 import ProfilePictureMale from "./views/SignUp/ProfilePictureMale";
@@ -30,6 +31,11 @@ export default function App() {
         <Stack.Screen
           name="UserType"
           component={UserType}
+          options={Options.signUpHeaderOptions}
+        />
+        <Stack.Screen
+          name="Credential"
+          component={Credential}
           options={Options.signUpHeaderOptions}
         />
         <Stack.Screen
