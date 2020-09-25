@@ -52,7 +52,12 @@ export default function ProfilePictureMale({ navigation }) {
       {/* Continue Button */}
       <AppButton
         title="Continue"
-        clickHandler={() => navigation.navigate("Home")}
+        clickHandler={() =>
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          })
+        }
       />
     </View>
   );
