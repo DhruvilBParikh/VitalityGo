@@ -8,7 +8,7 @@ export default function PersonalInformation({ navigation }) {
 
       {/* Title */}
       <View>
-        <Text style={{ color: Colors.text, fontWeight: 'bold', fontSize: 25, marginTop: 50 }}> Personal Information </Text>
+        <Text style={{ color: Colors.text, fontWeight: 'bold', fontSize: 25 }}> Personal Information </Text>
       </View>
 
       {/* Height */}
@@ -48,7 +48,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    alignItems: 'center'
+    alignItems: 'center',
+    justifyContent:'center'
   },
   textInputContainer: {
     backgroundColor: 'white', 

@@ -24,7 +24,7 @@ export default function UserType({ navigation }) {
 
       {/* Input name */}
       <View>
-        <Text style={{ color: Colors.text, fontWeight: 'bold', fontSize: 25, marginTop: 50 }}> You are... </Text>
+        <Text style={{ color: Colors.text, fontWeight: 'bold', fontSize: 25}}> You are... </Text>
       </View>
       <View style={{ backgroundColor: 'white', width: '75%', margin: 40, height: 40, alignItems: 'center', paddingLeft: 10, flexDirection: 'row', borderRadius: 10, elevation: 5 }}>
         <Image source={require('../../assets/images/user-icon.png')} style={{ width: 25, height: 25 }} />
@@ -65,17 +65,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    alignItems: 'center'
-  },
-  headerContainer: {
-    marginTop: 30,
-    width: '100%',
-    flexDirection: 'row',
     alignItems: 'center',
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    shadowOpacity: 0.26,
-    elevation: 5
+    justifyContent:'center'
   },
   backButton: {
     flex: 1,
