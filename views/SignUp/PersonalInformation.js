@@ -8,7 +8,7 @@ export default function PersonalInformation({ navigation }) {
   return (
     <View style={styles.container}>
       {/* Title */}
-      <View>
+      <View style={{marginBottom:20}}>
         <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25 }}>
           {" "}
           Personal Information{" "}

@@ -25,7 +25,7 @@ export default function UserType({ navigation }) {
 
       {/* Type of User */}
       <View>
-        <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25 }}>
+        <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25, marginTop:40 }}>
           {" "}
           What type of user?{" "}
         </Text>
@@ -33,7 +33,7 @@ export default function UserType({ navigation }) {
       <View
         style={{
           flexDirection: "row",
-          margin: 25,
+          margin: 10,
           justifyContent: "space-between",
           alignItems: "center",
         }}
