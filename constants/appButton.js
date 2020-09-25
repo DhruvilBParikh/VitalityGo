@@ -3,8 +3,8 @@ import Colors from "../constants/colors";
 
 const appButtonStyle = StyleSheet.create({
   container: {
-    display: "flex",
-    paddingHorizontal: 20,
+    margin: 20,
+    width: "70%",
   },
   button: {
     backgroundColor: Colors.accent,

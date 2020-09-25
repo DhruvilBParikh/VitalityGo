@@ -1,13 +1,6 @@
 import React from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  ImageBackground,
-  Button,
-  TouchableOpacity,
-} from "react-native";
+import { StyleSheet, Text, View, Image, ImageBackground } from "react-native";
+import AppButton from "../../components/AppButton/AppButton";
 import Colors from "../../constants/colors";
 
 export default function GetStarted({ navigation }) {
@@ -27,13 +20,14 @@ export default function GetStarted({ navigation }) {
           style={styles.getStartedImage}
         />
       </ImageBackground>
-      <TouchableOpacity
-        activeOpacity={0.9}
-        style={styles.getStartedButton}
-        onPress={() => navigation.navigate("UserType")}
-      >
-        <Text style={styles.buttonText}> Get Started </Text>
-      </TouchableOpacity>
+
+      {/* Continue Button */}
+      <AppButton
+        title="Get Started"
+        clickHandler={() => navigation.navigate("UserType")}
+      />
+
+      {/* Login */}
       <View style={styles.textContainer}>
         <Text style={{ color: Colors.text, fontSize: 18, fontWeight: "bold" }}>
           {" "}
@@ -53,13 +47,10 @@ export default function GetStarted({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: Colors.background,
+    display: "flex",
     alignItems: "center",
-    justifyContent: "center",
   },
   logo: {
-    marginTop: -50,
     width: 240,
     height: 240,
   },
@@ -74,29 +65,10 @@ const styles = StyleSheet.create({
     height: 208,
   },
   whiteBackground: {
-    alignItems: "center",
     justifyContent: "center",
     marginVertical: 50,
     width: "100%",
-    height: 310,
-  },
-  getStartedButton: {
-    borderRadius: 30,
-    backgroundColor: Colors.accent,
-    width: 272,
-    maxWidth: "80%",
-    height: 62,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    shadowOpacity: 0.26,
-    elevation: 5,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 15,
-    fontWeight: "bold",
+    height: 250,
   },
   textContainer: {
     marginTop: 20,
