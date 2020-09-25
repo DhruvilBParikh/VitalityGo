@@ -1,10 +1,14 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import AppButton from "../../components/AppButton/AppButton";
 
 export default function Login({ navigation }) {
   return (
     <View>
-      <Text onPress={() => navigation.navigate("Home")}>Login</Text>
+      <AppButton
+        title="Login"
+        clickHandler={() => navigation.navigate("Home")}
+      />
     </View>
   );
 }
