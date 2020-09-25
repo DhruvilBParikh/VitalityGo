@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import AppButton from "../../components/AppButton/AppButton";
 import Colors from "../../constants/colors";
+import appInputStyle from "../../constants/appInput";
 
 export default function UserType({ navigation }) {
   return (
@@ -14,32 +15,12 @@ export default function UserType({ navigation }) {
           You are...{" "}
         </Text>
       </View>
-      <View
-        style={{
-          backgroundColor: "white",
-          width: "75%",
-          margin: 40,
-          height: 40,
-          alignItems: "center",
-          paddingLeft: 10,
-          flexDirection: "row",
-          borderRadius: 10,
-          elevation: 5,
-        }}
-      >
+      <View style={appInputStyle.container}>
         <Image
           source={require("../../assets/images/user-icon.png")}
-          style={{ width: 25, height: 25 }}
+          style={appInputStyle.image}
         />
-        <TextInput
-          placeholder="Full Name"
-          style={{
-            marginLeft: 15,
-            paddingHorizontal: 5,
-            fontSize: 15,
-            color: Colors.text,
-          }}
-        />
+        <TextInput placeholder="Full Name" style={appInputStyle.placeholder} />
       </View>
 
       {/* Type of User */}
@@ -88,7 +69,7 @@ export default function UserType({ navigation }) {
 
       <AppButton
         title="Continue"
-        clickHandler={() => navigation.navigate("PersonalInformation")}
+        clickHandler={() => navigation.navigate("Credential")}
       />
     </View>
   );

@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet, Image, TextInput } from "react-native";
 import AppButton from "../../components/AppButton/AppButton";
 import Colors from "../../constants/colors";
+import appInputStyle from "../../constants/appInput";
 
 export default function PersonalInformation({ navigation }) {
   return (
@@ -15,70 +16,44 @@ export default function PersonalInformation({ navigation }) {
       </View>
 
       {/* Height */}
-      <View style={styles.textInputContainer}>
+      <View style={appInputStyle.container}>
         <Image
           source={require("../../assets/images/height-icon.png")}
-          style={{ width: 25, height: 25 }}
+          style={appInputStyle.image}
         />
-        <TextInput
-          placeholder="Height"
-          style={{
-            marginLeft: 15,
-            paddingHorizontal: 5,
-            fontSize: 15,
-            color: Colors.text,
-          }}
-        />
+        <TextInput placeholder="Height" style={appInputStyle.placeholder} />
       </View>
 
       {/* Weight */}
-      <View style={styles.textInputContainer}>
+      <View style={appInputStyle.container}>
         <Image
           source={require("../../assets/images/weight-icon.png")}
-          style={{ width: 25, height: 25 }}
+          style={appInputStyle.image}
         />
-        <TextInput
-          placeholder="Weight"
-          style={{
-            marginLeft: 15,
-            paddingHorizontal: 5,
-            fontSize: 15,
-            color: Colors.text,
-          }}
-        />
+        <TextInput placeholder="Weight" style={appInputStyle.placeholder} />
       </View>
 
       {/* Blood Group */}
-      <View style={styles.textInputContainer}>
+      <View style={appInputStyle.container}>
         <Image
           source={require("../../assets/images/blood-group-icon.png")}
-          style={{ width: 25, height: 25 }}
+          style={appInputStyle.image}
         />
         <TextInput
           placeholder="Blood Group"
-          style={{
-            marginLeft: 15,
-            paddingHorizontal: 5,
-            fontSize: 15,
-            color: Colors.text,
-          }}
+          style={appInputStyle.placeholder}
         />
       </View>
 
       {/* Birth Date */}
-      <View style={styles.textInputContainer}>
+      <View style={appInputStyle.container}>
         <Image
           source={require("../../assets/images/calendar-icon.png")}
-          style={{ width: 25, height: 25 }}
+          style={appInputStyle.image}
         />
         <TextInput
           placeholder="Birthdate (mm/dd/yyyy)"
-          style={{
-            marginLeft: 15,
-            paddingHorizontal: 5,
-            fontSize: 15,
-            color: Colors.text,
-          }}
+          style={appInputStyle.placeholder}
         />
       </View>
 
@@ -97,20 +72,5 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     alignItems: "center",
     justifyContent: "center",
-  },
-  textInputContainer: {
-    backgroundColor: "white",
-    width: "75%",
-    marginTop: 20,
-    marginBottom: 20,
-    height: 40,
-    alignItems: "center",
-    paddingLeft: 10,
-    flexDirection: "row",
-    borderRadius: 10,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    shadowOpacity: 0.26,
-    elevation: 5,
   },
 });
