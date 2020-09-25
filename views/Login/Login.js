@@ -7,7 +7,12 @@ export default function Login({ navigation }) {
     <View>
       <AppButton
         title="Login"
-        clickHandler={() => navigation.navigate("Home")}
+        clickHandler={() =>
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          })
+        }
       />
     </View>
   );
