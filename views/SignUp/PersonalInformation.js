@@ -35,6 +35,7 @@ export default function PersonalInformation({ navigation }) {
         <TextInput placeholder='Birthdate (mm/dd/yyyy)' style={{ marginLeft:15, paddingHorizontal: 5, fontSize:15, color: Colors.text }} />
       </View>
 
+      {/* Continue Button */}
       <TouchableOpacity activeOpacity={0.9} style={styles.continueButton} onPress={() => navigation.navigate("Gender")}>
         <Text style={styles.buttonText}> Continue </Text>
       </TouchableOpacity>
@@ -66,7 +67,7 @@ const styles = StyleSheet.create({
   continueButton: {
     margin: 40,
     borderRadius: 30,
-    backgroundColor: Colors.buttonColor,
+    backgroundColor: Colors.accent,
     width: 272,
     maxWidth: '80%',
     height: 62,

@@ -15,7 +15,7 @@ export default function GetStarted({navigation}) {
             </TouchableOpacity>
             <View style={styles.textContainer}>
                 <Text style={{color: Colors.text, fontSize:18, fontWeight: "bold"}}> Already have an account? </Text>
-                <Text onPress={() => navigation.navigate("Login")} style={{color: Colors.buttonColor, fontSize:18, fontWeight: "bold"}}> Sign in </Text>
+                <Text onPress={() => navigation.navigate("Login")} style={{color: Colors.accent, fontSize:18, fontWeight: "bold"}}> Sign in </Text>
             </View>
         </View>
     );
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     },
     getStartedButton: {
         borderRadius: 30,
-        backgroundColor: Colors.buttonColor,
+        backgroundColor: Colors.accent,
         width: 272,
         maxWidth: '80%',
         height: 62,
