@@ -58,7 +58,7 @@ export default function App() {
           component={ProfilePictureFemale}
           options={Options.signUpHeaderOptions}
         />
-        <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Home" component={Home} options={Options.homeHeaderOptions} />
         <Stack.Screen name="Nutrition" component={Nutrition} />
         <Stack.Screen name="Water" component={Water} />
         <Stack.Screen name="ECG" component={ECG} />
