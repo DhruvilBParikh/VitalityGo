@@ -59,7 +59,7 @@ export default function App() {
           options={Options.signUpHeaderOptions}
         />
         <Stack.Screen name="Home" component={Home} options={Options.homeHeaderOptions} />
-        <Stack.Screen name="Nutrition" component={Nutrition} options={Options.homeHeaderOptions} />
+        <Stack.Screen name="Nutrition" component={Nutrition} options={Options.nutritionHeaderOptions} />
         <Stack.Screen name="Water" component={Water} />
         <Stack.Screen name="ECG" component={ECG} />
       </Stack.Navigator>

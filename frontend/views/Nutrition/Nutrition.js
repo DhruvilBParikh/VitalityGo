@@ -75,12 +75,12 @@ export default function Nutrition() {
         <Text style={{fontWeight:'bold', fontSize:25, color:Colors.text}}>Breakfast</Text>
         {/* List */}
         <View style={{margin:5, padding:10, flexDirection:'row', justifyContent:"space-between", borderBottomWidth:2, borderColor:'#BBADAD'}}>
-          <Text style={{color:Colors.text, fontSize:20}}>Chicken {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>200 grams</Text></Text>
-          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>300 cal</Text>
+          <Text style={{color:Colors.text, fontSize:20}}>Eggs {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>200 grams</Text></Text>
+          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>100 cal</Text>
         </View>
         <View style={{margin:5, padding:10, flexDirection:'row', justifyContent:"space-between", borderBottomWidth:2, borderColor:'#BBADAD'}}>
-          <Text style={{color:Colors.text, fontSize:20}}>Chicken {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>200 grams</Text></Text>
-          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>300 cal</Text>
+          <Text style={{color:Colors.text, fontSize:20}}>Fries {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>100 grams</Text></Text>
+          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>50 cal</Text>
         </View>
       </View>
 
@@ -89,10 +89,10 @@ export default function Nutrition() {
         {/* List */}
         <View style={{margin:5, padding:10, flexDirection:'row', justifyContent:"space-between", borderBottomWidth:2, borderColor:'#BBADAD'}}>
           <Text style={{color:Colors.text, fontSize:20}}>Chicken {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>200 grams</Text></Text>
-          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>300 cal</Text>
+          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>150 cal</Text>
         </View>
         <View style={{margin:5, padding:10, flexDirection:'row', justifyContent:"space-between", borderBottomWidth:2, borderColor:'#BBADAD'}}>
-          <Text style={{color:Colors.text, fontSize:20}}>Chicken {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>200 grams</Text></Text>
+          <Text style={{color:Colors.text, fontSize:20}}>Rice {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>100 grams</Text></Text>
           <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>300 cal</Text>
         </View>
       </View>
@@ -102,11 +102,11 @@ export default function Nutrition() {
         {/* List */}
         <View style={{margin:5, padding:10, flexDirection:'row', justifyContent:"space-between", borderBottomWidth:2, borderColor:'#BBADAD'}}>
           <Text style={{color:Colors.text, fontSize:20}}>Chicken {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>200 grams</Text></Text>
-          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>300 cal</Text>
+          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>150 cal</Text>
         </View>
         <View style={{margin:5, padding:10, flexDirection:'row', justifyContent:"space-between", borderBottomWidth:2, borderColor:'#BBADAD'}}>
-          <Text style={{color:Colors.text, fontSize:20}}>Chicken {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>200 grams</Text></Text>
-          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>300 cal</Text>
+          <Text style={{color:Colors.text, fontSize:20}}>Eggs {"\n"}<Text style={{color:"#BBADAD", fontSize:15}}>200 grams</Text></Text>
+          <Text style={{textAlign:"right", color:Colors.text, fontSize:20}}>100 cal</Text>
         </View>
       </View>
 

@@ -26,9 +26,9 @@ export default function Home({ navigation }) {
         <View style={styles.summaryContainer}>
           <Text style={styles.summaryTitle}> Nutrition </Text>
           <View style={styles.progressContainer}>
-            <Text style={{ color: '#BBADAD' }}> 800/1000 cal </Text>
+            <Text style={{ color: '#BBADAD' }}> 850/1000 cal </Text>
           </View>
-          <Bar progress={0.8} width={200} color='#00D7A3' />
+          <Bar progress={0.85} width={200} color='#00D7A3' />
         </View>
       </TouchableOpacity>
 
