@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 mongoose.set('useCreateIndex', true);
 
-var DayToDaySchema = mongooseBootstrapper({
+var DayToDayGoalSchema = mongooseBootstrapper({
 
     user: { type: ObjectId, ref:'User'},
     food: { type: ObjectId, ref:'Food'},
@@ -14,4 +14,4 @@ var DayToDaySchema = mongooseBootstrapper({
 
 });
 
-mongoose.model('DayToDay', DayToDaySchema, 'dayToDay');
+mongoose.model('DayToDayGoal', DayToDayGoalSchema, 'dayToDayGoal');
