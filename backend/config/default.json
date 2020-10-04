@@ -1,0 +1,6 @@
+{
+    "app" :{
+        "modelsDirectory": "/models",
+        "mongoUrl":"mongodb+srv://vg_2020:VitalityGo@cluster0.uijro.mongodb.net/vitalitygo?retryWrites=true&w=majority"
+    }
+}
