@@ -9,7 +9,7 @@ var ECGSchema = mongooseBootstrapper({
 
     user: {type: ObjectId, ref:'User'},
     timestamp: { type: Date },
-    rate= {type: Number}
+    rate: {type: Number}
 
 });
 

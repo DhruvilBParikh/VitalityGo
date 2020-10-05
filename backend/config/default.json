@@ -1,6 +1,31 @@
 {
     "app" :{
         "modelsDirectory": "/models",
+        "routesDirectory": "/routes",
+        "routes": [
+			{
+				"basePath": "/",
+				"file": "index.js"
+			},
+			{
+				"basePath": "/api/users",
+				"file": "users.js"
+			},
+			{
+				"basePath": "/api/notifications",
+				"file": "notifications.js"
+			},
+            {
+                "basePath": "/api/food",
+				"file": "food.js"
+            },
+			{
+				"basePath": "/api/admin",
+				"file": "admin.js"
+            }
+
+        ],
+        "jwtSecret": "VitalityGoSecretrEcbkSUYge235hfsduak",
         "mongoUrl":"mongodb+srv://vg_2020:VitalityGo@cluster0.uijro.mongodb.net/vitalitygo?retryWrites=true&w=majority"
     }
 }
