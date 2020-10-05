@@ -9,11 +9,8 @@ const config = require('config')
 require('./utils/mongoose-bootstrapper')
 require('./utils/mongoose-connector');
 
-
-const mongoose = require('./utils/mongoose-bootstrapper');
 const authRoutes = require('./routes/authRoutes')
 
-const User = mongoose.model('User')
 app.use(bodyParser.json())
 
 app.use(authRoutes)
@@ -33,21 +30,6 @@ for (var i = 0; i < routes.length; i++) {
     var p = path.join(routesDirectory, routeObject.file);
     app.use(routeObject.basePath, require(p));
 }
-
-// app.post('/',(req, res)=> {
-//     console.log(req.body)
-//     var user = new User({
-//         "email": "dhruvil@gmail.com",
-//         "firstName": "Dhruvil",
-//         "lastName": "Parikh"
-//     })
-//     user.save()
-    
-//     res.send("Hello")
-// })
-// app.get('/', (req, res)=>{
-//     res.send("Hello")
-// })
 
 app.listen(PORT,()=>{
     console.log("server running on "+ PORT)
