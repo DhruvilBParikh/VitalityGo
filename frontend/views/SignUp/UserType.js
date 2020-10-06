@@ -7,20 +7,29 @@ import appInputStyle from "../../constants/appInput";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 
 export default function UserType({ navigation }) {
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState(null);
+  const [lastName, setLastName] = useState(null);
   const [role, setRole] = useState(null);
 
-  const [showInvalidName, setShowInvalidName] = useState(false);
+  const [showInvalidFirstName, setShowInvalidFirstName] = useState(false);
+  const [showInvalidLastName, setShowInvalidLastName] = useState(false);
   const [showSelectRole, setShowSelectRole] = useState(false);
 
   const navigationHandler = () => {
     let navigate = true;
 
-    if (name.length === 0) {
-      setShowInvalidName(true);
+    if (firstName === null) {
+      setShowInvalidFirstName(true);
       navigate = false;
     } else {
-      setShowInvalidName(false);
+      setShowInvalidFirstName(false);
+    }
+
+    if (lastName === null) {
+      setShowInvalidLastName(true);
+      navigate = false;
+    } else {
+      setShowInvalidLastName(false);
     }
 
     if (role === null) {
@@ -31,8 +40,8 @@ export default function UserType({ navigation }) {
     }
 
     if (navigate) {
-      // store name, role
-      console.log(name, role);
+      // store firstname, lastname, role
+      console.log(firstName, lastName, role);
 
       navigation.navigate("Credential");
     }
@@ -42,24 +51,44 @@ export default function UserType({ navigation }) {
     <View style={styles.container}>
       {/* Input name */}
       <View>
-        <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25 }}>
-          You are...
-        </Text>
+        <Text style={styles.header}>You are...</Text>
       </View>
+
+      <View style={appInputStyle.container}>
+        {/* First Name */}
+        <Image
+          source={require("../../assets/images/user-icon.png")}
+          style={appInputStyle.image}
+        />
+        <TextInput
+          onChangeText={(text) => setFirstName(text)}
+          placeholder="First Name"
+          value={firstName}
+          style={appInputStyle.placeholder}
+        />
+      </View>
+
+      {showInvalidFirstName ? (
+        <ValidationMsg message="Please enter first name" />
+      ) : null}
+
+      {/* Last Name */}
       <View style={appInputStyle.container}>
         <Image
           source={require("../../assets/images/user-icon.png")}
           style={appInputStyle.image}
         />
         <TextInput
-          onChangeText={(text) => setName(text)}
-          placeholder="Full Name"
-          value={name}
+          onChangeText={(text) => setLastName(text)}
+          placeholder="Last Name"
+          value={lastName}
           style={appInputStyle.placeholder}
         />
       </View>
 
-      {showInvalidName ? <ValidationMsg message="Please enter a name" /> : null}
+      {showInvalidLastName ? (
+        <ValidationMsg message="Please enter last name" />
+      ) : null}
 
       {/* Type of User */}
       <View>
@@ -144,6 +173,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     alignItems: "center",
     justifyContent: "center",
+  },
+  header: {
+    color: Colors.text,
+    fontWeight: "bold",
+    fontSize: 25,
   },
   backButton: {
     flex: 1,

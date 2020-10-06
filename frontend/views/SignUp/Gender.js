@@ -28,10 +28,7 @@ export default function Gender({ navigation }) {
     <View style={styles.container}>
       {/* Title */}
       <View>
-        <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25 }}>
-          {" "}
-          Which one are you?{" "}
-        </Text>
+        <Text style={styles.header}> Which one are you? </Text>
       </View>
 
       {/* Gender of User */}
@@ -112,6 +109,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     alignItems: "center",
     justifyContent: "center",
+  },
+  header: {
+    color: Colors.text,
+    fontWeight: "bold",
+    fontSize: 25,
   },
   whiteBackground: {
     alignItems: "center",

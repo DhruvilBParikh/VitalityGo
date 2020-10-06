@@ -90,10 +90,7 @@ export default function PersonalInformation({ navigation }) {
     <View style={styles.container}>
       {/* Title */}
       <View style={{ marginBottom: 20 }}>
-        <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25 }}>
-          {" "}
-          Personal Information{" "}
-        </Text>
+        <Text style={styles.header}>Personal Information</Text>
       </View>
 
       {/* Height */}
@@ -195,6 +192,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     alignItems: "center",
     justifyContent: "center",
+  },
+  header: {
+    color: Colors.text,
+    fontWeight: "bold",
+    fontSize: 25,
   },
   greyText: {
     color: "rgb(160, 160, 160)",

@@ -28,9 +28,7 @@ export default function ProfilePictureMale({ navigation }) {
     <View style={styles.container}>
       {/* Title */}
       <View>
-        <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25 }}>
-          Choose your profile picture
-        </Text>
+        <Text style={styles.header}>Choose your profile picture</Text>
       </View>
 
       {/* Avatar of User */}
@@ -105,6 +103,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     alignItems: "center",
     justifyContent: "center",
+  },
+  header: {
+    color: Colors.text,
+    fontWeight: "bold",
+    fontSize: 25,
   },
   whiteBackground: {
     backgroundColor: "transparent",
