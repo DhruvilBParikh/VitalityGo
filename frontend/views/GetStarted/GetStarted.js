@@ -24,8 +24,7 @@ export default function GetStarted({ navigation }) {
       {/* Continue Button */}
       <AppButton
         title="Get Started"
-        clickHandler={() => navigation.navigate("PersonalInformation")}
-        // clickHandler={() => navigation.navigate("UserType")}
+        clickHandler={() => navigation.navigate("UserType")}
       />
 
       {/* Login */}

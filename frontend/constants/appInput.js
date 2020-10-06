@@ -31,19 +31,10 @@ const appInputStyle = StyleSheet.create({
     color: Colors.text,
   },
   picker: {
-    // backgroundColor: "red",
     width: "100%",
     marginLeft: 10,
     padding: 0,
     color: "rgb(160, 160, 160)",
-  },
-  datePicker: {
-    backgroundColor: "red",
-  },
-  pickerItem: {
-    textAlign: "center",
-    backgroundColor: "red",
-    color: "blue",
   },
 });
 
