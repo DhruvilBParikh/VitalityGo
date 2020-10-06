@@ -82,7 +82,7 @@ router.get('/:userId/getUserInfo', authUtils, (req,res)=>{
 router.put('/:userId/editUserInfo', authUtils, (req,res)=>{
     
     const {height, weight, bloodGroup, birthDate, gender, city, state, country, phoneNumber}= req.body
-    const {userId }= req.params
+    const {userId}= req.params
     // let user = new User({height, weight, bloodGroup, birthDate, gender, city, state, country, phoneNumber })
     User.findByIdAndUpdate(userId,{ 
         $set: {
@@ -94,7 +94,7 @@ router.put('/:userId/editUserInfo', authUtils, (req,res)=>{
         }
     },{new : true}).exec()
     .then(response=>{
-        Patient.findByIdAndUpdate({user:response.userId},{
+        Patient.findOneAndUpdate({userId:response._id},{
             $set: {
                 height: height, 
                 weight: weight, 
