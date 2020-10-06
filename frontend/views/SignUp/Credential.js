@@ -12,6 +12,7 @@ export default function Credential({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
+  const [signedInFrom, setsignedInFrom] = useState("emailpassword");
 
   const [showInvalidEmail, setShowInvalidEmail] = useState(false);
   const [showInvalidPassword, setShowInvalidPassword] = useState(false);
@@ -42,10 +43,10 @@ export default function Credential({ navigation }) {
     }
 
     if (navigate) {
-      // store email, password
-      console.log(email, password);
+      // store email, password, signedInFrom
+      console.log(email, password, signedInFrom);
 
-      navigation.navigate("PersonalInformation");
+      navigation.navigate("ContactInfo");
     }
   };
 
@@ -59,6 +60,7 @@ export default function Credential({ navigation }) {
         />
         <TextInput
           placeholder="Email"
+          keyboardType="email-address"
           style={appInputStyle.placeholder}
           onChangeText={(text) => setEmail(text)}
         />

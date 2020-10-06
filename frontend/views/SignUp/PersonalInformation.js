@@ -5,14 +5,43 @@ import { Picker } from "@react-native-community/picker";
 import AppButton from "../../components/AppButton/AppButton";
 import Colors from "../../constants/colors";
 import appInputStyle from "../../constants/appInput";
+import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 
 export default function PersonalInformation({ navigation }) {
-  const [bloodGroup, setBloodGroup] = useState("A+");
-  const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+  const [height, setHeight] = useState(null);
+  const [weight, setWeight] = useState(null);
+  const [bloodGroup, setBloodGroup] = useState(null);
 
   const todayDate = new Date();
   const [date, setDate] = useState(todayDate);
   const [show, setShow] = useState(false);
+
+  const heights = [["Height", null]];
+  for (let i = 100; i < 300; i++) {
+    heights.push([i.toString() + " cm", i]);
+  }
+
+  const weights = [["Weight", null]];
+  for (let i = 140; i <= 320; i++) {
+    weights.push([i.toString() + " lb", i]);
+  }
+
+  const bloodGroups = [
+    ["Blood Group", null],
+    ["A+", "A+"],
+    ["A-", "A-"],
+    ["B+", "B+"],
+    ["B-", "B-"],
+    ["AB+", "AB+"],
+    ["AB-", "AB-"],
+    ["O+", "O+"],
+    ["O-", "O-"],
+  ];
+
+  const [showSelectHeight, setShowSelectHeight] = useState(false);
+  const [showSelectWeight, setShowSelectWeight] = useState(false);
+  const [showSelectBloodGroup, setShowSelectBloodGroup] = useState(false);
+  const [showSelectBirthday, setShowSelectBirthday] = useState(false);
 
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
@@ -21,24 +50,47 @@ export default function PersonalInformation({ navigation }) {
   };
 
   const navigationHandler = () => {
-    if (date.toLocaleDateString() === todayDate.toLocaleDateString()) {
-      setDate("");
+    let navigate = true;
+
+    if (height === null) {
+      setShowSelectHeight(true);
+      navigate = false;
+    } else {
+      setShowSelectHeight(false);
     }
 
-    console.log(date);
-    return;
+    if (weight === null) {
+      setShowSelectWeight(true);
+      navigate = false;
+    } else {
+      setShowSelectWeight(false);
+    }
 
-    navigation.navigate("Gender");
+    if (bloodGroup === null) {
+      setShowSelectBloodGroup(true);
+      navigate = false;
+    } else {
+      setShowSelectBloodGroup(false);
+    }
+
+    if (
+      date >= todayDate ||
+      date.toLocaleDateString() === todayDate.toLocaleDateString()
+    ) {
+      setShowSelectBirthday(true);
+      navigate = false;
+    } else {
+      setShowSelectBirthday(false);
+    }
+
+    if (navigate) navigation.navigate("Gender");
   };
 
   return (
     <View style={styles.container}>
       {/* Title */}
       <View style={{ marginBottom: 20 }}>
-        <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25 }}>
-          {" "}
-          Personal Information{" "}
-        </Text>
+        <Text style={styles.header}>Personal Information</Text>
       </View>
 
       {/* Height */}
@@ -47,8 +99,18 @@ export default function PersonalInformation({ navigation }) {
           source={require("../../assets/images/height-icon.png")}
           style={appInputStyle.image}
         />
-        <TextInput placeholder="Height" style={appInputStyle.placeholder} />
+        <Picker
+          selectedValue={height}
+          style={appInputStyle.picker}
+          onValueChange={(itemValue) => setHeight(itemValue)}
+        >
+          {heights.map((wt, index) => {
+            return <Picker.Item key={index} label={wt[0]} value={wt[1]} />;
+          })}
+        </Picker>
       </View>
+
+      {showSelectHeight ? <ValidationMsg message="Please add height" /> : null}
 
       {/* Weight */}
       <View style={appInputStyle.container}>
@@ -56,8 +118,18 @@ export default function PersonalInformation({ navigation }) {
           source={require("../../assets/images/weight-icon.png")}
           style={appInputStyle.image}
         />
-        <TextInput placeholder="Weight" style={appInputStyle.placeholder} />
+        <Picker
+          selectedValue={weight}
+          style={appInputStyle.picker}
+          onValueChange={(itemValue) => setWeight(itemValue)}
+        >
+          {weights.map((wt, index) => {
+            return <Picker.Item key={index} label={wt[0]} value={wt[1]} />;
+          })}
+        </Picker>
       </View>
+
+      {showSelectWeight ? <ValidationMsg message="Please add weight" /> : null}
 
       {/* Blood Group */}
       <View style={appInputStyle.container}>
@@ -65,30 +137,20 @@ export default function PersonalInformation({ navigation }) {
           source={require("../../assets/images/blood-group-icon.png")}
           style={appInputStyle.image}
         />
-        {/* <Text style={[appInputStyle.placeholder, styles.greyText]}>
-          {bloodGroup}
-        </Text> */}
         <Picker
           selectedValue={bloodGroup}
           style={appInputStyle.picker}
-          onValueChange={(itemValue, itemIndex) => setBloodGroup(itemValue)}
+          onValueChange={(itemValue) => setBloodGroup(itemValue)}
         >
           {bloodGroups.map((bg, index) => {
-            return (
-              <Picker.Item
-                key={index}
-                label={bg}
-                value={bg}
-                style={appInputStyle.pickerItem}
-              />
-            );
+            return <Picker.Item key={index} label={bg[0]} value={bg[1]} />;
           })}
         </Picker>
-        {/* <TextInput
-          placeholder="Blood Group"
-          style={appInputStyle.placeholder}
-        /> */}
       </View>
+
+      {showSelectBloodGroup ? (
+        <ValidationMsg message="Please select blood group" />
+      ) : null}
 
       {/* Birth Date */}
       <View style={appInputStyle.container}>
@@ -114,6 +176,10 @@ export default function PersonalInformation({ navigation }) {
         </Text>
       </View>
 
+      {showSelectBirthday ? (
+        <ValidationMsg message="Please add birthday" />
+      ) : null}
+
       {/* Continue button */}
       <AppButton title="Continue" clickHandler={navigationHandler} />
     </View>
@@ -126,6 +192,11 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     alignItems: "center",
     justifyContent: "center",
+  },
+  header: {
+    color: Colors.text,
+    fontWeight: "bold",
+    fontSize: 25,
   },
   greyText: {
     color: "rgb(160, 160, 160)",
