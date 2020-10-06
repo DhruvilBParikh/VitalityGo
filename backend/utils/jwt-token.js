@@ -4,6 +4,7 @@ const User = mongoose.model('User')
 const config = require('config')
 
 module.exports = (req, res, next)=> {
+    console.log("JWT TOKEN")
     const {authorization} = req.headers
     if(!authorization){
         res.status(401).send({error:"You must be logged in"})

@@ -1,12 +1,8 @@
 {
     "app" :{
-        "modelsDirectory": "/models",
+		"modelsDirectory": "/models",
         "routesDirectory": "/routes",
         "routes": [
-			{
-				"basePath": "/",
-				"file": "index.js"
-			},
 			{
 				"basePath": "/api/users",
 				"file": "users.js"
