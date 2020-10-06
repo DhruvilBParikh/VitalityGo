@@ -1,33 +1,27 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import AppButton from "../../components/AppButton/AppButton";
+import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 import Colors from "../../constants/colors";
 
 export default function Gender({ navigation }) {
-  const [isMale, setIsMale] = useState(); // set default to null
-  const [backgroundColor1, setBackgroundColor1] = useState("white");
-  const [backgroundColor2, setBackgroundColor2] = useState("white");
+  const [gender, setGender] = useState(null);
+  const [showSelectGender, setShowSelectGender] = useState(false);
 
-  const handleGender = (gender) => {
-    if (gender == "male") {
-      if (isMale == null || isMale == false) {
-        setBackgroundColor1(Colors.accent);
-        setBackgroundColor2("white");
-        setIsMale(true);
-      } else {
-        setBackgroundColor1("white");
-        setIsMale(null);
-      }
+  const navigationHandler = () => {
+    if (gender === null) {
+      setShowSelectGender(true);
+      return;
     } else {
-      if (isMale == null || isMale == true) {
-        setBackgroundColor1("white");
-        setBackgroundColor2(Colors.accent);
-        setIsMale(false);
-      } else {
-        setBackgroundColor2("white");
-        setIsMale(null);
-      }
+      setShowSelectGender(false);
     }
+
+    // store gender
+    console.log(gender);
+
+    gender === "male"
+      ? navigation.navigate("ProfilePictureMale")
+      : navigation.navigate("ProfilePictureFemale");
   };
 
   return (
@@ -53,14 +47,19 @@ export default function Gender({ navigation }) {
           <TouchableOpacity
             style={[
               styles.whiteBackground,
-              { backgroundColor: backgroundColor1 },
+              {
+                backgroundColor: gender === "male" ? Colors.accent : "white",
+              },
             ]}
             activeOpacity={0.9}
-            onPress={() => handleGender("male")}
+            onPress={() => setGender("male")}
           >
             <Image
               source={require("../../assets/images/gender-male.png")}
-              style={styles.maleImage}
+              style={
+                (styles.maleImage,
+                { tintColor: gender === "male" ? "white" : "black" })
+              }
             />
           </TouchableOpacity>
           <Text
@@ -74,14 +73,19 @@ export default function Gender({ navigation }) {
           <TouchableOpacity
             style={[
               styles.whiteBackground,
-              { backgroundColor: backgroundColor2 },
+              {
+                backgroundColor: gender === "female" ? Colors.accent : "white",
+              },
             ]}
             activeOpacity={0.9}
-            onPress={() => handleGender("female")}
+            onPress={() => setGender("female")}
           >
             <Image
               source={require("../../assets/images/gender-female.png")}
-              style={styles.femaleImage}
+              style={
+                (styles.femaleImage,
+                { tintColor: gender === "female" ? "white" : "black" })
+              }
             />
           </TouchableOpacity>
           <Text
@@ -92,15 +96,12 @@ export default function Gender({ navigation }) {
         </View>
       </View>
 
+      {showSelectGender ? (
+        <ValidationMsg message="Please select a gender" />
+      ) : null}
+
       {/* Continue Button */}
-      <AppButton
-        title="Continue"
-        clickHandler={() =>
-          isMale
-            ? navigation.navigate("ProfilePictureMale")
-            : navigation.navigate("ProfilePictureFemale")
-        }
-      />
+      <AppButton title="Continue" clickHandler={navigationHandler} />
     </View>
   );
 }
