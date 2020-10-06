@@ -1,18 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image } from "react-native";
 import { TextInput, TouchableOpacity } from "react-native-gesture-handler";
 import AppButton from "../../components/AppButton/AppButton";
 import Colors from "../../constants/colors";
 import appInputStyle from "../../constants/appInput";
+import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 
 export default function UserType({ navigation }) {
+  const [name, setName] = useState("");
+  const [role, setRole] = useState(null);
+
+  const [showInvalidName, setShowInvalidName] = useState(false);
+  const [showSelectRole, setShowSelectRole] = useState(false);
+
+  const navigationHandler = () => {
+    let navigate = true;
+
+    if (name.length === 0) {
+      setShowInvalidName(true);
+      navigate = false;
+    } else {
+      setShowInvalidName(false);
+    }
+
+    if (role === null) {
+      setShowSelectRole(true);
+      navigate = false;
+    } else {
+      setShowSelectRole(false);
+    }
+
+    if (navigate) {
+      // store name, role
+      console.log(name, role);
+
+      navigation.navigate("Credential");
+    }
+  };
+
   return (
     <View style={styles.container}>
       {/* Input name */}
       <View>
         <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25 }}>
-          {" "}
-          You are...{" "}
+          You are...
         </Text>
       </View>
       <View style={appInputStyle.container}>
@@ -20,14 +51,27 @@ export default function UserType({ navigation }) {
           source={require("../../assets/images/user-icon.png")}
           style={appInputStyle.image}
         />
-        <TextInput placeholder="Full Name" style={appInputStyle.placeholder} />
+        <TextInput
+          onChangeText={(text) => setName(text)}
+          placeholder="Full Name"
+          value={name}
+          style={appInputStyle.placeholder}
+        />
       </View>
+
+      {showInvalidName ? <ValidationMsg message="Please enter a name" /> : null}
 
       {/* Type of User */}
       <View>
-        <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25, marginTop:40 }}>
-          {" "}
-          What type of user?{" "}
+        <Text
+          style={{
+            color: Colors.text,
+            fontWeight: "bold",
+            fontSize: 25,
+            marginTop: 40,
+          }}
+        >
+          What type of user?
         </Text>
       </View>
       <View
@@ -39,10 +83,20 @@ export default function UserType({ navigation }) {
         }}
       >
         <View style={{ alignItems: "center" }}>
-          <TouchableOpacity style={styles.whiteBackground} activeOpacity={0.9}>
+          <TouchableOpacity
+            style={[
+              styles.whiteBackground,
+              { backgroundColor: role === "doctor" ? Colors.accent : "white" },
+            ]}
+            activeOpacity={0.9}
+            onPress={() => setRole("doctor")}
+          >
             <Image
               source={require("../../assets/images/user-doctor.png")}
-              style={styles.userTypeImage}
+              style={
+                (styles.userTypeImage,
+                { tintColor: role === "doctor" ? "white" : "black" })
+              }
             />
           </TouchableOpacity>
           <Text
@@ -53,10 +107,20 @@ export default function UserType({ navigation }) {
         </View>
 
         <View style={{ alignItems: "center" }}>
-          <TouchableOpacity style={styles.whiteBackground} activeOpacity={0.9}>
+          <TouchableOpacity
+            style={[
+              styles.whiteBackground,
+              { backgroundColor: role === "patient" ? Colors.accent : "white" },
+            ]}
+            activeOpacity={0.9}
+            onPress={() => setRole("patient")}
+          >
             <Image
               source={require("../../assets/images/user-general.png")}
-              style={styles.userTypeImage}
+              style={
+                (styles.userTypeImage,
+                { tintColor: role === "patient" ? "white" : "black" })
+              }
             />
           </TouchableOpacity>
           <Text
@@ -67,10 +131,9 @@ export default function UserType({ navigation }) {
         </View>
       </View>
 
-      <AppButton
-        title="Continue"
-        clickHandler={() => navigation.navigate("Credential")}
-      />
+      {showSelectRole ? <ValidationMsg message="Please select a role" /> : null}
+
+      <AppButton title="Continue" clickHandler={navigationHandler} />
     </View>
   );
 }
@@ -92,27 +155,14 @@ const styles = StyleSheet.create({
   space: {
     flex: 1,
   },
-  textInputContainer: {
-    backgroundColor: "white",
-    width: "75%",
-    margin: 40,
-    height: 40,
-    alignItems: "center",
-    paddingLeft: 10,
-    flexDirection: "row",
-    borderRadius: 10,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    shadowOpacity: 0.26,
-    elevation: 5,
-  },
   whiteBackground: {
+    backgroundColor: "white",
+    padding: 50,
     alignItems: "center",
     justifyContent: "center",
     width: 130,
     height: 130,
     borderRadius: 30,
-    backgroundColor: "white",
     margin: 10,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 6,

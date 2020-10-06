@@ -1,14 +1,40 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TextInput } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { Picker } from "@react-native-community/picker";
 import AppButton from "../../components/AppButton/AppButton";
 import Colors from "../../constants/colors";
 import appInputStyle from "../../constants/appInput";
 
 export default function PersonalInformation({ navigation }) {
+  const [bloodGroup, setBloodGroup] = useState("A+");
+  const bloodGroups = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+
+  const todayDate = new Date();
+  const [date, setDate] = useState(todayDate);
+  const [show, setShow] = useState(false);
+
+  const onChange = (event, selectedDate) => {
+    const currentDate = selectedDate || date;
+    setShow(Platform.OS === "ios");
+    setDate(currentDate);
+  };
+
+  const navigationHandler = () => {
+    if (date.toLocaleDateString() === todayDate.toLocaleDateString()) {
+      setDate("");
+    }
+
+    console.log(date);
+    return;
+
+    navigation.navigate("Gender");
+  };
+
   return (
     <View style={styles.container}>
       {/* Title */}
-      <View style={{marginBottom:20}}>
+      <View style={{ marginBottom: 20 }}>
         <Text style={{ color: Colors.text, fontWeight: "bold", fontSize: 25 }}>
           {" "}
           Personal Information{" "}
@@ -39,10 +65,29 @@ export default function PersonalInformation({ navigation }) {
           source={require("../../assets/images/blood-group-icon.png")}
           style={appInputStyle.image}
         />
-        <TextInput
+        {/* <Text style={[appInputStyle.placeholder, styles.greyText]}>
+          {bloodGroup}
+        </Text> */}
+        <Picker
+          selectedValue={bloodGroup}
+          style={appInputStyle.picker}
+          onValueChange={(itemValue, itemIndex) => setBloodGroup(itemValue)}
+        >
+          {bloodGroups.map((bg, index) => {
+            return (
+              <Picker.Item
+                key={index}
+                label={bg}
+                value={bg}
+                style={appInputStyle.pickerItem}
+              />
+            );
+          })}
+        </Picker>
+        {/* <TextInput
           placeholder="Blood Group"
           style={appInputStyle.placeholder}
-        />
+        /> */}
       </View>
 
       {/* Birth Date */}
@@ -51,17 +96,26 @@ export default function PersonalInformation({ navigation }) {
           source={require("../../assets/images/calendar-icon.png")}
           style={appInputStyle.image}
         />
-        <TextInput
-          placeholder="Birthdate (mm/dd/yyyy)"
-          style={appInputStyle.placeholder}
-        />
+        {show ? (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode="date"
+            display="default"
+            onChange={onChange}
+            style={appInputStyle.datePicker}
+          />
+        ) : null}
+        <Text
+          style={[appInputStyle.placeholder, styles.greyText]}
+          onPress={() => setShow(true)}
+        >
+          {date.toLocaleDateString()}
+        </Text>
       </View>
 
       {/* Continue button */}
-      <AppButton
-        title="Continue"
-        clickHandler={() => navigation.navigate("Gender")}
-      />
+      <AppButton title="Continue" clickHandler={navigationHandler} />
     </View>
   );
 }
@@ -72,5 +126,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     alignItems: "center",
     justifyContent: "center",
+  },
+  greyText: {
+    color: "rgb(160, 160, 160)",
   },
 });
