@@ -8,7 +8,7 @@ import Colors from "../../constants/colors";
 import isValidEmail from "../../constants/emailValidator";
 import isValidPassword from "../../constants/passwordValidator";
 
-export default function Credential({ navigation }) {
+export default function Credential({ route, navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmedPassword, setConfirmedPassword] = useState("");
@@ -43,10 +43,14 @@ export default function Credential({ navigation }) {
     }
 
     if (navigate) {
-      // store email, password, signedInFrom
-      console.log(email, password, signedInFrom);
-
-      navigation.navigate("ContactInfo");
+      navigation.navigate("ContactInfo", {
+        userData: {
+          ...route.params.userData,
+          email,
+          password,
+          signedInFrom,
+        },
+      });
     }
   };
 

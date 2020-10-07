@@ -7,7 +7,9 @@ import appInputStyle from "../../constants/appInput";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 import isValidPhoneNumber from "../../constants/phoneNumberValidator";
 
-export default function ContactInfo({ navigation }) {
+export default function ContactInfo({ route, navigation }) {
+  const userData = route.params.userData;
+
   const [phoneNumber, setPhoneNumber] = useState("");
   const [country, setCountry] = useState(null);
   const [countryState, setCountryState] = useState(null);
@@ -81,12 +83,14 @@ export default function ContactInfo({ navigation }) {
     }
 
     if (navigate) {
-      // store phone number, country, state, city
-      console.log(phoneNumber, country, countryState, city);
+      userData.phoneNumber = phoneNumber;
+      userData.country = country;
+      userData.state = countryState;
+      userData.city = city;
 
-      const role = "patient";
-      if (role === "patient") navigation.navigate("PersonalInformation");
-      else navigation.navigate("Gender");
+      if (userData.type === "patient")
+        navigation.navigate("PersonalInformation", { userData });
+      else navigation.navigate("Gender", { userData });
     }
   };
 

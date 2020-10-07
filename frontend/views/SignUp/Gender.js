@@ -4,7 +4,7 @@ import AppButton from "../../components/AppButton/AppButton";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 import Colors from "../../constants/colors";
 
-export default function Gender({ navigation }) {
+export default function Gender({ route, navigation }) {
   const [gender, setGender] = useState(null);
   const [showSelectGender, setShowSelectGender] = useState(false);
 
@@ -16,12 +16,14 @@ export default function Gender({ navigation }) {
       setShowSelectGender(false);
     }
 
-    // store gender
-    console.log(gender);
+    const data = {
+      ...route.params,
+      userData: { ...route.params.userData, gender },
+    };
 
     gender === "male"
-      ? navigation.navigate("ProfilePictureMale")
-      : navigation.navigate("ProfilePictureFemale");
+      ? navigation.navigate("ProfilePictureMale", { data })
+      : navigation.navigate("ProfilePictureFemale", { data });
   };
 
   return (

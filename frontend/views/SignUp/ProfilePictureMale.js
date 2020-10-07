@@ -4,7 +4,7 @@ import AppButton from "../../components/AppButton/AppButton";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 import Colors from "../../constants/colors";
 
-export default function ProfilePictureMale({ navigation }) {
+export default function ProfilePictureMale({ route, navigation }) {
   const [avatar, setAvatar] = useState(null);
   const [showSelectAvatar, setShowSelectAvatar] = useState(false);
 
@@ -15,8 +15,14 @@ export default function ProfilePictureMale({ navigation }) {
     } else {
       setShowSelectAvatar(false);
     }
-    // store avatar
-    console.log(avatar);
+
+    const data = {
+      ...route.params.data,
+      userData: { ...route.params.data.userData, profilePicture: avatar },
+    };
+
+    // signup user: data
+    console.log(data);
 
     navigation.reset({
       index: 0,
