@@ -14,32 +14,41 @@ const config = require('config')
 
 router.post('/signup', async (req,res)=>{
 
-    const {email, firstName, lastName, type, password} = req.body
+    const {email, firstName, lastName, type, password, profilePicture, phoneNumber, gender, height, weight, bloodGroup, birthDate, city, state, country, signedInFrom} = req.body
     console.log(req.body)
-    let user = new User({email, firstName, lastName, type, password})
+    let user = new User({email, firstName, lastName, gender, type, password, profilePicture, phoneNumber, city, state, country, signedInFrom})
     user.save()
     .then(response=>{
+        const token = jwt.sign({userId: response._id}, config.app.jwtSecret)
+        
         if(type=='Patient'){
-            Patient.create({userId:response._id})
-            .then(res => {
+            Patient.create({userId:response._id, height: height, weight: weight, bloodGroup: bloodGroup, birthDate: birthDate})
+            .then(response2 => {
                 console.log("Patient created")
+                res.status(200).send(token)
+            }).catch(err=>{
+                res.status(401).send(err.message)
             })
         }
         else{
-            Doctor.create({userId:response._id})
-            .then(res => {
+            Doctor.create({userId:response._id, birthDate: birthDate})
+            .then(response3 => {
                 console.log("Doctor created")
+                res.status(200).send(token)
+            }).catch(err=>{
+                res.status(401).send(err.message)
             })
         }
         Admin.create({
             user:response._id,
             activity: "User Created", 
             auditedAt: new Date()
-        }).then(res =>{
+        }).then(result =>{
             console.log("User entry updated in admin")
+        }).catch(err=>{
+            res.status(401).send(err.message)
         })
-        const token = jwt.sign({userId: response._id}, config.app.jwtSecret)
-        res.status(200).send(token)
+
     }).catch(err=>{
         res.status(401).send(err.message)
     })
