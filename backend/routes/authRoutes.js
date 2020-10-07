@@ -25,14 +25,20 @@ router.post('/signup', async (req,res)=>{
             Patient.create({userId:response._id, height: height, weight: weight, bloodGroup: bloodGroup, birthDate: birthDate})
             .then(response2 => {
                 console.log("Patient created")
-                res.status(200).send(token)
+                Goal.create({userId:response._id, caloriesGoal: 2000, waterGoal: 8})
+                .then(response3 => {
+                    console.log("Default Goal created") 
+                    res.status(200).send(token)
+                }).catch(err=>{
+                    res.status(401).send(err.message)
+                })                
             }).catch(err=>{
                 res.status(401).send(err.message)
             })
         }
         else{
             Doctor.create({userId:response._id, birthDate: birthDate})
-            .then(response3 => {
+            .then(response4 => {
                 console.log("Doctor created")
                 res.status(200).send(token)
             }).catch(err=>{
