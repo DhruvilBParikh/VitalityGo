@@ -8,9 +8,11 @@ mongoose.set('useCreateIndex', true);
 var DayToDayGoalSchema = mongooseBootstrapper({
 
     user: { type: ObjectId, ref:'User'},
-    food: { type: ObjectId, ref:'Food'},
-    calories: { type: Number },
-    createdAt: { type: Date }
+    caloriesGoalReached: { type: Boolean},
+    waterGoalReached: { type: Boolean },
+    totalCalories: {type: Number},
+    totalWaterGlasses: {type: Number},
+    onDate: { type: Date }
 
 });
 
