@@ -10,10 +10,12 @@ require('./utils/mongoose-bootstrapper')
 require('./utils/mongoose-connector');
 
 const authRoutes = require('./routes/authRoutes')
+const userRoutes = require('./routes/users')
 
 app.use(bodyParser.json())
 
 app.use(authRoutes)
+app.use(userRoutes)
 
 var routesDirectory = config.app.routesDirectory;
 if (routesDirectory) {

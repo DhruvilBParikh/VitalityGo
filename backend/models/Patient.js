@@ -11,7 +11,7 @@ var PatientSchema = mongooseBootstrapper({
     weight: {type: Number},
     height: {type: Number},
     bloodGroup: {type: String},
-    birthdate: {type: Date},
+    birthDate: {type: Date},
     emergencyContacts: [{type:ObjectId, ref:'User'}],
     doctors: [{type:ObjectId, ref:'User'}]
 
