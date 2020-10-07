@@ -5,6 +5,7 @@ const mongoose = require('../utils/mongoose-bootstrapper');
 const User = mongoose.model('User')
 const Patient = mongoose.model('Patient')
 const Admin = mongoose.model('Admin')
+const Goal = mongoose.model('Goal')
 
 router.put('/:userId/addPersonalInfo', authUtils, (req,res)=>{
 
@@ -14,14 +15,6 @@ router.put('/:userId/addPersonalInfo', authUtils, (req,res)=>{
     User.findByIdAndUpdate(userId,{ $set: {city: city, state: state, country: country, gender: gender }}, { new: true }).exec()
     .then(response=>{
         
-        Admin.create({
-        user:response._id,
-        activity: "User details successfully updated", 
-        auditedAt: new Date()
-        }).then(res =>{
-            console.log("Admin: User details successfully updated")
-        })     
-
         Patient.findOneAndUpdate({userId:response._id},{ $set: 
                 {
                     height: height, 
@@ -31,11 +24,25 @@ router.put('/:userId/addPersonalInfo', authUtils, (req,res)=>{
                 }
         },{new: true}).exec()
         .then(response2=>{
+
+            Admin.create({
+                user:response._id,
+                activity: "User details successfully updated", 
+                auditedAt: new Date()
+                }).then(res =>{
+                    console.log("Admin: User details successfully updated")
+                }).catch(err=>{
+                    res.status(401).send(err.message)
+                })   
+
             const resp = {
                 "msg": "Successfully updated",
                 "data": { }
             }
+
             res.status(200).send(JSON.stringify(resp))
+        }).catch(err=>{
+            res.status(401).send(err.message)
         })       
     }).catch(err=>{
         res.status(401).send(err.message)
@@ -70,8 +77,9 @@ router.get('/:userId/getUserInfo', authUtils, (req,res)=>{
                 }
             }
             res.status(200).send(JSON.stringify(resp))
-    })
-        
+        }).catch(err=>{
+        res.status(401).send(err.message)
+        })        
             
         }).catch(err=>{
             res.status(401).send(err.message)
@@ -94,6 +102,7 @@ router.put('/:userId/editUserInfo', authUtils, (req,res)=>{
         }
     },{new : true}).exec()
     .then(response=>{
+        
         Patient.findOneAndUpdate({userId:response._id},{
             $set: {
                 height: height, 
@@ -103,21 +112,26 @@ router.put('/:userId/editUserInfo', authUtils, (req,res)=>{
             }
         }).exec()
         .then(response2 =>{
+
             Admin.create({
                 user:response._id,
                 activity: "User Info updated successfully in Patient and User", 
                 auditedAt: new Date()
             }).then(res =>{
                 console.log("Admin: User Info updated successfully in Patient and User")
+            }).catch(err=>{
+                res.status(401).send(err.message)
             })
+
             const resp = {
                 "msg": "User Info updated successfully",
                 "data": { }
             }
             res.status(200).send(JSON.stringify(resp))
 
-        })
-
+        }).catch(err=>{
+        res.status(401).send(err.message)
+    })
        
     }).catch(err=>{
         res.status(401).send(err.message)
@@ -125,6 +139,64 @@ router.put('/:userId/editUserInfo', authUtils, (req,res)=>{
 
 })
 
+router.put('/:userId/editProfilePicture', authUtils, (req,res)=>{
+    
+    console.log("TBD")
+})
+
+router.put('/:userId/setGoal', authUtils, (req,res)=>{
+
+    const {caloriesGoal, waterGoal} = req.body
+    const {userId} = req.params
+
+    // let goal = new Goal({caloriesGoal, waterGoal})
+    Goal.findOneAndUpdate({userId : userId},{$set:{
+        caloriesGoal: caloriesGoal, 
+        waterGoal: waterGoal}},{new: true}
+     ).exec()
+    .then(response=>{
+        Admin.create({
+            user:response._id,
+            activity: "User Goal successfully changed", 
+            auditedAt: new Date()
+            }).then(res =>{
+                console.log("Admin: User Goal successfully changed")
+            }).catch(err=>{
+                res.status(401).send(err.message)
+            })   
+
+        const resp = {
+            "msg": "Goal successfully changed",
+            "data": response
+        }
+
+        res.status(200).send(JSON.stringify(resp))
+        
+    }).catch(err=>{
+        res.status(401).send(err.message)
+    })
+})
+
+router.get('/:userId/getGoal', authUtils, (req,res)=>{
+
+    const {userId} = req.params
+
+    Goal.findOne({userId : userId}).exec()
+    .then(response=>{
+
+        const resp = {
+            "msg": "",
+            "data": {
+                caloriesGoal: response.caloriesGoal,
+                waterGoal: response.waterGoal
+            }
+        }
+
+        res.status(200).send(JSON.stringify(resp))        
+    }).catch(err=>{
+        res.status(401).send(err.message)
+    })
+})
 
 module.exports = router
 
