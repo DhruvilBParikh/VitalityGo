@@ -14,32 +14,47 @@ const config = require('config')
 
 router.post('/signup', async (req,res)=>{
 
-    const {email, firstName, lastName, type, password} = req.body
+    const {email, firstName, lastName, type, password, profilePicture, phoneNumber, gender, height, weight, bloodGroup, birthDate, city, state, country, signedInFrom} = req.body
     console.log(req.body)
-    let user = new User({email, firstName, lastName, type, password})
+    let user = new User({email, firstName, lastName, gender, type, password, profilePicture, phoneNumber, city, state, country, signedInFrom})
     user.save()
     .then(response=>{
+        const token = jwt.sign({userId: response._id}, config.app.jwtSecret)
+        
         if(type=='Patient'){
-            Patient.create({userId:response._id})
-            .then(res => {
+            Patient.create({userId:response._id, height: height, weight: weight, bloodGroup: bloodGroup, birthDate: birthDate})
+            .then(response2 => {
                 console.log("Patient created")
+                Goal.create({userId:response._id, caloriesGoal: 2000, waterGoal: 8})
+                .then(response3 => {
+                    console.log("Default Goal created") 
+                    res.status(200).send(token)
+                }).catch(err=>{
+                    res.status(401).send(err.message)
+                })                
+            }).catch(err=>{
+                res.status(401).send(err.message)
             })
         }
         else{
-            Doctor.create({userId:response._id})
-            .then(res => {
+            Doctor.create({userId:response._id, birthDate: birthDate})
+            .then(response4 => {
                 console.log("Doctor created")
+                res.status(200).send(token)
+            }).catch(err=>{
+                res.status(401).send(err.message)
             })
         }
         Admin.create({
             user:response._id,
             activity: "User Created", 
             auditedAt: new Date()
-        }).then(res =>{
+        }).then(result =>{
             console.log("User entry updated in admin")
+        }).catch(err=>{
+            res.status(401).send(err.message)
         })
-        const token = jwt.sign({userId: response._id}, config.app.jwtSecret)
-        res.status(200).send(token)
+
     }).catch(err=>{
         res.status(401).send(err.message)
     })
@@ -131,9 +146,9 @@ router.get('/login', async (req,res)=>{
 
         ECG.findOne({user: response._id}).exec()
         .then(response2=>{
-            Goal.findOne({user: response._id}).exec()
+            Goal.findOne({userId: response._id}).exec()
             .then(response3=>{
-                DayToDayGoal.findOne({user: response._id}).exec()
+                DayToDayGoal.findOne({userId: response._id}).exec()
                 .then(response4=>{
                 console.log("User Home Page Info")
                 const resp = {

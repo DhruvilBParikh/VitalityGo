@@ -8,7 +8,7 @@ mongoose.set('useCreateIndex', true);
 var DoctorSchema = mongooseBootstrapper({
 
     userId: {type: ObjectId, ref:'User'},
-    birthdate: {type: Date},
+    birthDate: {type: Date},
     patients: [{type:ObjectId, ref:'User'}]
     
 });
