@@ -7,7 +7,7 @@ import Colors from "../../constants/colors";
 import appInputStyle from "../../constants/appInput";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 
-export default function PersonalInformation({ navigation }) {
+export default function PersonalInformation({ route, navigation }) {
   const [height, setHeight] = useState(null);
   const [weight, setWeight] = useState(null);
   const [bloodGroup, setBloodGroup] = useState(null);
@@ -83,7 +83,17 @@ export default function PersonalInformation({ navigation }) {
       setShowSelectBirthday(false);
     }
 
-    if (navigate) navigation.navigate("Gender");
+    if (navigate) {
+      navigation.navigate("Gender", {
+        ...route.params,
+        patientData: {
+          birthdate: date.toJSON(),
+          height,
+          weight,
+          bloodGroup,
+        },
+      });
+    }
   };
 
   return (

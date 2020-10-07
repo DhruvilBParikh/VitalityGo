@@ -40,10 +40,13 @@ export default function UserType({ navigation }) {
     }
 
     if (navigate) {
-      // store firstname, lastname, role
-      console.log(firstName, lastName, role);
-
-      navigation.navigate("Credential");
+      navigation.navigate("Credential", {
+        userData: {
+          firstName,
+          lastName,
+          type: role,
+        },
+      });
     }
   };
 
@@ -155,7 +158,7 @@ export default function UserType({ navigation }) {
           <Text
             style={{ fontWeight: "bold", fontSize: 17, color: Colors.text }}
           >
-            General
+            Patient
           </Text>
         </View>
       </View>

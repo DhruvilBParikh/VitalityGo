@@ -32,7 +32,7 @@ export default function Login({ navigation }) {
     }
 
     if (navigate) {
-      // store email, password
+      // login user
       console.log(email, password);
 
       navigation.reset({
