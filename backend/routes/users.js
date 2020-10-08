@@ -6,6 +6,7 @@ const User = mongoose.model('User')
 const Patient = mongoose.model('Patient')
 const Admin = mongoose.model('Admin')
 const Goal = mongoose.model('Goal')
+const DayToDayGoal = mongoose.model('DayToDayGoal')
 
 router.put('/:userId/addPersonalInfo', authUtils, (req,res)=>{
 
@@ -197,6 +198,140 @@ router.get('/:userId/getGoal', authUtils, (req,res)=>{
         res.status(401).send(err.message)
     })
 })
+
+router.get('/:userId/getGoal', authUtils, (req,res)=>{
+
+    const {userId} = req.params
+
+    Goal.findOne({userId : userId}).exec()
+    .then(response=>{
+
+        const resp = {
+            "msg": "",
+            "data": {
+                caloriesGoal: response.caloriesGoal,
+                waterGoal: response.waterGoal
+            }
+        }
+
+        res.status(200).send(JSON.stringify(resp))        
+    }).catch(err=>{
+        res.status(401).send(err.message)
+    })
+})
+
+router.post('/initializeEachDayGoal', async (req,res)=>{
+
+    User.find()
+    .then(response=>{
+        response.forEach(user=>{            
+            let dayToDayGoal = new DayToDayGoal({userId: user._id, caloriesGoalReached:Boolean(false), waterGoalReached:Boolean(false), totalCalories:0, totalWaterGlasses:0, onDate:new Date()})
+            dayToDayGoal.save()
+            .then(response1=>{
+                const resp = {
+                    "msg": "DayToDayGoal Successfully updated",
+                    "data": { }
+                }    
+                res.status(200).send(JSON.stringify(resp))
+            }).catch(err=>{
+                res.status(401).send(err.message)
+            })
+        })        
+       
+    }).catch(err=>{
+        res.status(401).send(err.message)
+    })
+
+})
+
+router.put('/:userId/updateDaytoDayGoal', authUtils, (req,res)=>{
+    
+    const {totalCalories, totalWaterGlasses}= req.body
+    const {userId}= req.params
+    
+    Goal.findOne({userId: userId}).exec()
+    .then(response=>{
+        DayToDayGoal.findOne({userId: userId}).exec()
+        .then(response1=>{
+            console.log("Update Day to day goal", response1)
+            let total_Calories= response1.totalCalories+totalCalories
+            let total_waterGlasses= response1.totalWaterGlasses+totalWaterGlasses
+            let caloriesGoalReached= total_Calories >= response.caloriesGoal 
+            let waterGoalReached= total_waterGlasses >= response.waterGoal 
+
+            DayToDayGoal.findByIdAndUpdate(response1._id,{ $set:
+                {
+                    caloriesGoalReached: caloriesGoalReached,
+                    waterGoalReached: waterGoalReached,
+                    totalCalories: total_Calories,
+                    totalWaterGlasses: total_waterGlasses
+                }
+            },{new: true}).exec()
+            .then(response2 =>{
+
+                Admin.create({
+                    user:response._id,
+                    activity: "User DayToDayGoal successfully updated", 
+                    auditedAt: new Date()
+                    }).then(result =>{
+                        console.log("Admin: User DayToDayGoal  successfully updated")
+                    }).catch(err=>{
+                        res.status(401).send(err.message)
+                    })   
+    
+                const resp = {
+                    "msg": "Successfully updated",
+                    "data": { }
+                }
+    
+                res.status(200).send(JSON.stringify(resp))
+
+            }).catch(err=>{
+                res.status(401).send(err.message)
+            }) 
+
+
+    }).catch(err=>{
+        res.status(401).send(err.message)
+    }) 
+}).catch(err=>{
+    res.status(401).send(err.message)
+})    
+
+})
+
+router.get('/:userId/getDaytoDayGoal', authUtils, (req,res)=>{
+    
+    const {onDate}= req.body
+    const {userId}= req.params
+ 
+    DayToDayGoal.findOne({userId: userId, onDate: {$gte: new Date(onDate)}}).exec()
+        .then(response=>{
+            //console.log("getDaytoDayGoal", response)
+            const resp = {
+                "msg": "DayToDayGoal details found successfully",
+                "data": {
+                        "caloriesGoalReached": response.caloriesGoalReached,
+                        "waterGoalReached": response.waterGoalReached,
+                        "totalCalories": response.totalCalories,
+                        "totalWaterGlasses": response.totalWaterGlasses
+                     }
+                }    
+            res.status(200).send(JSON.stringify(resp))
+        }).catch(err=>{
+            res.status(401).send(err.message)
+   })   
+})
+
+router.get('/:userId/getECG', authUtils, (req,res)=>{
+    
+        
+})
+
+router.put(':/userId/addFoodRecord', authUtils, (req,res)=>{
+    
+})
+
 
 module.exports = router
 
