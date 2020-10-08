@@ -334,4 +334,3 @@ router.put(':/userId/addFoodRecord', authUtils, (req,res)=>{
 
 
 module.exports = router
-

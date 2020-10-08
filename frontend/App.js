@@ -15,6 +15,7 @@ import Home from "./views/Home/Home";
 import Nutrition from "./views/Nutrition/Nutrition";
 import Water from "./views/Water/Water";
 import ECG from "./views/ECG/ECG";
+import ContactInfo from "./views/SignUp/ContactInfo";
 
 const Stack = createStackNavigator();
 
@@ -39,6 +40,11 @@ export default function App() {
           options={Options.signUpHeaderOptions}
         />
         <Stack.Screen
+          name="ContactInfo"
+          component={ContactInfo}
+          options={Options.signUpHeaderOptions}
+        />
+        <Stack.Screen
           name="PersonalInformation"
           component={PersonalInformation}
           options={Options.signUpHeaderOptions}
@@ -58,8 +64,16 @@ export default function App() {
           component={ProfilePictureFemale}
           options={Options.signUpHeaderOptions}
         />
-        <Stack.Screen name="Home" component={Home} options={Options.homeHeaderOptions} />
-        <Stack.Screen name="Nutrition" component={Nutrition} options={Options.nutritionHeaderOptions} />
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={Options.homeHeaderOptions}
+        />
+        <Stack.Screen
+          name="Nutrition"
+          component={Nutrition}
+          options={Options.nutritionHeaderOptions}
+        />
         <Stack.Screen name="Water" component={Water} />
         <Stack.Screen name="ECG" component={ECG} />
       </Stack.Navigator>

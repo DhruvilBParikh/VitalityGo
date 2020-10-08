@@ -14,35 +14,38 @@ const config = require('config')
 
 router.post('/signup', async (req,res)=>{
 
-    const {email, firstName, lastName, type, password, profilePicture, phoneNumber, gender, height, weight, bloodGroup, birthDate, city, state, country, signedInFrom} = req.body
+    let userData = req.body.userData
     console.log(req.body)
-    let user = new User({email, firstName, lastName, gender, type, password, profilePicture, phoneNumber, city, state, country, signedInFrom})
+    let user = new User(userData)
     user.save()
     .then(response=>{
+        console.log("User Created")
         const token = jwt.sign({userId: response._id}, config.app.jwtSecret)
-        
-        if(type=='Patient'){
-            Patient.create({userId:response._id, height: height, weight: weight, bloodGroup: bloodGroup, birthDate: birthDate})
+        if(userData.type=='patient'){
+            Patient.create({userId: response._id, ...req.body.patientData})
             .then(response2 => {
                 console.log("Patient created")
-                Goal.create({userId:response._id, caloriesGoal: 2000, waterGoal: 8})
+                Goal.create({user:response._id, caloriesGoal: 2000, waterGoal: 8})
                 .then(response3 => {
                     console.log("Default Goal created") 
                     res.status(200).send(token)
                 }).catch(err=>{
-                    res.status(401).send(err.message)
+                    console.log("Goal Error") 
+                    res.status(401).send(`Goal Error:${err.message}`)
                 })                
             }).catch(err=>{
-                res.status(401).send(err.message)
+                console.log("Patient Error")
+                res.status(401).send(`Patient Error${err.message}`)
             })
         }
         else{
-            Doctor.create({userId:response._id, birthDate: birthDate})
+            Doctor.create({userId:response._id, ...req.body.doctorData})
             .then(response4 => {
                 console.log("Doctor created")
                 res.status(200).send(token)
             }).catch(err=>{
-                res.status(401).send(err.message)
+                console.log("Doctor Error")
+                res.status(401).send(`Doctor Error${err.message}`)
             })
         }
         Admin.create({
@@ -52,11 +55,12 @@ router.post('/signup', async (req,res)=>{
         }).then(result =>{
             console.log("User entry updated in admin")
         }).catch(err=>{
-            res.status(401).send(err.message)
+            console.log("Admin Error")
+            res.status(401).send(`Admin Error${err.message}`)
         })
 
     }).catch(err=>{
-        res.status(401).send(err.message)
+        res.status(401).send("User Error",err.message)
     })
 
 })
@@ -146,9 +150,9 @@ router.get('/login', async (req,res)=>{
 
         ECG.findOne({user: response._id}).exec()
         .then(response2=>{
-            Goal.findOne({userId: response._id}).exec()
+            Goal.findOne({user: response._id}).exec()
             .then(response3=>{
-                DayToDayGoal.findOne({userId: response._id}).exec()
+                DayToDayGoal.findOne({user: response._id}).exec()
                 .then(response4=>{
                 console.log("User Home Page Info")
                 const resp = {

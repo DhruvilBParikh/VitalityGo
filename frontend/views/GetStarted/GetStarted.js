@@ -30,15 +30,13 @@ export default function GetStarted({ navigation }) {
       {/* Login */}
       <View style={styles.textContainer}>
         <Text style={{ color: Colors.text, fontSize: 18, fontWeight: "bold" }}>
-          {" "}
-          Already have an account?{" "}
+          Already have an account?
         </Text>
         <Text
           onPress={() => navigation.navigate("Login")}
           style={{ color: Colors.accent, fontSize: 18, fontWeight: "bold" }}
         >
-          {" "}
-          Sign in{" "}
+          Sign in
         </Text>
       </View>
     </View>
