@@ -10,6 +10,7 @@ var NutritionSchema = mongooseBootstrapper({
     user: {type: ObjectId, ref:'User'},
     food: {type: ObjectId, ref:'Food'},
     calories: { type: Number },
+    weight: {type: Number },
     createdAt: { type: Date }
 
 });
