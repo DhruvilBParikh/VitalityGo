@@ -10,6 +10,7 @@ const config = require('config')
 require('./utils/mongoose-bootstrapper')
 require('./utils/mongoose-connector');
 
+
 app.use(cors())
 
 const authRoutes = require('./routes/authRoutes')
