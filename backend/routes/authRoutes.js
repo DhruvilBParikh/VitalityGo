@@ -14,15 +14,14 @@ const config = require('config')
 
 router.post('/signup', async (req,res)=>{
 
-    const {email, firstName, lastName, type, password, profilePicture, phoneNumber, gender, height, weight, bloodGroup, birthDate, city, state, country, signedInFrom} = req.body
+    let userData = req.body.userData
     console.log(req.body)
-    let user = new User({email, firstName, lastName, gender, type, password, profilePicture, phoneNumber, city, state, country, signedInFrom})
+    let user = new User(userData)
     user.save()
     .then(response=>{
         const token = jwt.sign({userId: response._id}, config.app.jwtSecret)
-        
-        if(type=='Patient'){
-            Patient.create({userId:response._id, height: height, weight: weight, bloodGroup: bloodGroup, birthDate: birthDate})
+        if(userData.type=='patient'){
+            Patient.create({userId: response._id, ...req.body.patientData})
             .then(response2 => {
                 console.log("Patient created")
                 Goal.create({userId:response._id, caloriesGoal: 2000, waterGoal: 8})
@@ -37,7 +36,7 @@ router.post('/signup', async (req,res)=>{
             })
         }
         else{
-            Doctor.create({userId:response._id, birthDate: birthDate})
+            Doctor.create({userId:response._id, ...doctorData})
             .then(response4 => {
                 console.log("Doctor created")
                 res.status(200).send(token)
