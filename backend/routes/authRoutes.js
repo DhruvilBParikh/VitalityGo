@@ -19,29 +19,33 @@ router.post('/signup', async (req,res)=>{
     let user = new User(userData)
     user.save()
     .then(response=>{
+        console.log("User Created")
         const token = jwt.sign({userId: response._id}, config.app.jwtSecret)
         if(userData.type=='patient'){
             Patient.create({userId: response._id, ...req.body.patientData})
             .then(response2 => {
                 console.log("Patient created")
-                Goal.create({userId:response._id, caloriesGoal: 2000, waterGoal: 8})
+                Goal.create({user:response._id, caloriesGoal: 2000, waterGoal: 8})
                 .then(response3 => {
                     console.log("Default Goal created") 
                     res.status(200).send(token)
                 }).catch(err=>{
-                    res.status(401).send(err.message)
+                    console.log("Goal Error") 
+                    res.status(401).send(`Goal Error:${err.message}`)
                 })                
             }).catch(err=>{
-                res.status(401).send(err.message)
+                console.log("Patient Error")
+                res.status(401).send(`Patient Error${err.message}`)
             })
         }
         else{
-            Doctor.create({userId:response._id, ...doctorData})
+            Doctor.create({userId:response._id, ...req.body.doctorData})
             .then(response4 => {
                 console.log("Doctor created")
                 res.status(200).send(token)
             }).catch(err=>{
-                res.status(401).send(err.message)
+                console.log("Doctor Error")
+                res.status(401).send(`Doctor Error${err.message}`)
             })
         }
         Admin.create({
@@ -51,11 +55,12 @@ router.post('/signup', async (req,res)=>{
         }).then(result =>{
             console.log("User entry updated in admin")
         }).catch(err=>{
-            res.status(401).send(err.message)
+            console.log("Admin Error")
+            res.status(401).send(`Admin Error${err.message}`)
         })
 
     }).catch(err=>{
-        res.status(401).send(err.message)
+        res.status(401).send("User Error",err.message)
     })
 
 })
