@@ -145,9 +145,9 @@ router.get('/login', async (req,res)=>{
 
         ECG.findOne({user: response._id}).exec()
         .then(response2=>{
-            Goal.findOne({userId: response._id}).exec()
+            Goal.findOne({user: response._id}).exec()
             .then(response3=>{
-                DayToDayGoal.findOne({userId: response._id}).exec()
+                DayToDayGoal.findOne({user: response._id}).exec()
                 .then(response4=>{
                 console.log("User Home Page Info")
                 const resp = {
