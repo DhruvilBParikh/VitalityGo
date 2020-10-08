@@ -4,10 +4,14 @@ var path = require('path');
 const app = express()
 const PORT = 3000
 const appRoot = require('app-root-path')
+const cors = require('cors')
 // const mongoose = require('mongoose')
 const config = require('config')
 require('./utils/mongoose-bootstrapper')
 require('./utils/mongoose-connector');
+
+
+app.use(cors())
 
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/users')
@@ -15,7 +19,7 @@ const userRoutes = require('./routes/users')
 app.use(bodyParser.json())
 
 app.use(authRoutes)
-app.use(userRoutes)
+app.use(userRoutes)  
 
 var routesDirectory = config.app.routesDirectory;
 if (routesDirectory) {

@@ -87,7 +87,7 @@ export default function PersonalInformation({ route, navigation }) {
       navigation.navigate("Gender", {
         ...route.params,
         patientData: {
-          birthdate: date.toJSON(),
+          birthDate: date.toJSON(),
           height,
           weight,
           bloodGroup,
