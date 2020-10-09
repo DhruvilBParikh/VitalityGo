@@ -2,7 +2,6 @@
 
 var mongooseBootstrapper = require('../utils/mongoose-model-bootstrapper');
 var mongoose = require('mongoose');
-var ObjectId = mongoose.Schema.Types.ObjectId;
 mongoose.set('useCreateIndex', true);
 
 var UserSchema = mongooseBootstrapper({
@@ -20,7 +19,7 @@ var UserSchema = mongooseBootstrapper({
     state: { type: String },
     country: { type: String},
     profilePicture: { type: String },
-    signedInFrom: { type: String, enum: ['emailpassword', 'google', 'facebook'] },
+    signedInFrom: { type: String, enum: ['email', 'google', 'facebook'] },
     verified: { type: Boolean },
     verifiedAt: { type: Date },
     deleted: { type: Boolean },
