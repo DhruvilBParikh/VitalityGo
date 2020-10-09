@@ -2,7 +2,6 @@
 
 var mongooseBootstrapper = require('../utils/mongoose-model-bootstrapper');
 var mongoose = require('mongoose');
-var ObjectId = mongoose.Schema.Types.ObjectId;
 mongoose.set('useCreateIndex', true);
 
 var UserSchema = mongooseBootstrapper({
