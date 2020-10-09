@@ -19,7 +19,7 @@ var UserSchema = mongooseBootstrapper({
     state: { type: String },
     country: { type: String},
     profilePicture: { type: String },
-    signedInFrom: { type: String, enum: ['email', 'google', 'facebook'] },
+    signedInFrom: { type: String, enum: ['emailpassword', 'google', 'facebook'] },
     verified: { type: Boolean },
     verifiedAt: { type: Date },
     deleted: { type: Boolean },
