@@ -22,7 +22,10 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{ headerShown: false }}
+      >
         <Stack.Screen name="GetStarted" component={GetStarted} />
         <Stack.Screen
           name="Login"
@@ -75,7 +78,11 @@ export default function App() {
           options={Options.nutritionHeaderOptions}
         />
         <Stack.Screen name="Water" component={Water} />
-        <Stack.Screen name="ECG" component={ECG} />
+        <Stack.Screen
+          name="ECG"
+          component={ECG}
+          options={Options.ecgHeaderOptions}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
