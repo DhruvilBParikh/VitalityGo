@@ -75,7 +75,11 @@ export default function App() {
           options={Options.nutritionHeaderOptions}
         />
         <Stack.Screen name="Water" component={Water} />
-        <Stack.Screen name="ECG" component={ECG} />
+        <Stack.Screen
+          name="ECG"
+          component={ECG}
+          options={Options.ecgHeaderOptions}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
