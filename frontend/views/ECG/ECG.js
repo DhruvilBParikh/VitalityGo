@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { LineChart, YAxis, Grid } from "react-native-svg-charts";
-import { View } from "react-native";
+import { View, StyleSheet } from "react-native";
 
 export default function ECG() {
   const [data, setData] = useState([]);
   const [start, setStart] = useState(0);
-  const timeInterval = 1000;
+  const timeInterval = 500;
   const plotSize = 1000;
-  const skipSize = 100;
+  const skipSize = 50;
 
   const contentInset = { top: 20, bottom: 20 };
 
@@ -10024,8 +10024,8 @@ export default function ECG() {
   }, []);
 
   return (
-    <View>
-      <View style={{ height: 200, flexDirection: "row" }}>
+    <View style={styles.container}>
+      <View style={styles.chartView}>
         <YAxis
           data={data.slice(
             start % data.length,
@@ -10040,7 +10040,7 @@ export default function ECG() {
           formatLabel={(value) => `${value}mV`}
         />
         <LineChart
-          style={{ flex: 1, marginLeft: 16 }}
+          style={styles.lineChart}
           data={data.slice(
             start % data.length,
             (start % data.length) + plotSize
@@ -10054,3 +10054,16 @@ export default function ECG() {
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {},
+  chartView: {
+    height: 300,
+    flexDirection: "row",
+  },
+  lineChart: {
+    flex: 1,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+});
