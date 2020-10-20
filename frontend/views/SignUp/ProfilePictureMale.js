@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import AppButton from "../../components/AppButton/AppButton";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 import Colors from "../../constants/colors";
-import config from '../../constants/config'
-import axios from 'react-native-axios'
+import config from "../../constants/config";
+import axios from "react-native-axios";
 
 export default function ProfilePictureMale({ route, navigation }) {
   const [avatar, setAvatar] = useState(null);
@@ -25,18 +25,20 @@ export default function ProfilePictureMale({ route, navigation }) {
 
     // signup user: data
     console.log(data);
-    axios.post(`${config.basepath}/signup`, data)
-      .then(response => {
+    axios
+      .post(`${config.basepath}/signup`, data)
+      .then((response) => {
         if (response.status === 200) {
-          console.log('Response: ', response)
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "Home" }],
-          });
+          console.log("Response: ", response);
+          // navigation.reset({
+          //   index: 0,
+          //   routes: [{ name: "Home" }],
+          // });
         }
-      }).catch(err => {
-        console.log("error:", err)
       })
+      .catch((err) => {
+        console.log("error:", err);
+      });
   };
 
   return (
