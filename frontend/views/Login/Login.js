@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Image, Text, TextInput } from "react-native";
+import React, { useState, useContext } from "react";
+import { View, StyleSheet, Image, TextInput } from "react-native";
 import AppButton from "../../components/AppButton/AppButton";
 import ExternalAuth from "../../components/ExternalAuth/ExternalAuth";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
@@ -7,12 +7,15 @@ import appInputStyle from "../../constants/appInput";
 import Colors from "../../constants/colors";
 import isValidEmail from "../../constants/emailValidator";
 import isValidPassword from "../../constants/passwordValidator";
+import { AuthContext } from "../../AuthContext.js";
 
-export default function Login({ navigation }) {
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showInvalidEmail, setShowInvalidEmail] = useState(false);
   const [showInvalidPassword, setShowInvalidPassword] = useState(false);
+
+  const { signIn } = useContext(AuthContext);
 
   const loginHandler = () => {
     let navigate = true;
@@ -32,13 +35,9 @@ export default function Login({ navigation }) {
     }
 
     if (navigate) {
-      // login user
+      // login user - store { token, userInfo }
       console.log(email, password);
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Home" }],
-      });
+      signIn({ email, password });
     }
   };
 

@@ -10037,7 +10037,7 @@ export default function ECG() {
             fontSize: 10,
           }}
           numberOfTicks={10}
-          formatLabel={(value) => `${value}mV`}
+          // formatLabel={(value) => `${value}mV`}
         />
         <LineChart
           style={styles.lineChart}
