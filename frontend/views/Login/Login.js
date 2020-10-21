@@ -7,6 +7,8 @@ import appInputStyle from "../../constants/appInput";
 import Colors from "../../constants/colors";
 import isValidEmail from "../../constants/emailValidator";
 import isValidPassword from "../../constants/passwordValidator";
+import config from "../../constants/config";
+import axios from "react-native-axios";
 import { AuthContext } from "../../AuthContext.js";
 
 export default function Login() {
@@ -35,9 +37,18 @@ export default function Login() {
     }
 
     if (navigate) {
-      // login user - store { token, userInfo }
-      console.log(email, password);
-      signIn({ email, password });
+      console.log("Sending login data: ", email, password);
+      axios
+        .post(`${config.basepath}/login`, { email, password })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("Login response: ", response.data);
+            signIn(response.data.data.userData);
+          }
+        })
+        .catch((err) => {
+          console.log("error:", err);
+        });
     }
   };
 

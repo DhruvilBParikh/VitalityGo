@@ -25,11 +25,11 @@ export default function App() {
   const [state, dispatch] = useReducer(
     (prevState, action) => {
       switch (action.type) {
-        case "RESTORE_TOKEN":
-          console.log("Restore token called");
+        case "RESTORE_USER":
+          console.log("Restore user called");
           return {
             ...prevState,
-            userToken: action.token,
+            userData: action.userData,
             isLoading: false,
           };
         case "SIGN_IN":
@@ -37,34 +37,33 @@ export default function App() {
           return {
             ...prevState,
             isSignout: false,
-            userToken: action.token,
+            userData: action.userData,
           };
         case "SIGN_OUT":
           console.log("Sign out called");
           return {
             ...prevState,
             isSignout: true,
-            userToken: null,
+            userData: null,
           };
       }
     },
     {
       isLoading: true,
       isSignout: false,
-      userToken: null,
+      userData: null,
     }
   );
 
   useEffect(() => {
     const bootstrapAsync = async () => {
-      let userToken;
+      let userData;
       try {
-        userToken = await AsyncStorage.getItem("userToken");
+        userData = await AsyncStorage.getItem("userData");
       } catch (e) {
-        // Restoring token failed
-        console.log(e);
+        console.log("Error restoing user: ", e);
       }
-      dispatch({ type: "RESTORE_TOKEN", token: userToken });
+      dispatch({ type: "RESTORE_USER", userData });
     };
 
     bootstrapAsync();
@@ -72,14 +71,14 @@ export default function App() {
 
   const authContext = useMemo(
     () => ({
-      signIn: async (data) => {
-        console.log("Sign in data: ", data);
-        dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
+      signIn: async (userData) => {
+        console.log("Authcontext sign in data: ", userData);
+        dispatch({ type: "SIGN_IN", userData });
       },
       signOut: () => dispatch({ type: "SIGN_OUT" }),
-      signUp: async (data) => {
-        console.log("Sign up data: ", data);
-        dispatch({ type: "SIGN_IN", token: "dummy-auth-token" });
+      signUp: async (userData) => {
+        console.log("Authcontext sign up data: ", userData);
+        dispatch({ type: "SIGN_IN", userData });
       },
     }),
     []
@@ -89,7 +88,7 @@ export default function App() {
     <NavigationContainer>
       <AuthContext.Provider value={authContext}>
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          {state.userToken !== null ? (
+          {state.userData !== null ? (
             <>
               <Stack.Screen
                 name="Home"
