@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import AppButton from "../../components/AppButton/AppButton";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 import Colors from "../../constants/colors";
 import config from "../../constants/config";
 import axios from "react-native-axios";
+import { AuthContext } from "../../AuthContext.js";
 
 export default function ProfilePictureMale({ route, navigation }) {
   const [avatar, setAvatar] = useState(null);
   const [showSelectAvatar, setShowSelectAvatar] = useState(false);
+
+  const { signUp } = useContext(AuthContext);
 
   const navigationHandler = () => {
     if (avatar === null) {
@@ -23,17 +26,14 @@ export default function ProfilePictureMale({ route, navigation }) {
       userData: { ...route.params.data.userData, profilePicture: avatar },
     };
 
-    // signup user: data
-    console.log(data);
+    console.log("Sending sign up data: ", data);
+
     axios
       .post(`${config.basepath}/signup`, data)
       .then((response) => {
         if (response.status === 200) {
-          console.log("Response: ", response);
-          // navigation.reset({
-          //   index: 0,
-          //   routes: [{ name: "Home" }],
-          // });
+          console.log("Signup response: ", response.data);
+          signUp(response.data.data.userData);
         }
       })
       .catch((err) => {
