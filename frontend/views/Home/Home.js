@@ -1,13 +1,15 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, Text, StyleSheet, Image, Button } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Bar } from "react-native-progress";
 import Colors from "../../constants/colors";
-import { AuthContext } from "../../AuthContext.js";
+// import { AuthContext } from "../../AuthContext.js";
+import { useDispatch } from "react-redux";
+import { signOut } from "../../redux/action/action.js";
 
 export default function Home({ navigation }) {
   const [cal, setCal] = useState(0);
-  const { signOut } = useContext(AuthContext);
+  const dispatch = useDispatch();
 
   return (
     <View style={styles.container}>
@@ -81,7 +83,7 @@ export default function Home({ navigation }) {
           </View>
         </View>
       </TouchableOpacity>
-      <Button title="Logout" onPress={() => signOut()} />
+      <Button title="Logout" onPress={() => dispatch(signOut())} />
     </View>
   );
 }

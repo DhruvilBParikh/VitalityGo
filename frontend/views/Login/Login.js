@@ -9,7 +9,8 @@ import isValidEmail from "../../constants/emailValidator";
 import isValidPassword from "../../constants/passwordValidator";
 import config from "../../constants/config";
 import axios from "react-native-axios";
-import { AuthContext } from "../../AuthContext.js";
+import { useDispatch } from "react-redux";
+import { signIn } from "../../redux/action/action.js";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -17,7 +18,7 @@ export default function Login() {
   const [showInvalidEmail, setShowInvalidEmail] = useState(false);
   const [showInvalidPassword, setShowInvalidPassword] = useState(false);
 
-  const { signIn } = useContext(AuthContext);
+  const dispatch = useDispatch();
 
   const loginHandler = () => {
     let navigate = true;
@@ -43,11 +44,11 @@ export default function Login() {
         .then((response) => {
           if (response.status === 200) {
             console.log("Login response: ", response.data);
-            signIn(response.data.data.userData);
+            dispatch(signIn(response.data.data.userData));
           }
         })
         .catch((err) => {
-          console.log("error:", err);
+          console.log("Login error:", err);
         });
     }
   };
