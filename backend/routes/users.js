@@ -308,16 +308,37 @@ router.get('/:userId/getDaytoDayGoal', authUtils, (req,res)=>{
     DayToDayGoal.findOne({userId: userId, onDate: {$gte: new Date(onDate)}}).exec()
         .then(response=>{
             //console.log("getDaytoDayGoal", response)
-            const resp = {
-                "msg": "DayToDayGoal details found successfully",
-                "data": {
-                        "caloriesGoalReached": response.caloriesGoalReached,
-                        "waterGoalReached": response.waterGoalReached,
-                        "totalCalories": response.totalCalories,
-                        "totalWaterGlasses": response.totalWaterGlasses
-                     }
-                }    
-            res.status(200).send(JSON.stringify(resp))
+            if(response.length===0) {
+                let dayToDayGoal = new DayToDayGoal({userId: userId, caloriesGoalReached:Boolean(false), waterGoalReached:Boolean(false), totalCalories:0, totalWaterGlasses:0, onDate:new Date()})
+                dayToDayGoal.save()
+                .then(response=>{
+                    const resp = {
+                        "msg": "DayToDayGoal details created successfully",
+                        "data": {
+                                "caloriesGoalReached": response.caloriesGoalReached,
+                                "waterGoalReached": response.waterGoalReached,
+                                "totalCalories": response.totalCalories,
+                                "totalWaterGlasses": response.totalWaterGlasses
+                             }
+                        }    
+                    res.status(200).send(JSON.stringify(resp))
+                })
+                .catch(err=>{
+                    res.status(401).send(err.message)
+                })
+            } else {
+                const resp = {
+                    "msg": "DayToDayGoal details found successfully",
+                    "data": {
+                            "caloriesGoalReached": response.caloriesGoalReached,
+                            "waterGoalReached": response.waterGoalReached,
+                            "totalCalories": response.totalCalories,
+                            "totalWaterGlasses": response.totalWaterGlasses
+                         }
+                    }    
+                res.status(200).send(JSON.stringify(resp))
+            }
+            
         }).catch(err=>{
             res.status(401).send(err.message)
    })   
