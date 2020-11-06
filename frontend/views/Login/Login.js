@@ -12,7 +12,7 @@ import axios from "react-native-axios";
 import { useDispatch } from "react-redux";
 import { signIn } from "../../redux/action/action.js";
 
-export default function Login() {
+export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showInvalidEmail, setShowInvalidEmail] = useState(false);
@@ -44,7 +44,19 @@ export default function Login() {
         .then((response) => {
           if (response.status === 200) {
             console.log("Login response: ", response.data);
-            dispatch(signIn(response.data.data.userData));
+            dispatch(
+              signIn({
+                type: response.data.data.userData.type,
+                token: response.data.token,
+                userData: response.data.data.userData,
+                patientData: response.data.data.patientData,
+                doctorData: response.data.data.doctorData,
+              })
+            );
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Home" }],
+            });
           }
         })
         .catch((err) => {

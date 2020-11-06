@@ -3,13 +3,34 @@ import { View, Text, StyleSheet, Image, Button } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { Bar } from "react-native-progress";
 import Colors from "../../constants/colors";
-// import { AuthContext } from "../../AuthContext.js";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signOut } from "../../redux/action/action.js";
+import axios from "axios";
+import config from "../../constants/config";
 
 export default function Home({ navigation }) {
-  const [cal, setCal] = useState(0);
   const dispatch = useDispatch();
+  const state = useSelector((state) => state);
+  console.log(state);
+
+  const getDayToDay = async () => {
+    try {
+      const date = new Date();
+      const response = await axios.get(
+        `${config.basepath}/${
+          state.userData._id
+        }/getDaytoDayGoal/${date.toDateString()}`,
+        { headers: { Authorization: `Bearer ${state.token}` } }
+      );
+      console.log("Day to day response: ", response);
+    } catch (err) {
+      console.log(err.message);
+    }
+  };
+
+  useEffect(() => {
+    getDayToDay();
+  }, []);
 
   return (
     <View style={styles.container}>
@@ -83,7 +104,16 @@ export default function Home({ navigation }) {
           </View>
         </View>
       </TouchableOpacity>
-      <Button title="Logout" onPress={() => dispatch(signOut())} />
+      <Button
+        title="Logout"
+        onPress={() =>
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "GetStarted" }],
+          })
+        }
+      />
+      {/* <Button title="Logout" onPress={() => dispatch(signOut())} /> */}
     </View>
   );
 }

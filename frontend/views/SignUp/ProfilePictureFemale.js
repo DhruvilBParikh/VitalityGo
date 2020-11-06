@@ -34,7 +34,19 @@ export default function ProfilePictureMale({ route, navigation }) {
       .then((response) => {
         if (response.status === 200) {
           console.log("Signup response: ", response.data);
-          dispatch(signIn(response.data.data.userData));
+          dispatch(
+            signIn({
+              type: response.data.data.userData.type,
+              token: response.data.token,
+              userData: response.data.data.userData,
+              patientData: response.data.data.patientData,
+              doctorData: response.data.data.doctorData,
+            })
+          );
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Home" }],
+          });
         }
       })
       .catch((err) => {

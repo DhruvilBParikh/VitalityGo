@@ -2,7 +2,11 @@ import { RESTORE_USER, SIGN_IN, SIGN_OUT } from "../action/actionTypes";
 
 const initialState = {
   isSignout: false,
+  type: null,
+  token: null,
   userData: null,
+  patientData: null,
+  doctorData: null,
 };
 
 const reducer = (state = initialState, action) => {
@@ -18,14 +22,23 @@ const reducer = (state = initialState, action) => {
       return {
         ...state,
         isSignout: false,
-        userData: action.userData,
+        userData: action.payload.userData,
+        type: action.payload.type,
+        token: action.payload.token,
+        userData: action.payload.userData,
+        patientData: action.payload.patientData,
+        doctorData: action.payload.doctorData,
       };
     case SIGN_OUT:
       console.log("Action type: SIGN_OUT");
       return {
         ...state,
         isSignout: true,
+        type: null,
+        token: null,
         userData: null,
+        patientData: null,
+        doctorData: null,
       };
     default:
       return state;
