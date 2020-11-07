@@ -5,6 +5,7 @@ var mongoose = require('mongoose');
 var ObjectId = mongoose.Schema.Types.ObjectId;
 mongoose.set('useCreateIndex', true);
 
+
 var FoodSchema = mongooseBootstrapper({
 
     foodName: {type: String },
