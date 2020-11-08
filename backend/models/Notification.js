@@ -7,6 +7,7 @@ mongoose.set('useCreateIndex', true);
 
 var NotificationSchema = mongooseBootstrapper({
 
+    userId: {type: ObjectId, ref:'User'},
     title: {type: String},
     description: { type: String },
     createdAt: { type: Date },

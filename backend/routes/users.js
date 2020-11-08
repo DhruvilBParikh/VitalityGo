@@ -7,6 +7,9 @@ const Patient = mongoose.model('Patient')
 const Admin = mongoose.model('Admin')
 const Goal = mongoose.model('Goal')
 const DayToDayGoal = mongoose.model('DayToDayGoal')
+const Doctor = mongoose.model('Doctor')
+const Request = mongoose.model('Request')
+const Notification = mongoose.model('Notification')
 
 router.put('/:userId/addPersonalInfo', authUtils, (req,res)=>{
 
@@ -367,5 +370,157 @@ router.get('/:userId/:onDate/getWaterGlass', authUtils, (req,res)=>{
    })   
 })
 
+router.put('/:userId/addEmergencyContact', authUtils, (req,res)=>{
+    
+    const { name, phoneNumber, email, message} = req.body
+    const { userId }= req.params
+
+    let user = new User({email, name, phoneNumber})
+
+    user.save()
+    .then(response=>{
+        Patient.findOneAndUpdate({userId:userId},{
+            $push:{
+                emergencyContacts : response._id
+            }
+        }, {new: true}).exec()
+        .then(response2=>{
+            Request.create({
+                fromUser:userId,
+                toUser: response._id,
+                status:'pending',
+                updatedAt: new Date()
+            }).then(response3=>{
+                Notification.create({
+                    userId:response._id,
+                    title:'Add Emergency Contact Request',
+                    description:message,
+                    createdAt:new Date()
+                }).then(response4=>{
+                    Admin.create({
+                        user:userId,
+                        activity: "User added emergency contact", 
+                        auditedAt: new Date()
+                        }).then(res =>{
+                            console.log("Admin: User details successfully updated")
+                        }).catch(err=>{
+                            res.status(401).send(err.message)
+                        })   
+        
+                    const resp = {
+                        "msg": "Successfully requested",
+                        "data": { }
+                    }
+
+                    res.status(200).send(JSON.stringify(resp))
+                }).catch(err=>{
+                    res.status(401).send(err.message)
+                })
+            }).catch(err=>{
+                res.status(401).send(err.message)
+            })
+        }).catch(err=>{
+            res.status(401).send(err.message)
+        })
+    }).catch(err=>{
+        res.status(401).send(err.message)
+    })
+})
+
+
+router.get('/:userId/getEmergencyContacts', authUtils, (req,res)=>{
+    
+    const {userId}= req.params
+
+    Patient.findOne({user: userId})
+    .populate({path:'emergencyContacts', select: ['firstName', 'phoneNumber', 'profilePicture']})
+    .exec()
+        .then(response=>{
+            const resp = {
+                "msg": "Successfully fetched",
+                "data": response
+                }    
+            res.status(200).send(JSON.stringify(resp))
+        }).catch(err=>{
+            res.status(401).send(err.message)
+   })   
+})
+
+router.put('/:userId/addDoctor', authUtils, (req,res)=>{
+    
+    const { toUser } = req.body
+    const { userId }= req.params
+
+    Patient.findOneAndUpdate({userId:userId},{
+        $push:{
+            doctors : toUser
+        }
+    }, {new: true}).exec()
+    .then(response2=>{
+        Doctor.findOneAndUpdate({userId:toUser},{
+            $push:{
+                patients: userId
+            }
+        }, {new: true}).exec()
+        .then(response5=>{
+            Request.create({
+                fromUser:userId,
+                toUser: toUser,
+                status:'pending',
+                updatedAt: new Date()
+            }).then(response3=>{
+                Notification.create({
+                    userId:toUser,
+                    title:'Add Doctor Request',
+                    createdAt:new Date()
+                }).then(response4=>{
+                    Admin.create({
+                        user:userId,
+                        activity: "User added doctor", 
+                        auditedAt: new Date()
+                        }).then(res =>{
+                            console.log("Admin: User details successfully updated")
+                        }).catch(err=>{
+                            res.status(401).send(err.message)
+                        })   
+        
+                    const resp = {
+                        "msg": "Successfully requested",
+                        "data": { }
+                    }
+    
+                    res.status(200).send(JSON.stringify(resp))
+                }).catch(err=>{
+                    res.status(401).send(err.message)
+                })
+            }).catch(err=>{
+                res.status(401).send(err.message)
+            })
+        }).catch(err=>{
+            res.status(401).send(err.message)
+        })
+    }).catch(err=>{
+        res.status(401).send(err.message)
+    })
+
+})
+
+router.get('/:userId/getDoctors', authUtils, (req,res)=>{
+    
+    const {userId}= req.params
+
+    Doctor.findOne({user: userId})
+    .populate({path:'patients', select: ['firstName', 'phoneNumber', 'profilePicture']})
+    .exec()
+        .then(response=>{
+            const resp = {
+                "msg": "Successfully fetched",
+                "data": response
+                }    
+            res.status(200).send(JSON.stringify(resp))
+        }).catch(err=>{
+            res.status(401).send(err.message)
+   })   
+})
 
 module.exports = router
