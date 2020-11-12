@@ -61,7 +61,10 @@ export default function App() {
               component={Nutrition}
               options={Options.nutritionHeaderOptions}
             />
-            <Stack.Screen name="Water" component={Water} />
+            <Stack.Screen 
+              name="Water" 
+              component={Water}
+              options={Options.hydrationHeaderOptions} />
             <Stack.Screen
               name="ECG"
               component={ECG}

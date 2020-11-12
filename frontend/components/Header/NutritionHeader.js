@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-export default function HomeHeader() {
+export default function NutritionHeader() {
   return (
     <View style={styles.container}>
       <View />
