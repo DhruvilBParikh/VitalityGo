@@ -4,9 +4,11 @@ const authUtils = require('../utils/jwt-token')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
 const User = mongoose.model('User')
+const authUtils = require('../utils/jwt-token')
 const Notification = mongoose.model('Notification')
 const Request = mongoose.model('Request')
 const config = require('config')
+const Admin = mongoose.model('Admin')
 
 router.get('/:userId/getNotifications', authUtils, (req,res)=>{
 
