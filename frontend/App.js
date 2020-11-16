@@ -25,97 +25,96 @@ import Nutrition from "./views/Nutrition/Nutrition";
 import Water from "./views/Water/Water";
 import ECG from "./views/ECG/ECG";
 import ContactInfo from "./views/SignUp/ContactInfo";
+import AddFoodModal from "./components/AddFoodModal/AddFoodModal";
 
 const Stack = createStackNavigator();
 
 export default function App() {
-  const state = useSelector((state) => state);
-  const dispatch = useDispatch();
+  // const state = useSelector((state) => state);
+  // const dispatch = useDispatch();
 
-  useEffect(() => {
-    const bootstrapAsync = async () => {
-      let userData;
-      try {
-        userData = await AsyncStorage.getItem("userData");
-        console.log("Async userData: ", userData);
-      } catch (e) {
-        console.log("Error restoing user: ", e);
-      }
-      dispatch(restoreUser(userData));
-    };
-    bootstrapAsync();
-  }, []);
+  // useEffect(() => {
+  //   const bootstrapAsync = async () => {
+  //     let userData;
+  //     try {
+  //       userData = await AsyncStorage.getItem("userData");
+  //       console.log("Async userData: ", userData);
+  //     } catch (e) {
+  //       console.log("Error restoing user: ", e);
+  //     }
+  //     dispatch(restoreUser(userData));
+  //   };
+  //   bootstrapAsync();
+  // }, []);
 
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {state.userData !== null ? (
-          <>
-            <Stack.Screen
-              name="Home"
-              component={Home}
-              options={Options.homeHeaderOptions}
-            />
-            <Stack.Screen
-              name="Nutrition"
-              component={Nutrition}
-              options={Options.nutritionHeaderOptions}
-            />
-            <Stack.Screen 
-              name="Water" 
-              component={Water}
-              options={Options.hydrationHeaderOptions} />
-            <Stack.Screen
-              name="ECG"
-              component={ECG}
-              options={Options.ecgHeaderOptions}
-            />
-          </>
+        {/* {state.userData !== null ? (
+          <> */}
+        <Stack.Screen
+          name="Home"
+          component={Home}
+          options={Options.homeHeaderOptions}
+        />
+        <Stack.Screen
+          name="Nutrition"
+          component={Nutrition}
+          options={Options.nutritionHeaderOptions}
+        />
+        <Stack.Screen name="AddFood" component={AddFoodModal} />
+        <Stack.Screen name="Water" component={Water} />
+        <Stack.Screen
+          name="ECG"
+          component={ECG}
+          options={Options.ecgHeaderOptions}
+        />
+        {/* </>
         ) : (
-          <>
-            <Stack.Screen name="GetStarted" component={GetStarted} />
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={Options.signUpHeaderOptions}
-            />
-            <Stack.Screen
-              name="UserType"
-              component={UserType}
-              options={Options.signUpHeaderOptions}
-            />
-            <Stack.Screen
-              name="Credential"
-              component={Credential}
-              options={Options.signUpHeaderOptions}
-            />
-            <Stack.Screen
-              name="ContactInfo"
-              component={ContactInfo}
-              options={Options.signUpHeaderOptions}
-            />
-            <Stack.Screen
-              name="PersonalInformation"
-              component={PersonalInformation}
-              options={Options.signUpHeaderOptions}
-            />
-            <Stack.Screen
-              name="Gender"
-              component={Gender}
-              options={Options.signUpHeaderOptions}
-            />
-            <Stack.Screen
-              name="ProfilePictureMale"
-              component={ProfilePictureMale}
-              options={Options.signUpHeaderOptions}
-            />
-            <Stack.Screen
-              name="ProfilePictureFemale"
-              component={ProfilePictureFemale}
-              options={Options.signUpHeaderOptions}
-            />
-          </>
-        )}
+          <> */}
+        <Stack.Screen name="GetStarted" component={GetStarted} />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={Options.signUpHeaderOptions}
+        />
+        <Stack.Screen
+          name="UserType"
+          component={UserType}
+          options={Options.signUpHeaderOptions}
+        />
+        <Stack.Screen
+          name="Credential"
+          component={Credential}
+          options={Options.signUpHeaderOptions}
+        />
+        <Stack.Screen
+          name="ContactInfo"
+          component={ContactInfo}
+          options={Options.signUpHeaderOptions}
+        />
+        <Stack.Screen
+          name="PersonalInformation"
+          component={PersonalInformation}
+          options={Options.signUpHeaderOptions}
+        />
+        <Stack.Screen
+          name="Gender"
+          component={Gender}
+          options={Options.signUpHeaderOptions}
+        />
+        <Stack.Screen
+          name="ProfilePictureMale"
+          component={ProfilePictureMale}
+          options={Options.signUpHeaderOptions}
+        />
+        <Stack.Screen
+          name="ProfilePictureFemale"
+          component={ProfilePictureFemale}
+          options={Options.signUpHeaderOptions}
+        />
+        {/* </>
+        )} */}
       </Stack.Navigator>
     </NavigationContainer>
   );

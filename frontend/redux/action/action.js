@@ -7,10 +7,16 @@ export const restoreUser = (userData) => {
   };
 };
 
-export const signIn = (userData) => {
+export const signIn = (data) => {
   return {
     type: SIGN_IN,
-    userData,
+    payload: {
+      type: data.type,
+      token: data.token,
+      userData: data.userData,
+      patientData: data.patientData,
+      doctorData: data.doctorData,
+    },
   };
 };
 
