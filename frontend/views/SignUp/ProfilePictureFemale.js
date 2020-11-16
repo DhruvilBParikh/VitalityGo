@@ -3,12 +3,16 @@ import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import AppButton from "../../components/AppButton/AppButton";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 import Colors from "../../constants/colors";
-import config from '../../constants/config'
-import axios from 'react-native-axios'
+import config from "../../constants/config";
+import axios from "react-native-axios";
+import { useDispatch } from "react-redux";
+import { signIn } from "../../redux/action/action.js";
 
 export default function ProfilePictureMale({ route, navigation }) {
   const [avatar, setAvatar] = useState(null);
   const [showSelectAvatar, setShowSelectAvatar] = useState(false);
+
+  const dispatch = useDispatch();
 
   const navigationHandler = () => {
     if (avatar === null) {
@@ -23,21 +27,31 @@ export default function ProfilePictureMale({ route, navigation }) {
       userData: { ...route.params.data.userData, profilePicture: avatar },
     };
 
-    // signup user: data
-    console.log(data);
-    axios.post(`${config.basepath}/signup`, data)
-      .then(response => {
+    console.log("Sending sign up data: ", data);
+
+    axios
+      .post(`${config.basepath}/signup`, data)
+      .then((response) => {
         if (response.status === 200) {
-          console.log('Response: ', response)
+          console.log("Signup response: ", response.data);
+          dispatch(
+            signIn({
+              type: response.data.data.userData.type,
+              token: response.data.token,
+              userData: response.data.data.userData,
+              patientData: response.data.data.patientData,
+              doctorData: response.data.data.doctorData,
+            })
+          );
           navigation.reset({
             index: 0,
             routes: [{ name: "Home" }],
           });
         }
-      }).catch(err => {
-        console.log("error:", err)
       })
-
+      .catch((err) => {
+        console.log("Signup error:", err);
+      });
   };
 
   return (
