@@ -15,11 +15,13 @@ app.use(cors())
 
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/users')
+const foodRoutes = require('./routes/food')
 
 app.use(bodyParser.json())
 
 app.use(authRoutes)
-app.use(userRoutes)  
+app.use(userRoutes)
+app.use(foodRoutes)  
 
 var routesDirectory = config.app.routesDirectory;
 if (routesDirectory) {

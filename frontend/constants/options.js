@@ -5,6 +5,7 @@ import HeaderTitle from "../components/Header/HeaderTitle";
 import HomeHeader from "../components/Header/HomeHeader";
 import NutritionHeader from "../components/Header/NutritionHeader";
 import ECGHeader from "../components/Header/ECGHeader";
+import HydrationHeader from "../components/Header/HydrationHeader";
 
 export default {
   signUpHeaderOptions: {
@@ -49,6 +50,17 @@ export default {
       />
     ),
     headerTitle: () => <ECGHeader />,
+    headerStyle: { height: 120, backgroundColor: Colors.background },
+  },
+  hydrationHeaderOptions: {
+    headerShown: true,
+    headerBackImage: () => (
+      <Image
+        style={{ marginLeft: 10 }}
+        source={require("../assets/images/back-button.png")}
+      />
+    ),
+    headerTitle: () => <HydrationHeader />,
     headerStyle: { height: 120, backgroundColor: Colors.background },
   },
 };

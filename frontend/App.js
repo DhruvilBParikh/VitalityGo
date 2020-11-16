@@ -25,6 +25,7 @@ import Nutrition from "./views/Nutrition/Nutrition";
 import Water from "./views/Water/Water";
 import ECG from "./views/ECG/ECG";
 import ContactInfo from "./views/SignUp/ContactInfo";
+import AddFoodModal from "./components/AddFoodModal/AddFoodModal";
 
 const Stack = createStackNavigator();
 
@@ -61,6 +62,7 @@ export default function App() {
           component={Nutrition}
           options={Options.nutritionHeaderOptions}
         />
+        <Stack.Screen name="AddFood" component={AddFoodModal} />
         <Stack.Screen name="Water" component={Water} />
         <Stack.Screen
           name="ECG"
