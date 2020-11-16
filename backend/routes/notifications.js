@@ -3,6 +3,7 @@ const mongoose = require('../utils/mongoose-bootstrapper');
 const jwt = require('jsonwebtoken')
 const router = express.Router()
 const User = mongoose.model('User')
+const authUtils = require('../utils/jwt-token')
 const Notification = mongoose.model('Notification')
 const Request = mongoose.model('Request')
 const config = require('config')

@@ -432,7 +432,7 @@ router.get('/:userId/getEmergencyContacts', authUtils, (req,res)=>{
     
     const {userId}= req.params
 
-    Patient.findOne({user: userId})
+    Patient.findOne({userId: userId})
     .populate({path:'emergencyContacts', select: ['firstName', 'phoneNumber', 'profilePicture']})
     .exec()
         .then(response=>{
@@ -505,17 +505,38 @@ router.put('/:userId/addDoctor', authUtils, (req,res)=>{
 
 })
 
-router.get('/:userId/getDoctors', authUtils, (req,res)=>{
+router.get('/:userId/getPatients', authUtils, (req,res)=>{
     
     const {userId}= req.params
 
-    Doctor.findOne({user: userId})
+    Doctor.findOne({userId: userId})
     .populate({path:'patients', select: ['firstName', 'phoneNumber', 'profilePicture']})
     .exec()
         .then(response=>{
             const resp = {
                 "msg": "Successfully fetched",
-                "data": response
+                "data": {
+                    "patients":response.patients
+                }
+                }    
+            res.status(200).send(JSON.stringify(resp))
+        }).catch(err=>{
+            res.status(401).send(err.message)
+   })   
+})
+
+router.get('/:userId/getDoctors', authUtils, (req,res)=>{
+    
+    const {userId}= req.params
+
+    Patient.findOne({userId: userId})
+    .populate({path:'doctors', select: ['firstName', 'phoneNumber', 'profilePicture']})
+    .exec()
+        .then(response=>{
+            const resp = {
+                "msg": "Successfully fetched",
+                "data": {
+                    "doctors":response.doctors}
                 }    
             res.status(200).send(JSON.stringify(resp))
         }).catch(err=>{
