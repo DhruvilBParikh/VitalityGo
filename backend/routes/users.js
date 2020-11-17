@@ -674,6 +674,22 @@ router.get('/:userId/getDoctors', authUtils, (req,res)=>{
    })   
 })
 
+router.get('/:userId/getAllDoctors', authUtils, (req,res)=>{
+    
+    Doctor.find()
+    .populate({path:'userId'})
+    .exec()
+        .then(response=>{
+            const resp = {
+                "msg": "Successfully fetched",
+                "data": {response}
+                }    
+            res.status(200).send(JSON.stringify(resp))
+        }).catch(err=>{
+            res.status(401).send(err.message)
+   })   
+})
+
 router.get("/:userId/getWaterPerformance", authUtils, (req, res) => {
   const { userId } = req.params;
 
@@ -704,3 +720,4 @@ router.get("/:userId/getWaterPerformance", authUtils, (req, res) => {
 });
 
 module.exports = router;
+
