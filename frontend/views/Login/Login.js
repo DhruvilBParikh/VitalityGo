@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, StyleSheet, Image, Text, TextInput } from "react-native";
+import React, { useState, useContext } from "react";
+import { View, StyleSheet, Image, TextInput } from "react-native";
 import AppButton from "../../components/AppButton/AppButton";
 import ExternalAuth from "../../components/ExternalAuth/ExternalAuth";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
@@ -7,12 +7,18 @@ import appInputStyle from "../../constants/appInput";
 import Colors from "../../constants/colors";
 import isValidEmail from "../../constants/emailValidator";
 import isValidPassword from "../../constants/passwordValidator";
+import config from "../../constants/config";
+import axios from "react-native-axios";
+import { useDispatch } from "react-redux";
+import { signIn } from "../../redux/action/action.js";
 
 export default function Login({ navigation }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showInvalidEmail, setShowInvalidEmail] = useState(false);
   const [showInvalidPassword, setShowInvalidPassword] = useState(false);
+
+  const dispatch = useDispatch();
 
   const loginHandler = () => {
     let navigate = true;
@@ -32,13 +38,30 @@ export default function Login({ navigation }) {
     }
 
     if (navigate) {
-      // login user
-      console.log(email, password);
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Home" }],
-      });
+      console.log("Sending login data: ", email, password);
+      axios
+        .post(`${config.basepath}/login`, { email, password })
+        .then((response) => {
+          if (response.status === 200) {
+            console.log("Login response: ", response.data);
+            dispatch(
+              signIn({
+                type: response.data.data.userData.type,
+                token: response.data.token,
+                userData: response.data.data.userData,
+                patientData: response.data.data.patientData,
+                doctorData: response.data.data.doctorData,
+              })
+            );
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Home" }],
+            });
+          }
+        })
+        .catch((err) => {
+          console.log("Login error:", err);
+        });
     }
   };
 
