@@ -17,8 +17,7 @@ export default function Home({ navigation }) {
     try {
       const date = new Date();
       const response = await axios.get(
-        `${config.basepath}/${
-          state.userData._id
+        `${config.basepath}/${state.userData._id
         }/getDaytoDayGoal/${date.toDateString()}`,
         { headers: { Authorization: `Bearer ${state.token}` } }
       );
@@ -112,6 +111,10 @@ export default function Home({ navigation }) {
             routes: [{ name: "GetStarted" }],
           })
         }
+      />
+      <Button
+        title="Add Emergency Contact"
+        onPress={() => navigation.navigate("AddEmergency")}
       />
       {/* <Button title="Logout" onPress={() => dispatch(signOut())} /> */}
     </View>
