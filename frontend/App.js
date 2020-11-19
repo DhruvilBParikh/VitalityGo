@@ -25,8 +25,9 @@ import Nutrition from "./views/Nutrition/Nutrition";
 import Water from "./views/Water/Water";
 import ECG from "./views/ECG/ECG";
 import ContactInfo from "./views/SignUp/ContactInfo";
-import AddFoodModal from "./components/AddFoodModal/AddFoodModal";
+import AddFoodModal from "./views/AddFoodModal/AddFoodModal";
 import AddEmergency from "./views/EmergencyContact/AddEmergency";
+import AddFoodNext from "./views/AddFoodNext/AddFoodNext.js";
 import Toast from "react-native-toast-message";
 
 const Stack = createStackNavigator();
@@ -66,10 +67,12 @@ export default function App() {
             options={Options.nutritionHeaderOptions}
           />
           <Stack.Screen name="AddFood" component={AddFoodModal} />
+          <Stack.Screen name="AddFoodNext" component={AddFoodNext} />
           <Stack.Screen
             name="Water"
             component={Water}
-            options={Options.hydrationHeaderOptions} />
+            options={Options.hydrationHeaderOptions}
+          />
           <Stack.Screen
             name="ECG"
             component={ECG}
@@ -130,6 +133,5 @@ export default function App() {
       </NavigationContainer>
       <Toast ref={(ref) => Toast.setRef(ref)} />
     </>
-
   );
 }
