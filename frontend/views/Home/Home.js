@@ -26,18 +26,18 @@ export default function Home({ navigation }) {
   }, []);
 
   const getDayToDay = async () => {
-    try {
-      const date = new Date();
-      const response = await axios.get(
-        `${config.basepath}/${
-          state.userData._id
-        }/getDaytoDayGoal/${date.toDateString()}`,
-        { headers: { Authorization: `Bearer ${state.token}` } }
-      );
-      console.log("Day to day response: ", response);
-    } catch (err) {
-      console.log(err.message);
-    }
+    // try {
+    //   const date = new Date();
+    //   const response = await axios.get(
+    //     `${config.basepath}/${
+    //       state.userData._id
+    //     }/getDaytoDayGoal/${date.toDateString()}`,
+    //     { headers: { Authorization: `Bearer ${state.token}` } }
+    //   );
+    //   console.log("Day to day response: ", response);
+    // } catch (err) {
+    //   console.log("Get day-to-day error: ", err.message);
+    // }
   };
 
   const handleAddContact = () => {
