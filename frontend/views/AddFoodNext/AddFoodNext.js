@@ -70,7 +70,7 @@ const AddFoodNext = ({ route, navigation }) => {
 
       {showFoodError && <ValidationMsg message="Please enter a food item" />}
 
-      {/* Calories */}
+      {/* calories */}
       <View style={appInputStyle.container}>
         <Text>Calories:</Text>
         <TextInput
@@ -83,6 +83,7 @@ const AddFoodNext = ({ route, navigation }) => {
 
       {showCaloriesError && <ValidationMsg message="Please enter calories" />}
 
+      {/* weight */}
       <View style={appInputStyle.container}>
         <Text>Weight:</Text>
         <TextInput
