@@ -2,20 +2,38 @@ import React, { useState } from "react";
 import { View, Text, Button, Image, StyleSheet } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Colors from "../../constants/colors";
+import AppButton from "../../components/AppButton/AppButton";
+import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 
 const AddFoodModal = ({ navigation }) => {
   const [mealType, setMealType] = useState(null);
   const [food, setFood] = useState(null);
+  const [showErrorMsg, setShowErrorMSg] = useState(false);
+
   const mealTypes = ["Snack", "Breakfast", "Lunch", "Dinner"];
   const mealItems = [
-    "Milk",
-    "Cereal",
-    "Fruits",
-    "Salad",
-    "Rice",
-    "Pasta",
-    "Chicken",
+    { item: "Custom", weight: "100", calories: "200" },
+    { item: "Milk", weight: "100", calories: "100" },
+    { item: "Cereal", weight: "100", calories: "100" },
+    { item: "Fruits", weight: "100", calories: "50" },
+    { item: "Salad", weight: "100", calories: "50" },
+    { item: "Rice", weight: "100", calories: "80" },
+    { item: "Pasta", weight: "100", calories: "250" },
+    { item: "Chicken", weight: "100", calories: "300" },
   ];
+
+  const handleNavigation = () => {
+    if (mealType === null || food === null) {
+      setShowErrorMSg(true);
+      return;
+    } else {
+      setShowErrorMSg(false);
+      navigation.navigate("AddFoodNext", {
+        meal: mealType,
+        food,
+      });
+    }
+  };
 
   return (
     <ScrollView>
@@ -47,23 +65,6 @@ const AddFoodModal = ({ navigation }) => {
               </TouchableOpacity>
             </View>
           ))}
-          <View>
-            <TouchableOpacity
-              activeOpacity={0.7}
-              style={styles.mealType}
-              onPress={() => setMealType("Dinner")}
-            >
-              <Image
-                source={require("../../assets/images/select-button.png")}
-                style={{
-                  ...styles.icon,
-                  tintColor:
-                    mealType === "Dinner" ? Colors.accent : Colors.disabled,
-                }}
-              />
-              <Text style={styles.text}>Dinner</Text>
-            </TouchableOpacity>
-          </View>
         </View>
         <View style={styles.mealItemsContainer}>
           <View>
@@ -72,22 +73,28 @@ const AddFoodModal = ({ navigation }) => {
                 activeOpacity={0.7}
                 style={styles.mealItem}
                 onPress={() => setFood(f)}
-                key={f}
+                key={f.item}
               >
-                <Text style={styles.text}>{f}</Text>
+                <Text style={styles.text}>{f.item}</Text>
                 <Image
                   source={require("../../assets/images/select-button.png")}
                   style={{
                     ...styles.icon,
                     padding: 0,
-                    tintColor: food === f ? Colors.accent : Colors.disabled,
+                    tintColor:
+                      food && food.item === f.item
+                        ? Colors.accent
+                        : Colors.disabled,
                   }}
                 />
               </TouchableOpacity>
             ))}
           </View>
         </View>
-        <Button title="Close" onPress={() => navigation.pop()} />
+        {showErrorMsg && (
+          <ValidationMsg message="Please select a meal and item" />
+        )}
+        <AppButton title="Next" clickHandler={handleNavigation} />
       </View>
     </ScrollView>
   );

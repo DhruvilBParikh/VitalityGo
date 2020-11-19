@@ -1,4 +1,4 @@
 // in cmd: ngrok http 3000
 export default {
-  basepath: "http://32fe0045a7d2.ngrok.io",
+  basepath: "http://2eba96494067.ngrok.io",
 };
