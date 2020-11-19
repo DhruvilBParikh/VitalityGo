@@ -53,7 +53,10 @@ export default function App() {
   return (
     <>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Navigator
+          initialRouteName="Login"
+          screenOptions={{ headerShown: false }}
+        >
           {/* {state.userData !== null ? (
           <> */}
           <Stack.Screen
