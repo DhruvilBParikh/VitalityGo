@@ -345,13 +345,14 @@ router.put("/:userId/updateDaytoDayGoal", authUtils, (req, res) => {
 
 router.get("/:userId/getDaytoDayGoal", authUtils, (req, res) => {
   // const { onDate } = req.body;
+  console.log("Getting Day to day goal");
   const { userId } = req.params;
 
-  DayToDayGoal.findOne({ userId: userId, onDate: { $gte: new Date(onDate) } })
+  DayToDayGoal.findOne({ userId: userId, onDate: { $gte: new Date() } })
     .exec()
     .then((response) => {
       //console.log("getDaytoDayGoal", response)
-      if (response.length === 0) {
+      if (!response) {
         let dayToDayGoal = new DayToDayGoal({
           userId: userId,
           caloriesGoalReached: Boolean(false),

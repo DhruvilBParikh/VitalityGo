@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Button } from "react-native";
 import Colors from "../../constants/colors";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
@@ -10,8 +10,14 @@ import {
 import { Table, Rows } from "react-native-table-component";
 import AppButton from "../../components/AppButton/AppButton";
 import Food from "../../components/Food/Food";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import config from "../../constants/config";
 
 export default function Nutrition({ navigation }) {
+  const [totalCalories, setTotalCalories] = useState("");
+  const state = useSelector((state) => state);
+
   const [tableData, setTableData] = useState([
     ["Fat", "20g", "27%"],
     ["Carb", "60g", "30%"],
@@ -22,6 +28,24 @@ export default function Nutrition({ navigation }) {
     { name: "Eggs", weight: "200", calories: "150" },
     { name: "Fries", weight: "150", calories: "200" },
   ];
+
+  useEffect(() => {
+    axios
+      .get(
+        `${config.basepath}/api/users/${state.userData._id}/getDaytoDayGoal`,
+        { headers: { Authorization: `Bearer ${state.token}` } }
+      )
+      .then((response) => {
+        console.log(
+          "Gained calories response: ",
+          response.data.data.totalCalories
+        );
+        setTotalCalories(response.data.data.totalCalories);
+      })
+      .catch((err) => {
+        console.log("Get total calories error: ", err);
+      });
+  }, []);
 
   return (
     <ScrollView>
@@ -37,7 +61,8 @@ export default function Nutrition({ navigation }) {
               textAlign: "center",
             }}
           >
-            You gained <Text style={{ color: "#7260BC" }}> 850 </Text> calories
+            You gained{" "}
+            <Text style={{ color: "#7260BC" }}> {totalCalories} </Text> calories
             today
           </Text>
         </View>
@@ -166,7 +191,7 @@ export default function Nutrition({ navigation }) {
           </Text>
           {/* List */}
           {food.map((f) => (
-            <Food key={f.name} food={f} />
+            <Food key={f.foodName} food={f} />
           ))}
         </View>
 

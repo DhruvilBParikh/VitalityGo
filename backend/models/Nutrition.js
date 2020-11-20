@@ -1,18 +1,17 @@
-'use strict';
+"use strict";
 
-var mongooseBootstrapper = require('../utils/mongoose-model-bootstrapper');
-var mongoose = require('mongoose');
+var mongooseBootstrapper = require("../utils/mongoose-model-bootstrapper");
+var mongoose = require("mongoose");
 var ObjectId = mongoose.Schema.Types.ObjectId;
-mongoose.set('useCreateIndex', true);
+mongoose.set("useCreateIndex", true);
 
 var NutritionSchema = mongooseBootstrapper({
-
-    user: {type: ObjectId, ref:'User'},
-    food: {type: ObjectId, ref:'Food'},
-    calories: { type: Number },
-    weight: {type: Number },
-    createdAt: { type: Date }
-
+  user: { type: ObjectId, ref: "User" },
+  food: { type: ObjectId, ref: "Food" },
+  mealType: { type: String },
+  calories: { type: Number },
+  weight: { type: Number },
+  createdAt: { type: Date },
 });
 
-mongoose.model('Nutrition', NutritionSchema, 'nutrition');
+mongoose.model("Nutrition", NutritionSchema, "nutrition");

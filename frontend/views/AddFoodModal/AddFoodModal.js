@@ -1,26 +1,24 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, Button, Image, StyleSheet } from "react-native";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import Colors from "../../constants/colors";
 import AppButton from "../../components/AppButton/AppButton";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import config from "../../constants/config";
 
 const AddFoodModal = ({ navigation }) => {
   const [mealType, setMealType] = useState(null);
   const [food, setFood] = useState(null);
   const [showErrorMsg, setShowErrorMSg] = useState(false);
+  const [mealItems, setMealItems] = useState([
+    { foodName: "Custom", defaultCalories: 200 },
+  ]);
+
+  const state = useSelector((state) => state);
 
   const mealTypes = ["Snack", "Breakfast", "Lunch", "Dinner"];
-  const mealItems = [
-    { item: "Custom", weight: "100", calories: "200" },
-    { item: "Milk", weight: "100", calories: "100" },
-    { item: "Cereal", weight: "100", calories: "100" },
-    { item: "Fruits", weight: "100", calories: "50" },
-    { item: "Salad", weight: "100", calories: "50" },
-    { item: "Rice", weight: "100", calories: "80" },
-    { item: "Pasta", weight: "100", calories: "250" },
-    { item: "Chicken", weight: "100", calories: "300" },
-  ];
 
   const handleNavigation = () => {
     if (mealType === null || food === null) {
@@ -34,6 +32,20 @@ const AddFoodModal = ({ navigation }) => {
       });
     }
   };
+
+  useEffect(() => {
+    axios
+      .get(`${config.basepath}/api/food/getFood`, {
+        headers: { Authorization: `Bearer ${state.token}` },
+      })
+      .then((response) => {
+        console.log("Food response length: ", response.data.data.length);
+        setMealItems([...mealItems, ...response.data.data]);
+      })
+      .catch((err) => {
+        console.log("Get food error: ", err);
+      });
+  }, []);
 
   return (
     <ScrollView>
@@ -73,16 +85,16 @@ const AddFoodModal = ({ navigation }) => {
                 activeOpacity={0.7}
                 style={styles.mealItem}
                 onPress={() => setFood(f)}
-                key={f.item}
+                key={f.foodName}
               >
-                <Text style={styles.text}>{f.item}</Text>
+                <Text style={styles.text}>{f.foodName}</Text>
                 <Image
                   source={require("../../assets/images/select-button.png")}
                   style={{
                     ...styles.icon,
                     padding: 0,
                     tintColor:
-                      food && food.item === f.item
+                      food && food.foodName === f.foodName
                         ? Colors.accent
                         : Colors.disabled,
                   }}
