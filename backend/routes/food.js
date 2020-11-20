@@ -61,8 +61,12 @@ router.put("/:userId/addFoodRecord", authUtils, (req, res) => {
 router.get("/:userId/getNutritionRecords", authUtils, (req, res) => {
   const { userId } = req.params;
 
-  Nutrition.find({ user: userId })
-    .populate({ path: "food", select: ["foodName", "mealType"] })
+  Nutrition.find({
+    user: userId,
+    createdAt: { $gte: new Date().setHours(0, 0, 0, 0) },
+  })
+    .select("food calories weight mealType")
+    .populate({ path: "food", select: "foodName" })
     .exec()
     .then((response) => {
       const resp = {

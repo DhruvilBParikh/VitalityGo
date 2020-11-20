@@ -15,7 +15,7 @@ const Food = (props) => {
       }}
     >
       <Text style={{ color: Colors.text, fontSize: 20 }}>
-        {props.food.name} {"\n"}
+        {props.food.food.foodName} {"\n"}
         <Text style={{ color: "#BBADAD", fontSize: 15 }}>
           {props.food.weight} grams
         </Text>
