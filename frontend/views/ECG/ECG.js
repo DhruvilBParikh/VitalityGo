@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { LineChart, YAxis, Grid } from "react-native-svg-charts";
 import { View, StyleSheet } from "react-native";
-import { Table, Rows } from "react-native-table-component";
+import { Table, Rows, Row } from "react-native-table-component";
 import Colors from "../../constants/colors";
 
 export default function ECG() {
@@ -10,7 +10,11 @@ export default function ECG() {
   const timeInterval = 500;
   const plotSize = 1000;
   const skipSize = 50;
-
+  const [variability, setVariability] = useState(getRandomArbitrary(30, 40, 'int'))
+  const [restingHR, setRestingHR] = useState(getRandomArbitrary(65, 72, 'int'))
+  const [walkingHR, setWalkingHR] = useState(getRandomArbitrary(97, 104, 'int'))
+  const [stressLevel, setStressLevel] = useState(getRandomArbitrary(7.1, 7.9, 'decimal'))
+  
   const contentInset = { top: 20, bottom: 20 };
 
   useEffect(() => {
@@ -10020,13 +10024,34 @@ export default function ECG() {
     const interval = setInterval(() => {
       setStart((prev) => prev + skipSize);
     }, timeInterval);
+
     return () => {
       clearInterval(interval);
     };
   }, []);
 
+  useEffect(() => {
+    const statsInterval = setInterval(() => {
+      setVariability(getRandomArbitrary(30, 40, 'int'))
+      setRestingHR(getRandomArbitrary(65, 72, 'int'))
+      setWalkingHR(getRandomArbitrary(97, 104, 'int'))
+      setStressLevel(getRandomArbitrary(7.1, 7.9, 'decimal'))
+    }, 10000)
+    return () => {
+      clearInterval(statsInterval)
+    }
+
+  }, [])
+
+  function getRandomArbitrary(min, max, type) {
+    return type === "decimal" ?
+      parseFloat(Math.random() * (max - min) + min).toFixed(2)
+      :
+      Math.floor(Math.random() * (max - min) + min)
+  }
+
   return (
-    <View style={styles.container}>
+    <View>
       <View style={styles.chartView}>
         <YAxis
           data={data.slice(
@@ -10054,24 +10079,25 @@ export default function ECG() {
         </LineChart>
       </View>
 
-      <View>
-        <Table style={styles.tableContainer}>
-          <Rows
-            data={[
-              [
-                "Heart Rate",
-                "Hear Rate Variablity",
-                "Resting Heart Rate",
-                "Walking Heart Rate",
-              ],
-              ["72 bpm", "30 ms", "72 bpm", "89 bpm"],
-            ]}
-            style={{
-              borderBottomWidth: 1,
-              paddingLeft: 60,
-              borderColor: Colors.text,
-            }}
-          />
+      <View style={styles.container}>
+        <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
+          <Row data={[
+            "Heart Rate",
+            "Heart Rate \nVariability",
+            "Resting \nHeart Rate",
+            "Walking \nHeart Rate",
+          ]} style={styles.head} textStyle={styles.textHeader} />
+          <Rows data={[["72 bpm", variability + " ms", restingHR + " bpm", walkingHR + " bpm"]]} style={styles.dataBackground} textStyle={styles.textData} />
+        </Table>
+      </View>
+
+      <View style={styles.statsContainer}>
+        <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
+          <Row data={[
+            "Stress Level",
+            "Glucose Level"
+          ]} style={styles.statsHead} textStyle={styles.statsTextHeader} />
+          <Rows data={[[stressLevel + " PSS", "95 mg/dL"]]} style={styles.dataBackground} textStyle={styles.statsTextData} />
         </Table>
       </View>
     </View>
@@ -10079,7 +10105,6 @@ export default function ECG() {
 }
 
 const styles = StyleSheet.create({
-  container: {},
   chartView: {
     height: 300,
     flexDirection: "row",
@@ -10091,6 +10116,22 @@ const styles = StyleSheet.create({
     marginRight: 5,
   },
   tableContainer: {
+    marginHorizontal: 10,
+    marginVertical: 10,
     justifyContent: "space-around",
+    borderWidth: 1
   },
+  tableRows: {
+    padding: 10,
+    borderColor: Colors.text
+  },
+  container: { padding: 10, paddingTop: 30, backgroundColor: Colors.backgroundColor },
+  head: { height: 80, backgroundColor: '#f1f8ff' },
+  textHeader: { height: 40, fontSize: 15, margin: 6, alignSelf: "center" },
+  textData: { height: 28, fontSize: 15, margin: 6, alignSelf: "center" },
+  statsContainer: { padding: 10, paddingTop: 30, backgroundColor: Colors.backgroundColor, marginBottom: 30 },
+  statsHead: { height: 60, backgroundColor: '#f1f8ff' },
+  statsTextHeader: { height: 25, fontSize: 15, margin: 6, alignSelf: "center" },
+  statsTextData: { height: 28, fontSize: 15, margin: 6, alignSelf: "center" },
+  dataBackground: { backgroundColor: Colors.white }
 });
