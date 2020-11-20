@@ -43,7 +43,7 @@ export default function Login({ navigation }) {
         .post(`${config.basepath}/login`, { email, password })
         .then((response) => {
           if (response.status === 200) {
-            console.log("Login response: ", response.data);
+            // console.log("Login response: ", response.data);
             dispatch(
               signIn({
                 type: response.data.data.userData.type,

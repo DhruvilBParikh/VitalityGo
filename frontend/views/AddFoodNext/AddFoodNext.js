@@ -1,17 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import AppButton from "../../components/AppButton/AppButton";
 import ValidationMsg from "../../components/ValidationMsg/ValidationMsg";
 import appInputStyle from "../../constants/appInput";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import config from "../../constants/config";
 
 const AddFoodNext = ({ route, navigation }) => {
-  const [food, setFood] = useState(route.params.food.item);
-  const [calories, setCalories] = useState(route.params.food.calories);
-  const [weight, setWeight] = useState(route.params.food.weight);
-
+  const [food, setFood] = useState(route.params.food.foodName);
+  const [weight, setWeight] = useState("100");
+  const [calories, setCalories] = useState(
+    route.params.food.defaultCalories.toString()
+  );
   const [showFoodError, setShowFoodError] = useState(false);
-  const [showCaloriesError, setShowCaloriesError] = useState(false);
   const [showWeightError, setShowWeightError] = useState(false);
+  const state = useSelector((state) => state);
+
+  useEffect(() => {
+    if (route.params.food.foodName !== "Custom") {
+      const cl = route.params.food.defaultCalories;
+      setCalories(((parseInt(weight) * cl) / 100).toFixed(2).toString());
+    }
+  }, [weight]);
 
   const addFoodHandler = () => {
     let navigate = true;
@@ -23,14 +34,7 @@ const AddFoodNext = ({ route, navigation }) => {
       setShowFoodError(false);
     }
 
-    if (calories.trim().length === 0) {
-      navigate = false;
-      setShowCaloriesError(true);
-    } else {
-      setShowCaloriesError(false);
-    }
-
-    if (weight.trim().length === 0) {
+    if (weight.toString().trim().length === 0) {
       navigate = false;
       setShowWeightError(true);
     } else {
@@ -41,12 +45,22 @@ const AddFoodNext = ({ route, navigation }) => {
       const data = {
         foodName: food,
         mealType: route.params.meal,
-        calories,
-        weight,
+        calories: parseFloat(calories),
+        weight: parseInt(weight),
       };
-      // call api
-      console.log("food data: ", data);
-      navigation.navigate("Nutrition");
+      axios
+        .put(
+          `${config.basepath}/api/food/${state.userData._id}/addFoodRecord`,
+          data,
+          { headers: { Authorization: `Bearer ${state.token}` } }
+        )
+        .then((response) => {
+          console.log("Add food response: ", response.data.msg);
+          navigation.navigate("Nutrition");
+        })
+        .catch((err) => {
+          console.log("Add food error: ", err);
+        });
     }
   };
 
@@ -58,6 +72,8 @@ const AddFoodNext = ({ route, navigation }) => {
       {/* mealtype */}
       <Text style={styles.subTitle}>{route.params.meal}</Text>
 
+      <Text>Please verify item and weight.</Text>
+
       {/* food item */}
       <View style={appInputStyle.container}>
         <Text>Item:</Text>
@@ -65,23 +81,11 @@ const AddFoodNext = ({ route, navigation }) => {
           value={food}
           onChangeText={(text) => setFood(text)}
           style={appInputStyle.placeholder}
+          editable={route.params.food.foodName === "Custom"}
         />
       </View>
 
       {showFoodError && <ValidationMsg message="Please enter a food item" />}
-
-      {/* calories */}
-      <View style={appInputStyle.container}>
-        <Text>Calories:</Text>
-        <TextInput
-          keyboardType="number-pad"
-          value={calories}
-          onChangeText={(text) => setCalories(text)}
-          style={appInputStyle.placeholder}
-        />
-      </View>
-
-      {showCaloriesError && <ValidationMsg message="Please enter calories" />}
 
       {/* weight */}
       <View style={appInputStyle.container}>
@@ -95,6 +99,18 @@ const AddFoodNext = ({ route, navigation }) => {
       </View>
 
       {showWeightError && <ValidationMsg message="Please enter weight" />}
+
+      {/* calories */}
+      <View style={appInputStyle.container}>
+        <Text>Calories:</Text>
+        <TextInput
+          keyboardType="number-pad"
+          value={calories}
+          style={appInputStyle.placeholder}
+          editable={route.params.food.foodName === "Custom"}
+          onChangeText={(text) => setCalories(text)}
+        />
+      </View>
 
       <AppButton title="Add" clickHandler={addFoodHandler} />
     </View>

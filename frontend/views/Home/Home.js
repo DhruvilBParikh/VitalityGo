@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,15 +11,16 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Bar } from "react-native-progress";
 import Colors from "../../constants/colors";
 import { useDispatch, useSelector } from "react-redux";
-import { signOut } from "../../redux/action/action.js";
 import axios from "axios";
 import config from "../../constants/config";
 import AppButton from "../../components/AppButton/AppButton";
 
 export default function Home({ navigation }) {
+  const [totalCalories, setTotalCalories] = useState("");
+  const [totalGlasses, setTotalGlasses] = useState("");
+
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
-  console.log(state);
 
   useEffect(() => {
     getDayToDay();
@@ -27,16 +28,16 @@ export default function Home({ navigation }) {
 
   const getDayToDay = async () => {
     try {
-      const date = new Date();
+      // const date = new Date();
       const response = await axios.get(
-        `${config.basepath}/${
-          state.userData._id
-        }/getDaytoDayGoal/${date.toDateString()}`,
+        `${config.basepath}/api/users/${state.userData._id}/getDaytoDayGoal`,
         { headers: { Authorization: `Bearer ${state.token}` } }
       );
-      console.log("Day to day response: ", response);
+      // console.log("Day to day response: ", response.data.data);
+      setTotalCalories(response.data.data.totalCalories);
+      setTotalGlasses(response.data.data.totalWaterGlasses);
     } catch (err) {
-      console.log("Get day-to-day error: ", err.message);
+      console.log("Get day-to-day error: ", err);
     }
   };
 
@@ -79,9 +80,16 @@ export default function Home({ navigation }) {
             <View style={styles.summaryContainer}>
               <Text style={styles.summaryTitle}> Nutrition </Text>
               <View style={styles.progressContainer}>
-                <Text style={{ color: "#BBADAD" }}> 850/1000 cal </Text>
+                <Text style={{ color: "#BBADAD" }}>
+                  {" "}
+                  {totalCalories}/{state.patientData.caloriesGoal} cal{" "}
+                </Text>
               </View>
-              <Bar progress={0.85} width={200} color="#00D7A3" />
+              <Bar
+                progress={totalCalories / state.patientData.caloriesGoal}
+                width={200}
+                color="#00D7A3"
+              />
             </View>
           </TouchableOpacity>
 
@@ -99,9 +107,16 @@ export default function Home({ navigation }) {
             <View style={styles.summaryContainer}>
               <Text style={styles.summaryTitle}> Water </Text>
               <View style={styles.progressContainer}>
-                <Text style={{ color: "#BBADAD" }}> 4/8 glasses </Text>
+                <Text style={{ color: "#BBADAD" }}>
+                  {" "}
+                  {totalGlasses}/{state.patientData.waterGoal} glasses{" "}
+                </Text>
               </View>
-              <Bar progress={0.5} width={200} color="#00D7A3" />
+              <Bar
+                progress={totalGlasses / state.patientData.waterGoal}
+                width={200}
+                color="#00D7A3"
+              />
             </View>
           </TouchableOpacity>
 
