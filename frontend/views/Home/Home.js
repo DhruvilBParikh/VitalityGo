@@ -23,8 +23,11 @@ export default function Home({ navigation }) {
   const state = useSelector((state) => state);
 
   useEffect(() => {
-    getDayToDay();
-  }, []);
+    const unsubscribe = navigation.addListener("focus", () => {
+      getDayToDay();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   const getDayToDay = async () => {
     try {
@@ -56,102 +59,102 @@ export default function Home({ navigation }) {
     <View style={styles.container}>
       {/* <ScrollView>
         <View> */}
-          {/* Greeting */}
-          <View style={styles.greetingContainer}>
-            <Text style={styles.greetingText}>
-              Greetings, {state.userData.firstName}{" "}
-            </Text>
-            <Text style={styles.motivationText}>
-              Take care of your body. It's the only place you have to live.
-          </Text>
+      {/* Greeting */}
+      <View style={styles.greetingContainer}>
+        <Text style={styles.greetingText}>
+          Greetings, {state.userData.firstName}{" "}
+        </Text>
+        <Text style={styles.motivationText}>
+          Take care of your body. It's the only place you have to live.
+        </Text>
+      </View>
+
+      {/* Nutrition */}
+      <View>
+        <TouchableOpacity
+          style={styles.whiteBackground}
+          onPress={() => navigation.navigate("Nutrition")}
+        >
+          <View style={{ width: 100, height: 80, alignItems: "center" }}>
+            <Image
+              source={require("../../assets/images/home-nutrition.png")}
+              style={{ width: 76, height: 75 }}
+            />
           </View>
-
-          {/* Nutrition */}
-          <View>
-            <TouchableOpacity
-              style={styles.whiteBackground}
-              onPress={() => navigation.navigate("Nutrition")}
-            >
-              <View style={{ width: 100, height: 80, alignItems: "center" }}>
-                <Image
-                  source={require("../../assets/images/home-nutrition.png")}
-                  style={{ width: 76, height: 75 }}
-                />
-              </View>
-              <View style={styles.summaryContainer}>
-                <Text style={styles.summaryTitle}> Nutrition </Text>
-                <View style={styles.progressContainer}>
-                  <Text style={{ color: "#BBADAD" }}>
-                    {" "}
-                    {totalCalories}/{state.patientData.caloriesGoal} cal{" "}
-                  </Text>
-                </View>
-                <Bar
-                  progress={totalCalories / state.patientData.caloriesGoal}
-                  width={200}
-                  color="#00D7A3"
-                />
-              </View>
-            </TouchableOpacity>
-
-            {/* Water */}
-            <TouchableOpacity
-              style={styles.whiteBackground}
-              onPress={() => navigation.navigate("Water")}
-            >
-              <View style={{ width: 100, height: 80, alignItems: "center" }}>
-                <Image
-                  source={require("../../assets/images/home-water.png")}
-                  style={{ width: 49, height: 71 }}
-                />
-              </View>
-              <View style={styles.summaryContainer}>
-                <Text style={styles.summaryTitle}> Water </Text>
-                <View style={styles.progressContainer}>
-                  <Text style={{ color: "#BBADAD" }}>
-                    {" "}
-                    {totalGlasses}/{state.patientData.waterGoal} glasses{" "}
-                  </Text>
-                </View>
-                <Bar
-                  progress={totalGlasses / state.patientData.waterGoal}
-                  width={200}
-                  color="#00D7A3"
-                />
-              </View>
-            </TouchableOpacity>
-
-            {/* ECG */}
-            <TouchableOpacity
-              style={[styles.whiteBackground, { borderBottomWidth: 1 }]}
-              onPress={() => navigation.navigate("ECG")}
-            >
-              <View style={{ width: 100, height: 80, alignItems: "center" }}>
-                <Image
-                  source={require("../../assets/images/home-ecg.png")}
-                  style={{ width: 69, height: 72 }}
-                />
-              </View>
-              <View style={styles.summaryContainer}>
-                <Text style={styles.summaryTitle}> ECG </Text>
-                <View style={styles.progressContainer}>
-                  <Text style={{ color: "#BBADAD" }}> 72 bpm </Text>
-                  <Text style={{ color: "#BBADAD", fontSize: 12 }}>
-                    {" "}
-                  65 bpm resting heart rate{" "}
-                  </Text>
-                </View>
-              </View>
-            </TouchableOpacity>
+          <View style={styles.summaryContainer}>
+            <Text style={styles.summaryTitle}> Nutrition </Text>
+            <View style={styles.progressContainer}>
+              <Text style={{ color: "#BBADAD" }}>
+                {" "}
+                {totalCalories}/{state.patientData.caloriesGoal} cal{" "}
+              </Text>
+            </View>
+            <Bar
+              progress={totalCalories / state.patientData.caloriesGoal}
+              width={200}
+              color="#00D7A3"
+            />
           </View>
+        </TouchableOpacity>
 
-          <AppButton
-            title="Add Emergency Contact"
-            clickHandler={handleAddContact}
-          />
+        {/* Water */}
+        <TouchableOpacity
+          style={styles.whiteBackground}
+          onPress={() => navigation.navigate("Water")}
+        >
+          <View style={{ width: 100, height: 80, alignItems: "center" }}>
+            <Image
+              source={require("../../assets/images/home-water.png")}
+              style={{ width: 49, height: 71 }}
+            />
+          </View>
+          <View style={styles.summaryContainer}>
+            <Text style={styles.summaryTitle}> Water </Text>
+            <View style={styles.progressContainer}>
+              <Text style={{ color: "#BBADAD" }}>
+                {" "}
+                {totalGlasses}/{state.patientData.waterGoal} glasses{" "}
+              </Text>
+            </View>
+            <Bar
+              progress={totalGlasses / state.patientData.waterGoal}
+              width={200}
+              color="#00D7A3"
+            />
+          </View>
+        </TouchableOpacity>
 
-          <AppButton title="Logout" clickHandler={handleLogout} />
-        {/* </View>
+        {/* ECG */}
+        <TouchableOpacity
+          style={[styles.whiteBackground, { borderBottomWidth: 1 }]}
+          onPress={() => navigation.navigate("ECG")}
+        >
+          <View style={{ width: 100, height: 80, alignItems: "center" }}>
+            <Image
+              source={require("../../assets/images/home-ecg.png")}
+              style={{ width: 69, height: 72 }}
+            />
+          </View>
+          <View style={styles.summaryContainer}>
+            <Text style={styles.summaryTitle}> ECG </Text>
+            <View style={styles.progressContainer}>
+              <Text style={{ color: "#BBADAD" }}> 72 bpm </Text>
+              <Text style={{ color: "#BBADAD", fontSize: 12 }}>
+                {" "}
+                65 bpm resting heart rate{" "}
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
+
+      <AppButton
+        title="Add Emergency Contact"
+        clickHandler={handleAddContact}
+      />
+
+      <AppButton title="Logout" clickHandler={handleLogout} />
+      {/* </View>
       </ScrollView> */}
     </View>
   );
@@ -161,7 +164,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    alignItems: "center"
+    alignItems: "center",
   },
   greetingContainer: {
     marginHorizontal: 45,

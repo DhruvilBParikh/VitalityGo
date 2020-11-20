@@ -353,7 +353,7 @@ router.get("/:userId/getDaytoDayGoal", authUtils, (req, res) => {
   })
     .exec()
     .then((response) => {
-      console.log("getDaytoDayGoal", response)
+      // console.log("getDaytoDayGoal", response)
       if (!response) {
         let dayToDayGoal = new DayToDayGoal({
           user: userId,
