@@ -8,9 +8,9 @@ export default function NutritionHeader() {
       <View>
         <Text style={styles.title}>Nutrition</Text>
       </View>
-      <TouchableOpacity activeOpacity={0.7}>
+      {/* <TouchableOpacity activeOpacity={0.7}>
         <Image source={require("../../assets/images/add-button.png")} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
     </View>
   );
 }
@@ -19,9 +19,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "center",
     alignItems: "center",
-    marginHorizontal: 10,
+    marginLeft: -15,
   },
   title: {
     color: "#474444",

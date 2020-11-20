@@ -10,7 +10,7 @@ const Food = (props) => {
         padding: 10,
         flexDirection: "row",
         justifyContent: "space-between",
-        borderBottomWidth: 2,
+        borderBottomWidth: 1,
         borderColor: "#BBADAD",
       }}
     >

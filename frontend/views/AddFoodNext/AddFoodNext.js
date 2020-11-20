@@ -59,8 +59,8 @@ const AddFoodNext = ({ route, navigation }) => {
             console.log("Add food response: ", response.data.msg);
             const caloriesData = {
               totalCalories: parseFloat(calories),
-              totalWaterGlasses: 0
-            }
+              totalWaterGlasses: 0,
+            };
             axios
               .put(
                 `${config.basepath}/api/users/${state.userData._id}/updateDayToDayGoal`,
@@ -69,7 +69,10 @@ const AddFoodNext = ({ route, navigation }) => {
               )
               .then((response) => {
                 if (response.status === 200) {
-                  console.log("Update Day To Day response: ", response.data.msg);
+                  console.log(
+                    "Update Day To Day response: ",
+                    response.data.msg
+                  );
                   navigation.pop(2);
                   navigation.replace("Nutrition");
                 }

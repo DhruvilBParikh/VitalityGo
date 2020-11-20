@@ -15,25 +15,18 @@ import config from "../../constants/config";
 
 export default function Nutrition({ navigation }) {
   const [totalCalories, setTotalCalories] = useState(0);
-  const [allFood, setAllFood] = useState([]);
   const [snackFood, setSnackFood] = useState([]);
   const [breakfastFood, setBreakfastFood] = useState([]);
   const [lunchFood, setLunchFood] = useState([]);
   const [dinnerFood, setDinnerFood] = useState([]);
   const [totalWeight, setTotalWeight] = useState(0);
-  const [fatPercentage, setFatPercentage] = useState(0)
-  const [carbPercentage, setCarbPercentage] = useState(0)
-  const [proteinPercentage, setProteinPercentage] = useState(0)
+  const [fatPercentage, setFatPercentage] = useState(-1);
+  const [carbPercentage, setCarbPercentage] = useState(-1);
+  const [proteinPercentage, setProteinPercentage] = useState(-1);
   const state = useSelector((state) => state);
 
-  const [tableData, setTableData] = useState([
-    ["Fat", "20g", "27%"],
-    ["Carb", "60g", "30%"],
-    ["Protein", "100g", "63%"],
-  ]);
-
   useEffect(() => {
-    console.log("user token:", state.token)
+    console.log("user token:", state.token);
     axios
       .get(
         `${config.basepath}/api/users/${state.userData._id}/getDaytoDayGoal`,
@@ -52,7 +45,6 @@ export default function Nutrition({ navigation }) {
   }, []);
 
   useEffect(() => {
-    console.log("Getting Food Details:::::::::::")
     axios
       .get(
         `${config.basepath}/api/food/${state.userData._id}/getNutritionRecords`,
@@ -69,11 +61,9 @@ export default function Nutrition({ navigation }) {
             response.data.data.length
           );
           console.log(response.data.data.length);
-          setAllFood(response.data.data);
-          const foodData = response.data.data;
-          let totalWeight = 0
-          foodData.map((d) => {
-            totalWeight += d.weight
+          let totalWeight = 0;
+          response.data.data.map((d) => {
+            totalWeight += d.weight;
             switch (d.mealType) {
               case "Snack":
                 snacksArr.push(d);
@@ -104,16 +94,16 @@ export default function Nutrition({ navigation }) {
   }, []);
 
   useEffect(() => {
-    setFatPercentage(parseInt((totalCalories/3)/totalWeight*100))
-    setCarbPercentage(parseInt((totalCalories/4)/totalWeight*100))
-    setProteinPercentage(parseInt((totalCalories/2.5)/totalWeight*100))
-  },[totalCalories, totalWeight])
+    setFatPercentage(parseInt((totalCalories / 3 / totalWeight) * 100));
+    setCarbPercentage(parseInt((totalCalories / 4 / totalWeight) * 100));
+    setProteinPercentage(parseInt((totalCalories / 2.5 / totalWeight) * 100));
+  }, [totalCalories, totalWeight]);
 
   return (
-      <View style={styles.container}>
-        <ScrollView>
+    <View style={styles.container}>
+      <ScrollView>
         {/* Calories gained */}
-        <View style={{paddingTop:30}}>
+        <View style={{ paddingTop: 30 }}>
           <Text
             style={{
               fontSize: 30,
@@ -141,40 +131,51 @@ export default function Nutrition({ navigation }) {
             borderRadius: 20,
           }}
         >
-          <View>
-            <AnimatedCircularProgress
-              size={140}
-              width={15}
-              fill={fatPercentage}
-              rotation={0}
-              tintColor="#8378FE"
-              onAnimationComplete={() => console.log("onAnimationComplete")}
-              backgroundColor="#DAD8FB"
-              lineCap="round"
-            />
-            <AnimatedCircularProgress
-              size={100}
-              width={15}
-              fill={carbPercentage}
-              rotation={0}
-              tintColor="#948BFD"
-              onAnimationComplete={() => console.log("onAnimationComplete")}
-              backgroundColor="#DAD8FB"
-              lineCap="round"
-              style={{ position: "absolute", top: 20, left: 20 }}
-            />
-            <AnimatedCircularProgress
-              size={60}
-              width={15}
-              fill={proteinPercentage}
-              rotation={0}
-              tintColor="#A59EFD"
-              onAnimationComplete={() => console.log("onAnimationComplete")}
-              backgroundColor="#DAD8FB"
-              lineCap="round"
-              style={{ position: "absolute", top: 40, left: 40 }}
-            />
-          </View>
+          {fatPercentage >= 0 ? (
+            <View>
+              <AnimatedCircularProgress
+                size={140}
+                width={15}
+                fill={fatPercentage}
+                rotation={0}
+                tintColor="#8378FE"
+                onAnimationComplete={() =>
+                  console.log("onAnimationComplete, fat%: ", fatPercentage)
+                }
+                backgroundColor="#DAD8FB"
+                lineCap="round"
+              />
+              <AnimatedCircularProgress
+                size={100}
+                width={15}
+                fill={carbPercentage}
+                rotation={0}
+                tintColor="#948BFD"
+                onAnimationComplete={() =>
+                  console.log("onAnimationComplete, carb%: ", carbPercentage)
+                }
+                backgroundColor="#DAD8FB"
+                lineCap="round"
+                style={{ position: "absolute", top: 20, left: 20 }}
+              />
+              <AnimatedCircularProgress
+                size={60}
+                width={15}
+                fill={proteinPercentage}
+                rotation={0}
+                tintColor="#A59EFD"
+                onAnimationComplete={() =>
+                  console.log(
+                    "onAnimationComplete, protein%: ",
+                    proteinPercentage
+                  )
+                }
+                backgroundColor="#DAD8FB"
+                lineCap="round"
+                style={{ position: "absolute", top: 40, left: 40 }}
+              />
+            </View>
+          ) : null}
           <View style={{ justifyContent: "center" }}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TouchableWithoutFeedback
@@ -185,7 +186,9 @@ export default function Nutrition({ navigation }) {
                   borderRadius: 11,
                 }}
               />
-              <Text style={{ color: "#8378FE", marginLeft: 10 }}>Fat {fatPercentage}%</Text>
+              <Text style={{ color: "#8378FE", marginLeft: 10 }}>
+                Fat {fatPercentage === -1 ? 0 : fatPercentage}%
+              </Text>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TouchableWithoutFeedback
@@ -198,7 +201,7 @@ export default function Nutrition({ navigation }) {
                 }}
               />
               <Text style={{ color: "#948BFD", marginTop: 20, marginLeft: 10 }}>
-              Carb {carbPercentage}%
+                Carb {carbPercentage === -1 ? 0 : carbPercentage}%
               </Text>
             </View>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -212,7 +215,7 @@ export default function Nutrition({ navigation }) {
                 }}
               />
               <Text style={{ color: "#A59EFD", marginTop: 20, marginLeft: 10 }}>
-              Protien {proteinPercentage}%
+                Protien {proteinPercentage === -1 ? 0 : proteinPercentage}%
               </Text>
             </View>
           </View>
@@ -224,9 +227,13 @@ export default function Nutrition({ navigation }) {
         >
           <Rows
             data={[
-              ["Fat", parseInt(totalCalories/3)+"g", fatPercentage+"%"],
-              ["Carb", parseInt(totalCalories/4)+"g", carbPercentage+"%"],
-              ["Protein", parseInt(totalCalories/2.5)+"g", proteinPercentage+"%"],
+              ["Fat", parseInt(totalCalories / 3) + "g", fatPercentage + "%"],
+              ["Carb", parseInt(totalCalories / 4) + "g", carbPercentage + "%"],
+              [
+                "Protein",
+                parseInt(totalCalories / 2.5) + "g",
+                proteinPercentage + "%",
+              ],
             ]}
             textStyle={styles.text}
             style={{
@@ -237,20 +244,17 @@ export default function Nutrition({ navigation }) {
           />
         </Table>
 
-
         {breakfastFood.length > 0 && (
           <View style={styles.footContainer}>
             <Text
               style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
             >
               Breakfast
-          </Text>
+            </Text>
             {/* List */}
-            {breakfastFood.map((f) =>
-              (
-                <Food key={f.food.foodName} food={f} />
-              )
-            )}
+            {breakfastFood.map((f, index) => (
+              <Food key={index} food={f} />
+            ))}
           </View>
         )}
 
@@ -260,13 +264,11 @@ export default function Nutrition({ navigation }) {
               style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
             >
               Lunch
-          </Text>
+            </Text>
             {/* List */}
-            {lunchFood.map((f) =>
-              (
-                <Food key={f.food.foodName} food={f} />
-              )
-            )}
+            {lunchFood.map((f, index) => (
+              <Food key={index} food={f} />
+            ))}
           </View>
         )}
 
@@ -276,13 +278,11 @@ export default function Nutrition({ navigation }) {
               style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
             >
               Snacks
-          </Text>
+            </Text>
             {/* List */}
-            {snackFood.map((f) =>
-              (
-                <Food key={f.food.foodName} food={f} />
-              )
-            )}
+            {snackFood.map((f, index) => (
+              <Food key={index} food={f} />
+            ))}
           </View>
         )}
 
@@ -292,13 +292,11 @@ export default function Nutrition({ navigation }) {
               style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
             >
               Dinner
-          </Text>
+            </Text>
             {/* List */}
-            {dinnerFood.map((f) =>
-              (
-                <Food key={f.food.foodName} food={f} />
-              )
-            )}
+            {dinnerFood.map((f, index) => (
+              <Food key={index} food={f} />
+            ))}
           </View>
         )}
 
@@ -308,15 +306,15 @@ export default function Nutrition({ navigation }) {
             clickHandler={() => navigation.navigate("AddFood")}
           />
         </View>
-        </ScrollView>
-      </View>
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex:1,
-    backgroundColor: Colors.background
+    flex: 1,
+    backgroundColor: Colors.background,
   },
   summaryContainer: {
     width: "100%",
