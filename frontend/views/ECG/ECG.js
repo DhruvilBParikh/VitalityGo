@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { LineChart, YAxis, Grid } from "react-native-svg-charts";
 import { View, StyleSheet } from "react-native";
+import { Table, Rows } from "react-native-table-component";
+import Colors from "../../constants/colors";
 
 export default function ECG() {
   const [data, setData] = useState([]);
@@ -10051,6 +10053,27 @@ export default function ECG() {
           <Grid />
         </LineChart>
       </View>
+
+      <View>
+        <Table style={styles.tableContainer}>
+          <Rows
+            data={[
+              [
+                "Heart Rate",
+                "Hear Rate Variablity",
+                "Resting Heart Rate",
+                "Walking Heart Rate",
+              ],
+              ["72 bpm", "30 ms", "72 bpm", "89 bpm"],
+            ]}
+            style={{
+              borderBottomWidth: 1,
+              paddingLeft: 60,
+              borderColor: Colors.text,
+            }}
+          />
+        </Table>
+      </View>
     </View>
   );
 }
@@ -10060,10 +10083,14 @@ const styles = StyleSheet.create({
   chartView: {
     height: 300,
     flexDirection: "row",
+    backgroundColor: "white",
   },
   lineChart: {
     flex: 1,
     marginLeft: 5,
     marginRight: 5,
+  },
+  tableContainer: {
+    justifyContent: "space-around",
   },
 });
