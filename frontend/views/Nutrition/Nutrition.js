@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import Colors from "../../constants/colors";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import {
   ScrollView,
-  TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import { Table, Rows } from "react-native-table-component";
@@ -16,6 +15,11 @@ import config from "../../constants/config";
 
 export default function Nutrition({ navigation }) {
   const [totalCalories, setTotalCalories] = useState("");
+  const [allFood, setAllFood] = useState([]);
+  // const [snackFood, setSnackFood] = useState([]);
+  // const [breakfastFood, setBreakfastFood] = useState([]);
+  // const [lunchFood, setLunchFood] = useState([]);
+  // const [dinnerFood, setDinnerFood] = useState([]);
   const state = useSelector((state) => state);
 
   const [tableData, setTableData] = useState([
@@ -23,11 +27,6 @@ export default function Nutrition({ navigation }) {
     ["Carb", "60g", "30%"],
     ["Protein", "100g", "63%"],
   ]);
-
-  const food = [
-    { name: "Eggs", weight: "200", calories: "150" },
-    { name: "Fries", weight: "150", calories: "200" },
-  ];
 
   useEffect(() => {
     axios
@@ -44,6 +43,54 @@ export default function Nutrition({ navigation }) {
       })
       .catch((err) => {
         console.log("Get total calories error: ", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${config.basepath}/api/food/${state.userData._id}/getNutritionRecords`,
+        { headers: { Authorization: `Bearer ${state.token}` } }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          // const snacksArr = [];
+          // const breakfastArr = [];
+          // const lunchArr = [];
+          // const dinnerArr = [];
+          console.log(
+            "Gained nutrition response length: ",
+            response.data.data.length
+          );
+          console.log(response.data.data.length);
+          setAllFood(response.data.data);
+          // const foodData = response.data.data;
+          // foodData.map((d) => {
+          //   switch (d.mealType) {
+          //     case "Snack":
+          //       snacksArr.push(d);
+          //       break;
+          //     case "Breakfast":
+          //       breakfastArr.push(d);
+          //       break;
+          //     case "Lunch":
+          //       lunchArr.push(d);
+          //       break;
+          //     case "Dinner":
+          //       dinnerArr.push(d);
+          //       break;
+          //     default:
+          //       break;
+          //   }
+          // });
+          // setSnackFood(snacksArr);
+          // setBreakfastFood(breakfastArr);
+          // setLunchFood(lunchArr);
+          // setDinnerFood(dinnerArr);
+        }
+      })
+      .catch((err) => {
+        console.log("Get nutrition error: ", err);
       });
   }, []);
 
@@ -171,6 +218,23 @@ export default function Nutrition({ navigation }) {
           />
         </Table>
 
+        {/* {snackFood.length > 0 && ( */}
+        <View style={styles.footContainer}>
+          <Text
+            style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
+          >
+            Snacks
+          </Text>
+          {/* List */}
+          {allFood.map((f) =>
+            f.mealType === "Snack" ? (
+              <Food key={f.food.foodName} food={f} />
+            ) : null
+          )}
+        </View>
+        {/* )} */}
+
+        {/* {breakfastFood.length > 0 && ( */}
         <View style={styles.footContainer}>
           <Text
             style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
@@ -178,11 +242,15 @@ export default function Nutrition({ navigation }) {
             Breakfast
           </Text>
           {/* List */}
-          {food.map((f) => (
-            <Food key={f.name} food={f} />
-          ))}
+          {allFood.map((f) =>
+            f.mealType === "Breakfast" ? (
+              <Food key={f.food.foodName} food={f} />
+            ) : null
+          )}
         </View>
+        {/* )} */}
 
+        {/* {lunchFood.length > 0 && ( */}
         <View style={styles.footContainer}>
           <Text
             style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
@@ -190,11 +258,15 @@ export default function Nutrition({ navigation }) {
             Lunch
           </Text>
           {/* List */}
-          {food.map((f) => (
-            <Food key={f.foodName} food={f} />
-          ))}
+          {allFood.map((f) =>
+            f.mealType === "Lunch" ? (
+              <Food key={f.food.foodName} food={f} />
+            ) : null
+          )}
         </View>
+        {/* )} */}
 
+        {/* {dinnerFood.length > 0 && ( */}
         <View style={styles.footContainer}>
           <Text
             style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
@@ -202,10 +274,13 @@ export default function Nutrition({ navigation }) {
             Dinner
           </Text>
           {/* List */}
-          {food.map((f) => (
-            <Food key={f.name} food={f} />
-          ))}
+          {allFood.map((f) =>
+            f.mealType === "Dinner" ? (
+              <Food key={f.food.foodName} food={f} />
+            ) : null
+          )}
         </View>
+        {/* )} */}
 
         <View style={{ alignItems: "center" }}>
           <AppButton

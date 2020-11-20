@@ -348,7 +348,10 @@ router.get("/:userId/getDaytoDayGoal", authUtils, (req, res) => {
   console.log("Getting Day to day goal");
   const { userId } = req.params;
 
-  DayToDayGoal.findOne({ userId: userId, onDate: { $gte: new Date() } })
+  DayToDayGoal.findOne({
+    userId: userId,
+    onDate: { $gte: new Date().setHours(0, 0, 0, 0) },
+  })
     .exec()
     .then((response) => {
       //console.log("getDaytoDayGoal", response)
