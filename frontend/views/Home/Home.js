@@ -26,18 +26,18 @@ export default function Home({ navigation }) {
   }, []);
 
   const getDayToDay = async () => {
-    // try {
-    //   const date = new Date();
-    //   const response = await axios.get(
-    //     `${config.basepath}/${
-    //       state.userData._id
-    //     }/getDaytoDayGoal/${date.toDateString()}`,
-    //     { headers: { Authorization: `Bearer ${state.token}` } }
-    //   );
-    //   console.log("Day to day response: ", response);
-    // } catch (err) {
-    //   console.log("Get day-to-day error: ", err.message);
-    // }
+    try {
+      const date = new Date();
+      const response = await axios.get(
+        `${config.basepath}/${
+          state.userData._id
+        }/getDaytoDayGoal/${date.toDateString()}`,
+        { headers: { Authorization: `Bearer ${state.token}` } }
+      );
+      console.log("Day to day response: ", response);
+    } catch (err) {
+      console.log("Get day-to-day error: ", err.message);
+    }
   };
 
   const handleAddContact = () => {
@@ -56,7 +56,9 @@ export default function Home({ navigation }) {
       <View style={styles.container}>
         {/* Greeting */}
         <View style={styles.greetingContainer}>
-          <Text style={styles.greetingText}>Greetings, User </Text>
+          <Text style={styles.greetingText}>
+            Greetings, {state.userData.firstName}{" "}
+          </Text>
           <Text style={styles.motivationText}>
             Take care of your body. It's the only place you have to live.
           </Text>

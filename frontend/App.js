@@ -54,7 +54,7 @@ export default function App() {
     <>
       <NavigationContainer>
         <Stack.Navigator
-          initialRouteName="Home"
+          initialRouteName="GetStarted"
           screenOptions={{ headerShown: false }}
         >
           {/* {state.userData !== null ? (
