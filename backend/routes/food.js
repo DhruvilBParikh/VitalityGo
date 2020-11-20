@@ -31,7 +31,7 @@ router.put("/:userId/addFoodRecord", authUtils, (req, res) => {
       })
         .then((response2) => {
           Admin.create({
-            user: response._id,
+            user: userId,
             activity: "Nutrition information added",
             auditedAt: new Date(),
           })

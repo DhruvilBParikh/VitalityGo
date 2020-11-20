@@ -284,10 +284,10 @@ router.put("/:userId/updateDaytoDayGoal", authUtils, (req, res) => {
   const { totalCalories, totalWaterGlasses } = req.body;
   const { userId } = req.params;
 
-  Goal.findOne({ userId: userId })
+  Goal.findOne({ user: userId })
     .exec()
     .then((response) => {
-      DayToDayGoal.findOne({ userId: userId })
+      DayToDayGoal.findOne({ user: userId })
         .exec()
         .then((response1) => {
           console.log("Update Day to day goal", response1);
@@ -312,7 +312,7 @@ router.put("/:userId/updateDaytoDayGoal", authUtils, (req, res) => {
             .exec()
             .then((response2) => {
               Admin.create({
-                user: response._id,
+                user: userId,
                 activity: "User DayToDayGoal successfully updated",
                 auditedAt: new Date(),
               })
@@ -347,17 +347,16 @@ router.get("/:userId/getDaytoDayGoal", authUtils, (req, res) => {
   // const { onDate } = req.body;
   console.log("Getting Day to day goal");
   const { userId } = req.params;
-
   DayToDayGoal.findOne({
-    userId: userId,
+    user: userId,
     onDate: { $gte: new Date().setHours(0, 0, 0, 0) },
   })
     .exec()
     .then((response) => {
-      //console.log("getDaytoDayGoal", response)
+      console.log("getDaytoDayGoal", response)
       if (!response) {
         let dayToDayGoal = new DayToDayGoal({
-          userId: userId,
+          user: userId,
           caloriesGoalReached: Boolean(false),
           waterGoalReached: Boolean(false),
           totalCalories: 0,
@@ -607,7 +606,7 @@ router.put("/:userId/addDoctor", authUtils, (req, res) => {
             .then((response4) => {
               Admin.create({
                 user: userId,
-                activity: "User added doctor",
+                activity: "User requested the doctor",
                 auditedAt: new Date(),
               })
                 .then((res) => {

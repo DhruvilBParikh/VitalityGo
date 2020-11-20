@@ -55,8 +55,29 @@ const AddFoodNext = ({ route, navigation }) => {
           { headers: { Authorization: `Bearer ${state.token}` } }
         )
         .then((response) => {
-          console.log("Add food response: ", response.data.msg);
-          navigation.navigate("Nutrition");
+          if (response.status === 200) {
+            console.log("Add food response: ", response.data.msg);
+            const caloriesData = {
+              totalCalories: parseFloat(calories),
+              totalWaterGlasses: 0
+            }
+            axios
+              .put(
+                `${config.basepath}/api/users/${state.userData._id}/updateDayToDayGoal`,
+                caloriesData,
+                { headers: { Authorization: `Bearer ${state.token}` } }
+              )
+              .then((response) => {
+                if (response.status === 200) {
+                  console.log("Update Day To Day response: ", response.data.msg);
+                  navigation.pop(2);
+                  navigation.replace("Nutrition");
+                }
+              })
+              .catch((err) => {
+                console.log("Add food error: ", err);
+              });
+          }
         })
         .catch((err) => {
           console.log("Add food error: ", err);

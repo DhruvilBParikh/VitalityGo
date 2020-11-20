@@ -18,7 +18,7 @@ const AddFoodModal = ({ navigation }) => {
 
   const state = useSelector((state) => state);
 
-  const mealTypes = ["Snack", "Breakfast", "Lunch", "Dinner"];
+  const mealTypes = ["Breakfast", "Lunch", "Snack", "Dinner"];
 
   const handleNavigation = () => {
     if (mealType === null || food === null) {
