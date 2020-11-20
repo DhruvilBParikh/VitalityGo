@@ -21,6 +21,7 @@ export default function Home({ navigation }) {
 
   const dispatch = useDispatch();
   const state = useSelector((state) => state);
+  // console.log("Redux state: ", state);
 
   useEffect(() => {
     const unsubscribe = navigation.addListener("focus", () => {
