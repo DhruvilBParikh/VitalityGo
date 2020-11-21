@@ -3,6 +3,7 @@ import { LineChart, YAxis, Grid } from "react-native-svg-charts";
 import { View, StyleSheet } from "react-native";
 import { Table, Rows, Row } from "react-native-table-component";
 import Colors from "../../constants/colors";
+import Toast from "react-native-toast-message";
 
 export default function ECG() {
   const [data, setData] = useState([]);
@@ -14,7 +15,9 @@ export default function ECG() {
   const [restingHR, setRestingHR] = useState(getRandomArbitrary(65, 72, 'int'))
   const [walkingHR, setWalkingHR] = useState(getRandomArbitrary(97, 104, 'int'))
   const [stressLevel, setStressLevel] = useState(getRandomArbitrary(7.1, 7.9, 'decimal'))
-  
+  const [isNotificationSent, setIsNotificationSent] = useState(false)
+  const threshold = 0.80
+
   const contentInset = { top: 20, bottom: 20 };
 
   useEffect(() => {
@@ -10022,6 +10025,7 @@ export default function ECG() {
     ];
     setData(ecgData);
     const interval = setInterval(() => {
+
       setStart((prev) => prev + skipSize);
     }, timeInterval);
 
@@ -10042,6 +10046,25 @@ export default function ECG() {
     }
 
   }, [])
+
+  useEffect(() => {
+    if(!isNotificationSent) {
+      let range = data.slice(
+        start % data.length,
+        (start % data.length) + plotSize
+      )
+      if(Math.max(...range).toFixed(2) >= threshold) {
+        //send notification
+        Toast.show({
+          text1: "Report sent",
+          text2: "Sent report to your doctor.",
+        });
+        setIsNotificationSent(true)
+      }
+    }
+      
+        
+  }, [start])
 
   function getRandomArbitrary(min, max, type) {
     return type === "decimal" ?
@@ -10064,7 +10087,7 @@ export default function ECG() {
             fontSize: 10,
           }}
           numberOfTicks={10}
-          // formatLabel={(value) => `${value}mV`}
+        // formatLabel={(value) => `${value}mV`}
         />
         <LineChart
           style={styles.lineChart}
@@ -10135,3 +10158,4 @@ const styles = StyleSheet.create({
   statsTextData: { height: 28, fontSize: 15, margin: 6, alignSelf: "center" },
   dataBackground: { backgroundColor: Colors.white }
 });
+
