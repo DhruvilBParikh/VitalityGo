@@ -7,6 +7,7 @@ import NutritionHeader from "../components/Header/NutritionHeader";
 import ECGHeader from "../components/Header/ECGHeader";
 import HydrationHeader from "../components/Header/HydrationHeader";
 import AddEmergencyHeader from "../components/Header/AddEmergencyHeader";
+import EditProfileHeader from "../components/Header/EditProfileHeader";
 
 export default {
   signUpHeaderOptions: {
@@ -73,6 +74,17 @@ export default {
       />
     ),
     headerTitle: () => <AddEmergencyHeader />,
+    headerStyle: { height: 120, backgroundColor: Colors.background },
+  },
+  editProfileHeaderOptions: {
+    headerShown: true,
+    headerBackImage: () => (
+      <Image
+        style={{ marginLeft: 10 }}
+        source={require("../assets/images/back-button.png")}
+      />
+    ),
+    headerTitle: () => <EditProfileHeader />,
     headerStyle: { height: 120, backgroundColor: Colors.background },
   },
 };

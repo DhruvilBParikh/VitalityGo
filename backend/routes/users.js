@@ -115,72 +115,63 @@ router.get("/:userId/getUserInfo", authUtils, (req, res) => {
 router.put("/:userId/editUserInfo", authUtils, (req, res) => {
   const {
     height,
-    weight,
-    bloodGroup,
-    birthDate,
-    gender,
-    city,
-    state,
-    country,
-    phoneNumber,
+    weight
   } = req.body;
   const { userId } = req.params;
   // let user = new User({height, weight, bloodGroup, birthDate, gender, city, state, country, phoneNumber })
-  User.findByIdAndUpdate(
-    userId,
+  // User.findByIdAndUpdate(
+  //   userId,
+  //   {
+  //     $set: {
+  //       gender: gender,
+  //       city: city,
+  //       state: state,
+  //       country: country,
+  //       phoneNumber: phoneNumber,
+  //     },
+  //   },
+  //   { new: true }
+  // )
+  //   .exec()
+  //   .then((response) => {
+  Patient.findOneAndUpdate(
+    { userId: userId },
     {
       $set: {
-        gender: gender,
-        city: city,
-        state: state,
-        country: country,
-        phoneNumber: phoneNumber,
+        height: height,
+        weight: weight
       },
-    },
-    { new: true }
+    }
   )
     .exec()
-    .then((response) => {
-      Patient.findOneAndUpdate(
-        { userId: response._id },
-        {
-          $set: {
-            height: height,
-            weight: weight,
-            bloodGroup: bloodGroup,
-            birthDate: birthDate,
-          },
-        }
-      )
-        .exec()
-        .then((response2) => {
-          Admin.create({
-            user: response._id,
-            activity: "User Info updated successfully in Patient and User",
-            auditedAt: new Date(),
-          })
-            .then((res) => {
-              console.log(
-                "Admin: User Info updated successfully in Patient and User"
-              );
-            })
-            .catch((err) => {
-              res.status(401).send(err.message);
-            });
-
-          const resp = {
-            msg: "User Info updated successfully",
-            data: {},
-          };
-          res.status(200).send(JSON.stringify(resp));
+    .then((response2) => {
+      Admin.create({
+        user: userId,
+        activity: "User Info updated successfully in Patient",
+        auditedAt: new Date(),
+      })
+        .then((res) => {
+          console.log(
+            "Admin: User Info updated successfully in Patient"
+          );
         })
         .catch((err) => {
           res.status(401).send(err.message);
         });
+
+      const resp = {
+        msg: "User Info updated successfully",
+        data: {},
+      };
+      res.status(200).send(JSON.stringify(resp));
     })
     .catch((err) => {
       res.status(401).send(err.message);
     });
+  // })
+  // .catch((err) => {
+  //   res.status(401).send(err.message);
+  // });
 });
 
 router.put("/:userId/editProfilePicture", authUtils, (req, res) => {
@@ -193,7 +184,7 @@ router.put("/:userId/setGoal", authUtils, (req, res) => {
 
   // let goal = new Goal({caloriesGoal, waterGoal})
   Goal.findOneAndUpdate(
-    { userId: userId },
+    { user: userId },
     {
       $set: {
         caloriesGoal: caloriesGoal,
@@ -204,26 +195,30 @@ router.put("/:userId/setGoal", authUtils, (req, res) => {
   )
     .exec()
     .then((response) => {
+      console.log("Set goal response: ", response)
       Admin.create({
-        user: response._id,
+        user: userId,
         activity: "User Goal successfully changed",
         auditedAt: new Date(),
       })
-        .then((res) => {
-          console.log("Admin: User Goal successfully changed");
+        .then((response1) => {
+          console.log("Admin: User Goal successfully changed ", response1);
+          const resp = {
+            msg: "Goal successfully changed",
+            data: response,
+          };
+
+          res.status(200).send(JSON.stringify(resp));
         })
         .catch((err) => {
+          console.log("Admin Error:: ", err)
           res.status(401).send(err.message);
         });
 
-      const resp = {
-        msg: "Goal successfully changed",
-        data: response,
-      };
 
-      res.status(200).send(JSON.stringify(resp));
     })
     .catch((err) => {
+      console.log("Goal Error:: ", err)
       res.status(401).send(err.message);
     });
 });
@@ -398,7 +393,7 @@ router.get("/:userId/getDaytoDayGoal", authUtils, (req, res) => {
     });
 });
 
-router.get("/:userId/getECG", authUtils, (req, res) => {});
+router.get("/:userId/getECG", authUtils, (req, res) => { });
 
 router.put("/:userId/addWaterGlass", authUtils, (req, res) => {
   const { noOfGlasses, onDate } = req.body;

@@ -58,9 +58,7 @@ export default function Home({ navigation }) {
 
   return (
     <View style={styles.container}>
-      {/* <ScrollView>
-        <View> */}
-      {/* Greeting */}
+
       <View style={styles.greetingContainer}>
         <Text style={styles.greetingText}>
           Greetings, {state.userData.firstName}{" "}
@@ -70,8 +68,8 @@ export default function Home({ navigation }) {
         </Text>
       </View>
 
-      {/* Nutrition */}
       <View>
+        {/* Nutrition */}
         <TouchableOpacity
           style={styles.whiteBackground}
           onPress={() => navigation.navigate("Nutrition")}
@@ -149,14 +147,10 @@ export default function Home({ navigation }) {
         </TouchableOpacity>
       </View>
 
-      <AppButton
-        title="Add Emergency Contact"
-        clickHandler={handleAddContact}
-      />
-
+      <AppButton title="Add Emergency Contact" clickHandler={handleAddContact} />
       <AppButton title="Logout" clickHandler={handleLogout} />
-      {/* </View>
-      </ScrollView> */}
+      <AppButton title="Edit Profile" clickHandler={()=>{navigation.navigate('EditProfile')}} />
+      
     </View>
   );
 }
@@ -204,4 +198,5 @@ const styles = StyleSheet.create({
   progressContainer: {
     marginTop: 10,
   },
+
 });

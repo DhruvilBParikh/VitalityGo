@@ -3,7 +3,7 @@ import Colors from "../constants/colors";
 
 const appButtonStyle = StyleSheet.create({
   container: {
-    margin: 20,
+    margin: 10,
     width: "70%",
   },
   button: {
