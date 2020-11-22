@@ -8,6 +8,7 @@ import ECGHeader from "../components/Header/ECGHeader";
 import HydrationHeader from "../components/Header/HydrationHeader";
 import AddEmergencyHeader from "../components/Header/AddEmergencyHeader";
 import EditProfileHeader from "../components/Header/EditProfileHeader";
+import NotificationHeader from "../components/Header/NotificationHeader";
 
 export default {
   signUpHeaderOptions: {
@@ -85,6 +86,17 @@ export default {
       />
     ),
     headerTitle: () => <EditProfileHeader />,
+    headerStyle: { height: 120, backgroundColor: Colors.background },
+  },
+  notificationHeaderOptions: {
+    headerShown: true,
+    headerBackImage: () => (
+      <Image
+        style={{ marginLeft: 10 }}
+        source={require("../assets/images/back-button.png")}
+      />
+    ),
+    headerTitle: () => <NotificationHeader />,
     headerStyle: { height: 120, backgroundColor: Colors.background },
   },
 };

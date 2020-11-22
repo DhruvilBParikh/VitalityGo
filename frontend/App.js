@@ -30,6 +30,7 @@ import AddEmergency from "./views/EmergencyContact/AddEmergency";
 import AddFoodNext from "./views/AddFoodNext/AddFoodNext.js";
 import Toast from "react-native-toast-message";
 import EditProfile from "./views/EditProfile/EditProfile.js";
+import Notification from "./views/Notification/Notification.js";
 
 const Stack = createStackNavigator();
 
@@ -91,6 +92,11 @@ export default function App() {
             name="EditProfile"
             component={EditProfile}
             options={Options.editProfileHeaderOptions}
+          />
+          <Stack.Screen
+            name="Notification"
+            component={Notification}
+            options={Options.notificationHeaderOptions}
           />
           {/* </>
         ) : (

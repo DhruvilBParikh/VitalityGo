@@ -559,7 +559,7 @@ router.get("/:userId/getEmergencyContacts", authUtils, (req, res) => {
 });
 
 router.put("/:userId/addDoctor", authUtils, (req, res) => {
-  const { toUser } = req.body;
+  const { toUser, description } = req.body;
   const { userId } = req.params;
 
   // Patient.findOneAndUpdate(
@@ -595,7 +595,8 @@ router.put("/:userId/addDoctor", authUtils, (req, res) => {
         .then((response3) => {
           Notification.create({
             userId: toUser,
-            title: "Add Doctor Request",
+            title: "Add Patient Request",
+            description: description,
             createdAt: new Date(),
           })
             .then((response4) => {

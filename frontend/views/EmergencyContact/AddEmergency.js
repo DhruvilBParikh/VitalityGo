@@ -19,7 +19,7 @@ import { useSelector } from "react-redux";
 
 export default function AddEmergency({ navigation }) {
   const state = useSelector((state) => state);
-  const [doctors, setDoctors] = useState([["Select Doctor", null]]);
+  const [doctors, setDoctors] = useState([]);
   const [allDoctors, setAllDoctors] = useState([]);
 
   const [currentSelection, setCurrentSelection] = useState(null);
@@ -52,27 +52,29 @@ export default function AddEmergency({ navigation }) {
   }, []);
 
   useEffect(() => {
-    let selection = [];
-    allDoctors.filter(function (array_el) {
-      return (
-        currentDoctors.filter(function (anotherOne_el) {
-          if (anotherOne_el._id !== array_el._id) {
-            let temp = [];
-            temp.push(array_el.firstName + " " + array_el.lastName);
-            temp.push(array_el._id);
-            selection.push(temp);
-          }
-          return anotherOne_el._id == array_el._id;
-        }).length == 0
-      );
-    });
+    const doctorsMap = new Map();
+    currentDoctors.map((d) => {
+      doctorsMap.set(d._id, d)
+    })
+
+    const selection = [["Select Doctor", null]];
+    allDoctors.map((d) => {
+      if (!doctorsMap.has(d._id)) {
+        const temp = [];
+        temp.push(d.firstName + " " + d.lastName);
+        temp.push(d._id);
+        selection.push(temp);
+      }
+    })
+    console.log("Doctors: ", doctors);
     console.log("Selections::: ", selection, allDoctors.length);
-    setDoctors((prev) => [...prev, ...selection]);
+    setDoctors(selection);
   }, [allDoctors, currentDoctors]);
 
   const requestDoctor = () => {
     const data = {
       toUser: currentSelection,
+      description: state.userData.firstName + " " +state.userData.lastName + " requested to add you as a doctor"
     };
     axios
       .put(
