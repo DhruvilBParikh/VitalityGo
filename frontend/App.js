@@ -32,6 +32,7 @@ import Toast from "react-native-toast-message";
 import EditProfile from "./views/EditProfile/EditProfile.js";
 import Notification from "./views/Notification/Notification.js";
 import DoctorHome from "./views/Home/DoctorHome.js";
+import PatientDeatils from "./views/PatientDetails/PatientDeatils.js";
 
 const Stack = createStackNavigator();
 
@@ -103,6 +104,11 @@ export default function App() {
             name="Notification"
             component={Notification}
             options={Options.notificationHeaderOptions}
+          />
+          <Stack.Screen
+            name="PatientDetails"
+            component={PatientDeatils}
+            options={Options.patientDetailsHeaderOptions}
           />
           {/* </>
         ) : (

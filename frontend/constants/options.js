@@ -9,6 +9,7 @@ import HydrationHeader from "../components/Header/HydrationHeader";
 import AddEmergencyHeader from "../components/Header/AddEmergencyHeader";
 import EditProfileHeader from "../components/Header/EditProfileHeader";
 import NotificationHeader from "../components/Header/NotificationHeader";
+import PatientDeatilsHeader from "../components/Header/PatientDetailsHeader";
 
 export default {
   signUpHeaderOptions: {
@@ -97,6 +98,17 @@ export default {
       />
     ),
     headerTitle: () => <NotificationHeader />,
+    headerStyle: { height: 120, backgroundColor: Colors.background },
+  },
+  patientDetailsHeaderOptions: {
+    headerShown: true,
+    headerBackImage: () => (
+      <Image
+        style={{ marginLeft: 10 }}
+        source={require("../assets/images/back-button.png")}
+      />
+    ),
+    headerTitle: () => <PatientDeatilsHeader />,
     headerStyle: { height: 120, backgroundColor: Colors.background },
   },
 };

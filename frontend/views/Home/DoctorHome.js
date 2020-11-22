@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import AppButton from "../../components/AppButton/AppButton";
 import Colors from "../../constants/colors";
 import axios from "axios";
@@ -11,7 +11,7 @@ const DoctorHome = ({ navigation }) => {
   const [patients, setPatients] = useState([]);
   const state = useSelector((state) => state);
 
-  useEffect(() => {
+  const getPatients = () => {
     console.log("Getting Patients: ");
     axios
       .get(`${config.basepath}/api/users/${state.userData._id}/getPatients`, {
@@ -24,7 +24,31 @@ const DoctorHome = ({ navigation }) => {
         }
       })
       .catch((err) => console.log("Get my patients error: ", err));
+  }
+
+  useEffect(() => {
+    getPatients();
   }, []);
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      getPatients();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
+  const openPatientDetails = patientId => {
+      navigation.navigate("PatientDetails", {
+        patientId
+      })
+  }
+
+  const handleLogout = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "GetStarted" }],
+    });
+  };
 
   return (
     <View style={styles.container}>
@@ -36,8 +60,10 @@ const DoctorHome = ({ navigation }) => {
       <View style={{ marginVertical: 15, width: '100%', padding: 20  }}>
         {patients.map((patient, i) => {
           return (
-            <View
+            <TouchableOpacity
+                activeOpacity={0.7}
               key={i}
+              onPress={()=>{openPatientDetails(patient._id)}}
               style={{
                 flexDirection: "row",
                 alignItems: "center",
@@ -59,7 +85,7 @@ const DoctorHome = ({ navigation }) => {
                   {patient.firstName} {patient.lastName}{" "}
                 </Text>
               </View>
-            </View>
+            </TouchableOpacity>
           );
         })}
       </View>
@@ -69,6 +95,7 @@ const DoctorHome = ({ navigation }) => {
           navigation.navigate("Notification");
         }}
       />
+      <AppButton title="Logout" clickHandler={handleLogout} />
     </View>
   );
 };
