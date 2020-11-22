@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { View, Text, StyleSheet, TextInput, Image } from 'react-native'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Picker } from "@react-native-community/picker";
 
 import appInputStyle from '../../constants/appInput'
@@ -9,6 +9,7 @@ import AppButton from '../../components/AppButton/AppButton';
 import ValidationMsg from '../../components/ValidationMsg/ValidationMsg';
 import axios from "axios";
 import config from "../../constants/config";
+import { editProfile } from '../../redux/action/action';
 
 const EditProfile = ({ navigation }) => {
     const state = useSelector(state => state)
@@ -19,6 +20,8 @@ const EditProfile = ({ navigation }) => {
 
     const [showCaloriesError, setShowCaloriesError] = useState(false)
     const [showWaterError, setShowWaterError] = useState(false)
+
+    const dispatch = useDispatch();
 
     const heights = [];
     for (let i = 100; i < 300; i++) {
@@ -69,7 +72,6 @@ const EditProfile = ({ navigation }) => {
                             caloriesGoal: parseInt(caloriesGoal),
                             waterGoal: parseInt(waterGoal),
                         };
-                        console.log("Goals data to be sent:::", goalsData)
                         axios
                             .put(
                                 `${config.basepath}/api/users/${state.userData._id}/setGoal`,
@@ -77,13 +79,18 @@ const EditProfile = ({ navigation }) => {
                                 { headers: { Authorization: `Bearer ${state.token}` } }
                             )
                             .then((response1) => {
-                                console.log("Set Goal Response: ", response1)
                                 if (response1.status === 200) {
                                     console.log(
                                         "Update Goal response: ",
                                         response1.data.msg
                                     );
-
+                                    const editProfileData = {
+                                        height:height,
+                                        weight:weight,
+                                        caloriesGoal: parseInt(caloriesGoal),
+                                        waterGoal: parseInt(waterGoal)
+                                    }
+                                    dispatch(editProfile(editProfileData));
                                     navigation.pop(1);
                                     navigation.replace("Home");
                                 }

@@ -1,4 +1,4 @@
-import { RESTORE_USER, SIGN_IN, SIGN_OUT } from "../action/actionTypes";
+import { RESTORE_USER, SIGN_IN, SIGN_OUT, EDIT_PROFILE } from "../action/actionTypes";
 
 const initialState = {
   isSignout: false,
@@ -40,6 +40,21 @@ const reducer = (state = initialState, action) => {
         patientData: null,
         doctorData: null,
       };
+      case EDIT_PROFILE:
+        console.log("Action type: EDIT_PROFILE");
+        return {
+          ...state,
+          patientData: {
+            ...state.patientData,
+            caloriesGoal: action.payload.caloriesGoal,
+            waterGoal: action.payload.waterGoal,
+            Data: {
+              ...state.patientData.Data,
+              height: action.payload.height,
+              weight: action.payload.weight
+            },
+          }
+        }
     default:
       return state;
   }
