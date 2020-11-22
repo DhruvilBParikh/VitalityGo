@@ -45,7 +45,8 @@ export default function ProfilePictureMale({ route, navigation }) {
           );
           navigation.reset({
             index: 0,
-            routes: [{ name: "Home" }],
+            routes: [{ name: response.data.data.userData.type === "doctor" ? 
+            "DoctorHome" : "Home" }],
           });
         }
       })

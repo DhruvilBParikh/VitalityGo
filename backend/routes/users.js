@@ -651,15 +651,13 @@ router.get("/:userId/getPatients", authUtils, (req, res) => {
   Doctor.findOne({ userId: userId })
     .populate({
       path: "patients",
-      select: ["firstName", "phoneNumber", "profilePicture"],
+      select: "firstName lastName phoneNumber profilePicture",
     })
     .exec()
     .then((response) => {
       const resp = {
         msg: "Successfully fetched",
-        data: {
-          patients: response.patients,
-        },
+        data: response.patients
       };
       res.status(200).send(JSON.stringify(resp));
     })

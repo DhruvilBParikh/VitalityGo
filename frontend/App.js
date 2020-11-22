@@ -31,6 +31,7 @@ import AddFoodNext from "./views/AddFoodNext/AddFoodNext.js";
 import Toast from "react-native-toast-message";
 import EditProfile from "./views/EditProfile/EditProfile.js";
 import Notification from "./views/Notification/Notification.js";
+import DoctorHome from "./views/Home/DoctorHome.js";
 
 const Stack = createStackNavigator();
 
@@ -64,6 +65,11 @@ export default function App() {
           <Stack.Screen
             name="Home"
             component={Home}
+            options={Options.homeHeaderOptions}
+          />
+          <Stack.Screen
+            name="DoctorHome"
+            component={DoctorHome}
             options={Options.homeHeaderOptions}
           />
           <Stack.Screen
