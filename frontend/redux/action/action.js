@@ -1,4 +1,4 @@
-import { RESTORE_USER, SIGN_IN, SIGN_OUT } from "./actionTypes";
+import { RESTORE_USER, SIGN_IN, SIGN_OUT, EDIT_PROFILE } from "./actionTypes";
 
 export const restoreUser = (userData) => {
   return {
@@ -25,3 +25,11 @@ export const signOut = () => {
     type: SIGN_OUT,
   };
 };
+
+
+export const editProfile = (data) => {
+  return {
+    type: EDIT_PROFILE,
+    payload: data
+  }
+}

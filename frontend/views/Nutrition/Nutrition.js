@@ -1,314 +1,313 @@
-import React, { useState } from "react";
-import { View, Text, StyleSheet, Button } from "react-native";
+import React, { useState, useEffect } from "react";
+import { View, Text, StyleSheet } from "react-native";
 import Colors from "../../constants/colors";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import {
   ScrollView,
-  TouchableOpacity,
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 import { Table, Rows } from "react-native-table-component";
+import AppButton from "../../components/AppButton/AppButton";
+import Food from "../../components/Food/Food";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import config from "../../constants/config";
 
 export default function Nutrition({ navigation }) {
-  const [tableData, setTableData] = useState([
-    ["Fat", "20g", "27%"],
-    ["Carb", "60g", "30%"],
-    ["Protein", "100g", "63%"],
-  ]);
+  const [totalCalories, setTotalCalories] = useState(0);
+  const [snackFood, setSnackFood] = useState([]);
+  const [breakfastFood, setBreakfastFood] = useState([]);
+  const [lunchFood, setLunchFood] = useState([]);
+  const [dinnerFood, setDinnerFood] = useState([]);
+  const [totalWeight, setTotalWeight] = useState(0);
+  const [fatPercentage, setFatPercentage] = useState(-1);
+  const [carbPercentage, setCarbPercentage] = useState(-1);
+  const [proteinPercentage, setProteinPercentage] = useState(-1);
+  const state = useSelector((state) => state);
+
+  useEffect(() => {
+    console.log("user token:", state.token);
+    axios
+      .get(
+        `${config.basepath}/api/users/${state.userData._id}/getDaytoDayGoal`,
+        { headers: { Authorization: `Bearer ${state.token}` } }
+      )
+      .then((response) => {
+        console.log(
+          "Gained calories response: ",
+          response.data.data.totalCalories
+        );
+        setTotalCalories(response.data.data.totalCalories);
+      })
+      .catch((err) => {
+        console.log("Get total calories error: ", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get(
+        `${config.basepath}/api/food/${state.userData._id}/getNutritionRecords`,
+        { headers: { Authorization: `Bearer ${state.token}` } }
+      )
+      .then((response) => {
+        if (response.status === 200) {
+          const snacksArr = [];
+          const breakfastArr = [];
+          const lunchArr = [];
+          const dinnerArr = [];
+          console.log(
+            "Gained nutrition response length: ",
+            response.data.data.length
+          );
+          console.log(response.data.data.length);
+          let totalWeight = 0;
+          response.data.data.map((d) => {
+            totalWeight += d.weight;
+            switch (d.mealType) {
+              case "Snack":
+                snacksArr.push(d);
+                break;
+              case "Breakfast":
+                breakfastArr.push(d);
+                break;
+              case "Lunch":
+                lunchArr.push(d);
+                break;
+              case "Dinner":
+                dinnerArr.push(d);
+                break;
+              default:
+                break;
+            }
+          });
+          setTotalWeight(totalWeight);
+          setSnackFood(snacksArr);
+          setBreakfastFood(breakfastArr);
+          setLunchFood(lunchArr);
+          setDinnerFood(dinnerArr);
+        }
+      })
+      .catch((err) => {
+        console.log("Get nutrition error: ", err);
+      });
+  }, []);
+
+  useEffect(() => {
+    setFatPercentage(parseInt((totalCalories / 3 / totalWeight) * 100));
+    setCarbPercentage(parseInt((totalCalories / 4 / totalWeight) * 100));
+    setProteinPercentage(parseInt((totalCalories / 2.5 / totalWeight) * 100));
+  }, [totalCalories, totalWeight]);
 
   return (
-    <ScrollView style={styles.tableContainer}>
-      {/* Calories gained */}
-      <View>
-        <Text
+    <View style={styles.container}>
+      <ScrollView>
+        {/* Calories gained */}
+        <View style={{ paddingTop: 30 }}>
+          <Text
+            style={{
+              fontSize: 30,
+              fontWeight: "bold",
+              color: Colors.text,
+              marginHorizontal: 50,
+              textAlign: "center",
+            }}
+          >
+            You gained{" "}
+            <Text style={{ color: "#7260BC" }}> {totalCalories} </Text> calories
+            today
+          </Text>
+        </View>
+
+        {/* Summary Graph */}
+        <View
           style={{
-            fontSize: 30,
-            fontWeight: "bold",
-            color: Colors.text,
-            marginHorizontal: 50,
-            textAlign: "center",
+            marginVertical: 20,
+            paddingVertical: 20,
+            marginHorizontal: 10,
+            flexDirection: "row",
+            justifyContent: "space-evenly",
+            backgroundColor: "white",
+            borderRadius: 20,
           }}
         >
-          You gained <Text style={{ color: "#7260BC" }}> 850 </Text> calories
-          today
-        </Text>
-      </View>
-
-      {/* Summary Graph */}
-      <View
-        style={{
-          marginVertical: 20,
-          paddingVertical: 20,
-          marginHorizontal: 5,
-          flexDirection: "row",
-          justifyContent: "space-evenly",
-          backgroundColor: "white",
-          borderRadius: 20,
-        }}
-      >
-        <View>
-          <AnimatedCircularProgress
-            size={140}
-            width={15}
-            fill={27}
-            rotation={0}
-            tintColor="#8378FE"
-            onAnimationComplete={() => console.log("onAnimationComplete")}
-            backgroundColor="#DAD8FB"
-            lineCap="round"
-          />
-          <AnimatedCircularProgress
-            size={100}
-            width={15}
-            fill={30}
-            rotation={0}
-            tintColor="#948BFD"
-            onAnimationComplete={() => console.log("onAnimationComplete")}
-            backgroundColor="#DAD8FB"
-            lineCap="round"
-            style={{ position: "absolute", top: 20, left: 20 }}
-          />
-          <AnimatedCircularProgress
-            size={60}
-            width={15}
-            fill={63}
-            rotation={0}
-            tintColor="#A59EFD"
-            onAnimationComplete={() => console.log("onAnimationComplete")}
-            backgroundColor="#DAD8FB"
-            lineCap="round"
-            style={{ position: "absolute", top: 40, left: 40 }}
-          />
-        </View>
-        <View style={{ justifyContent: "center" }}>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableWithoutFeedback
-              style={{
-                backgroundColor: "#8378FE",
-                width: 22,
-                height: 22,
-                borderRadius: 11,
-              }}
-            />
-            <Text style={{ color: "#8378FE", marginLeft: 10 }}>Fat 27%</Text>
+          {fatPercentage >= 0 ? (
+            <View>
+              <AnimatedCircularProgress
+                size={140}
+                width={15}
+                fill={fatPercentage}
+                rotation={0}
+                tintColor="#8378FE"
+                onAnimationComplete={() =>
+                  console.log("onAnimationComplete, fat%: ", fatPercentage)
+                }
+                backgroundColor="#DAD8FB"
+                lineCap="round"
+              />
+              <AnimatedCircularProgress
+                size={100}
+                width={15}
+                fill={carbPercentage}
+                rotation={0}
+                tintColor="#948BFD"
+                onAnimationComplete={() =>
+                  console.log("onAnimationComplete, carb%: ", carbPercentage)
+                }
+                backgroundColor="#DAD8FB"
+                lineCap="round"
+                style={{ position: "absolute", top: 20, left: 20 }}
+              />
+              <AnimatedCircularProgress
+                size={60}
+                width={15}
+                fill={proteinPercentage}
+                rotation={0}
+                tintColor="#A59EFD"
+                onAnimationComplete={() =>
+                  console.log(
+                    "onAnimationComplete, protein%: ",
+                    proteinPercentage
+                  )
+                }
+                backgroundColor="#DAD8FB"
+                lineCap="round"
+                style={{ position: "absolute", top: 40, left: 40 }}
+              />
+            </View>
+          ) : null}
+          <View style={{ justifyContent: "center" }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TouchableWithoutFeedback
+                style={{
+                  backgroundColor: "#8378FE",
+                  width: 22,
+                  height: 22,
+                  borderRadius: 11,
+                }}
+              />
+              <Text style={{ color: "#8378FE", marginLeft: 10 }}>
+                Fat {fatPercentage === -1 ? 0 : fatPercentage}%
+              </Text>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TouchableWithoutFeedback
+                style={{
+                  backgroundColor: "#948BFD",
+                  width: 22,
+                  height: 22,
+                  borderRadius: 11,
+                  marginTop: 20,
+                }}
+              />
+              <Text style={{ color: "#948BFD", marginTop: 20, marginLeft: 10 }}>
+                Carb {carbPercentage === -1 ? 0 : carbPercentage}%
+              </Text>
+            </View>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TouchableWithoutFeedback
+                style={{
+                  backgroundColor: "#A59EFD",
+                  width: 22,
+                  height: 22,
+                  borderRadius: 11,
+                  marginTop: 20,
+                }}
+              />
+              <Text style={{ color: "#A59EFD", marginTop: 20, marginLeft: 10 }}>
+                Protien {proteinPercentage === -1 ? 0 : proteinPercentage}%
+              </Text>
+            </View>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableWithoutFeedback
-              style={{
-                backgroundColor: "#948BFD",
-                width: 22,
-                height: 22,
-                borderRadius: 11,
-                marginTop: 20,
-              }}
-            />
-            <Text style={{ color: "#948BFD", marginTop: 20, marginLeft: 10 }}>
-              Carb 30%
+        </View>
+
+        <Table
+          borderStyle={{ borderColor: "#000" }}
+          style={{ justifyContent: "space-around" }}
+        >
+          <Rows
+            data={[
+              ["Fat", parseInt(totalCalories / 3) + "g", fatPercentage + "%"],
+              ["Carb", parseInt(totalCalories / 4) + "g", carbPercentage + "%"],
+              [
+                "Protein",
+                parseInt(totalCalories / 2.5) + "g",
+                proteinPercentage + "%",
+              ],
+            ]}
+            textStyle={styles.text}
+            style={{
+              borderBottomWidth: 1,
+              paddingLeft: 60,
+              borderColor: Colors.text,
+            }}
+          />
+        </Table>
+
+        {breakfastFood.length > 0 && (
+          <View style={styles.footContainer}>
+            <Text
+              style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
+            >
+              Breakfast
             </Text>
+            {/* List */}
+            {breakfastFood.map((f, index) => (
+              <Food key={index} food={f} />
+            ))}
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <TouchableWithoutFeedback
-              style={{
-                backgroundColor: "#A59EFD",
-                width: 22,
-                height: 22,
-                borderRadius: 11,
-                marginTop: 20,
-              }}
-            />
-            <Text style={{ color: "#A59EFD", marginTop: 20, marginLeft: 10 }}>
-              Protien 63%
+        )}
+
+        {lunchFood.length > 0 && (
+          <View style={styles.footContainer}>
+            <Text
+              style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
+            >
+              Lunch
             </Text>
+            {/* List */}
+            {lunchFood.map((f, index) => (
+              <Food key={index} food={f} />
+            ))}
           </View>
-        </View>
-      </View>
-      <Table
-        borderStyle={{ borderColor: "#000" }}
-        style={{ justifyContent: "space-around" }}
-      >
-        <Rows
-          data={tableData}
-          textStyle={styles.text}
-          style={{
-            borderBottomWidth: 1,
-            paddingLeft: 60,
-            borderColor: Colors.text,
-          }}
-        />
-      </Table>
+        )}
 
-      <View
-        style={{
-          backgroundColor: "white",
-          marginTop: 30,
-          padding: 15,
-          borderRadius: 20,
-          marginHorizontal: 5,
-        }}
-      >
-        <Text style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}>
-          Breakfast
-        </Text>
-        {/* List */}
-        <View
-          style={{
-            margin: 5,
-            padding: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderBottomWidth: 2,
-            borderColor: "#BBADAD",
-          }}
-        >
-          <Text style={{ color: Colors.text, fontSize: 20 }}>
-            Eggs {"\n"}
-            <Text style={{ color: "#BBADAD", fontSize: 15 }}>200 grams</Text>
-          </Text>
-          <Text
-            style={{ textAlign: "right", color: Colors.text, fontSize: 20 }}
-          >
-            100 cal
-          </Text>
-        </View>
-        <View
-          style={{
-            margin: 5,
-            padding: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderBottomWidth: 2,
-            borderColor: "#BBADAD",
-          }}
-        >
-          <Text style={{ color: Colors.text, fontSize: 20 }}>
-            Fries {"\n"}
-            <Text style={{ color: "#BBADAD", fontSize: 15 }}>100 grams</Text>
-          </Text>
-          <Text
-            style={{ textAlign: "right", color: Colors.text, fontSize: 20 }}
-          >
-            50 cal
-          </Text>
-        </View>
-      </View>
+        {snackFood.length > 0 && (
+          <View style={styles.footContainer}>
+            <Text
+              style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
+            >
+              Snacks
+            </Text>
+            {/* List */}
+            {snackFood.map((f, index) => (
+              <Food key={index} food={f} />
+            ))}
+          </View>
+        )}
 
-      <View
-        style={{
-          backgroundColor: "white",
-          marginTop: 30,
-          padding: 15,
-          borderRadius: 20,
-          marginHorizontal: 5,
-        }}
-      >
-        <Text style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}>
-          Lunch
-        </Text>
-        {/* List */}
-        <View
-          style={{
-            margin: 5,
-            padding: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderBottomWidth: 2,
-            borderColor: "#BBADAD",
-          }}
-        >
-          <Text style={{ color: Colors.text, fontSize: 20 }}>
-            Chicken {"\n"}
-            <Text style={{ color: "#BBADAD", fontSize: 15 }}>200 grams</Text>
-          </Text>
-          <Text
-            style={{ textAlign: "right", color: Colors.text, fontSize: 20 }}
-          >
-            150 cal
-          </Text>
-        </View>
-        <View
-          style={{
-            margin: 5,
-            padding: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderBottomWidth: 2,
-            borderColor: "#BBADAD",
-          }}
-        >
-          <Text style={{ color: Colors.text, fontSize: 20 }}>
-            Rice {"\n"}
-            <Text style={{ color: "#BBADAD", fontSize: 15 }}>100 grams</Text>
-          </Text>
-          <Text
-            style={{ textAlign: "right", color: Colors.text, fontSize: 20 }}
-          >
-            300 cal
-          </Text>
-        </View>
-      </View>
+        {dinnerFood.length > 0 && (
+          <View style={styles.footContainer}>
+            <Text
+              style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}
+            >
+              Dinner
+            </Text>
+            {/* List */}
+            {dinnerFood.map((f, index) => (
+              <Food key={index} food={f} />
+            ))}
+          </View>
+        )}
 
-      <View
-        style={{
-          backgroundColor: "white",
-          marginTop: 30,
-          padding: 15,
-          borderRadius: 20,
-          marginHorizontal: 5,
-        }}
-      >
-        <Text style={{ fontWeight: "bold", fontSize: 25, color: Colors.text }}>
-          Dinner
-        </Text>
-        {/* List */}
-        <View
-          style={{
-            margin: 5,
-            padding: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderBottomWidth: 2,
-            borderColor: "#BBADAD",
-          }}
-        >
-          <Text style={{ color: Colors.text, fontSize: 20 }}>
-            Chicken {"\n"}
-            <Text style={{ color: "#BBADAD", fontSize: 15 }}>200 grams</Text>
-          </Text>
-          <Text
-            style={{ textAlign: "right", color: Colors.text, fontSize: 20 }}
-          >
-            150 cal
-          </Text>
+        <View style={{ alignItems: "center" }}>
+          <AppButton
+            title="Add Food"
+            clickHandler={() => navigation.navigate("AddFood")}
+          />
         </View>
-        <View
-          style={{
-            margin: 5,
-            padding: 10,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            borderBottomWidth: 2,
-            borderColor: "#BBADAD",
-          }}
-        >
-          <Text style={{ color: Colors.text, fontSize: 20 }}>
-            Eggs {"\n"}
-            <Text style={{ color: "#BBADAD", fontSize: 15 }}>200 grams</Text>
-          </Text>
-          <Text
-            style={{ textAlign: "right", color: Colors.text, fontSize: 20 }}
-          >
-            100 cal
-          </Text>
-        </View>
-      </View>
-
-      <View style={{ marginVertical: 50, marginHorizontal: 10 }}>
-        <Button
-          title="Add Food"
-          onPress={() => navigation.navigate("AddFood")}
-        />
-      </View>
-    </ScrollView>
+      </ScrollView>
+    </View>
   );
 }
 
@@ -316,8 +315,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.background,
-    alignItems: "center",
-    paddingVertical: 20,
   },
   summaryContainer: {
     width: "100%",
@@ -332,10 +329,16 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   tableContainer: {
-    flex: 1,
     paddingTop: 30,
     backgroundColor: Colors.background,
   },
   head: { height: 40, backgroundColor: "#f1f8ff" },
   text: { margin: 10, fontSize: 18, color: Colors.text },
+  footContainer: {
+    backgroundColor: "white",
+    marginTop: 30,
+    padding: 15,
+    borderRadius: 20,
+    marginHorizontal: 10,
+  },
 });

@@ -1,111 +1,118 @@
-const express = require('express')
-const mongoose = require('../utils/mongoose-bootstrapper');
-const router = express.Router()
-const config = require('config')
-const authUtils = require('../utils/jwt-token')
-const Food = mongoose.model('Food')
-const Nutrition = mongoose.model('Nutrition')
-const Admin = mongoose.model('Admin')
-const DayToDayGoal = mongoose.model('DayToDayGoal')
+const express = require("express");
+const mongoose = require("../utils/mongoose-bootstrapper");
+const router = express.Router();
+const config = require("config");
+const authUtils = require("../utils/jwt-token");
+const Food = mongoose.model("Food");
+const Nutrition = mongoose.model("Nutrition");
+const Admin = mongoose.model("Admin");
+const DayToDayGoal = mongoose.model("DayToDayGoal");
 
+router.put("/:userId/addFoodRecord", authUtils, (req, res) => {
+  const { foodName, mealType, calories, weight } = req.body;
+  const { userId } = req.params;
 
-router.put('/:userId/addFoodRecord', authUtils, (req,res)=>{
+  Food.findOneAndUpdate(
+    { foodName: foodName },
+    {
+      $set: { foodName: foodName, defaultCalories: (calories * 100) / weight },
+    },
+    { new: true, upsert: true }
+  )
+    .exec()
+    .then((response) => {
+      Nutrition.create({
+        user: userId,
+        food: response._id,
+        mealType: mealType,
+        calories: calories,
+        weight: weight,
+        createdAt: new Date(),
+      })
+        .then((response2) => {
+          Admin.create({
+            user: userId,
+            activity: "Nutrition information added",
+            auditedAt: new Date(),
+          })
+            .then((res) => {
+              console.log("Nutrition information added");
+            })
+            .catch((err) => {
+              res.status(401).send(err.message);
+            });
 
-    const { foodName, mealType, calories, weight} = req.body
-    const { userId }= req.params
+          const resp = {
+            msg: "Successfully updated",
+            data: {},
+          };
 
-    Food.findOneAndUpdate({foodName:foodName, mealType:mealType},{ $set: {foodName: foodName, mealType: mealType, defaultCalories: calories}}, 
-        { new: true, upsert: true }).exec()
-    .then(response=>{
-        Nutrition.create({
-                    user:userId,
-                    food: response._id, 
-                    calories: calories, 
-                    weight: weight, 
-                    createdAt: new Date(), 
-                }
-        )
-        .then(response2=>{
-
-            Admin.create({
-                user:response._id,
-                activity: "Nutrition information added", 
-                auditedAt: new Date()
-                }).then(res =>{
-                    console.log("Nutrition information added")
-                }).catch(err=>{
-                    res.status(401).send(err.message)
-                })   
-
-            const resp = {
-                "msg": "Successfully updated",
-                "data": { }
-            }
-
-            res.status(200).send(JSON.stringify(resp))
-        }).catch(err=>{
-            res.status(401).send(err.message)
-        })       
-    }).catch(err=>{
-        res.status(401).send(err.message)
+          res.status(200).send(JSON.stringify(resp));
+        })
+        .catch((err) => {
+          res.status(401).send(err.message);
+        });
     })
-})
+    .catch((err) => {
+      res.status(401).send(err.message);
+    });
+});
 
+router.get("/:userId/getNutritionRecords", authUtils, (req, res) => {
+  const { userId } = req.params;
 
-router.get('/:userId/getNutritionRecords', authUtils, (req,res)=>{
-
-    const { userId }= req.params
-
-    Nutrition.find({user:userId})
-    .populate({path:'food',select: ['foodName', 'mealType']}).exec()
-    .then(response=>{
-        const resp = {
-            "msg": "Successfully fetched",
-            "data": response
-        }
-        res.status(200).send(JSON.stringify(resp))
+  Nutrition.find({
+    user: userId,
+    createdAt: { $gte: new Date().setHours(0, 0, 0, 0) },
+  })
+    .select("food calories weight mealType")
+    .populate({ path: "food", select: "foodName" })
+    .exec()
+    .then((response) => {
+      const resp = {
+        msg: "Successfully fetched",
+        data: response,
+      };
+      res.status(200).send(JSON.stringify(resp));
     })
-    .catch(err=>{
-        res.status(401).send(err.message)
-    }) 
-})
+    .catch((err) => {
+      res.status(401).send(err.message);
+    });
+});
 
-router.get('/:mealType/getFoodByType', authUtils, (req,res)=>{
-
-    const { mealType }= req.params
-
-    Food.find({mealType:mealType})
-    .then(response=>{
-        const resp = {
-            "msg": "Successfully fetched",
-            "data": response
-        }
-        res.status(200).send(JSON.stringify(resp))
+router.get("/getFood", authUtils, (req, res) => {
+  Food.find()
+    .select("foodName defaultCalories -_id")
+    .then((response) => {
+      const resp = {
+        msg: "Successfully fetched",
+        data: response,
+      };
+      res.status(200).send(JSON.stringify(resp));
     })
-    .catch(err=>{
-        res.status(401).send(err.message)
-    }) 
-})
+    .catch((err) => {
+      res.status(401).send(err.message);
+    });
+});
 
-router.get('/:userId/getBestFoodPerformance', authUtils, (req,res)=>{
+router.get("/:userId/getBestFoodPerformance", authUtils, (req, res) => {
+  const { userId } = req.params;
 
-    const { userId }= req.params
-
-    DayToDayGoal.find({user:userId})
-    .sort({totalCalories: -1})
+  DayToDayGoal.find({ user: userId })
+    .sort({ totalCalories: -1 })
     .limit(1)
-    .then(response=>{
-        const resp = {
-            "msg": "Successfully fetched",
-            "data": {
-                "totalCalories":response[0].totalCalories
-            }
-        }
-        res.status(200).send(JSON.stringify(resp))
+    .then((response) => {
+      const resp = {
+        msg: "Successfully fetched",
+        data: {
+          totalCalories: response[0].totalCalories,
+        },
+      };
+      res.status(200).send(JSON.stringify(resp));
     })
-    .catch(err=>{
-        res.status(401).send(err.message)
-    }) 
-})
+    .catch((err) => {
+      res.status(401).send(err.message);
+    });
+});
 
-module.exports = router
+module.exports = router;

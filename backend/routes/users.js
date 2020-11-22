@@ -115,72 +115,63 @@ router.get("/:userId/getUserInfo", authUtils, (req, res) => {
 router.put("/:userId/editUserInfo", authUtils, (req, res) => {
   const {
     height,
-    weight,
-    bloodGroup,
-    birthDate,
-    gender,
-    city,
-    state,
-    country,
-    phoneNumber,
+    weight
   } = req.body;
   const { userId } = req.params;
   // let user = new User({height, weight, bloodGroup, birthDate, gender, city, state, country, phoneNumber })
-  User.findByIdAndUpdate(
-    userId,
+  // User.findByIdAndUpdate(
+  //   userId,
+  //   {
+  //     $set: {
+  //       gender: gender,
+  //       city: city,
+  //       state: state,
+  //       country: country,
+  //       phoneNumber: phoneNumber,
+  //     },
+  //   },
+  //   { new: true }
+  // )
+  //   .exec()
+  //   .then((response) => {
+  Patient.findOneAndUpdate(
+    { userId: userId },
     {
       $set: {
-        gender: gender,
-        city: city,
-        state: state,
-        country: country,
-        phoneNumber: phoneNumber,
+        height: height,
+        weight: weight
       },
-    },
-    { new: true }
+    }
   )
     .exec()
-    .then((response) => {
-      Patient.findOneAndUpdate(
-        { userId: response._id },
-        {
-          $set: {
-            height: height,
-            weight: weight,
-            bloodGroup: bloodGroup,
-            birthDate: birthDate,
-          },
-        }
-      )
-        .exec()
-        .then((response2) => {
-          Admin.create({
-            user: response._id,
-            activity: "User Info updated successfully in Patient and User",
-            auditedAt: new Date(),
-          })
-            .then((res) => {
-              console.log(
-                "Admin: User Info updated successfully in Patient and User"
-              );
-            })
-            .catch((err) => {
-              res.status(401).send(err.message);
-            });
-
-          const resp = {
-            msg: "User Info updated successfully",
-            data: {},
-          };
-          res.status(200).send(JSON.stringify(resp));
+    .then((response2) => {
+      Admin.create({
+        user: userId,
+        activity: "User Info updated successfully in Patient",
+        auditedAt: new Date(),
+      })
+        .then((res) => {
+          console.log(
+            "Admin: User Info updated successfully in Patient"
+          );
         })
         .catch((err) => {
           res.status(401).send(err.message);
         });
+
+      const resp = {
+        msg: "User Info updated successfully",
+        data: {},
+      };
+      res.status(200).send(JSON.stringify(resp));
     })
     .catch((err) => {
       res.status(401).send(err.message);
     });
+  // })
+  // .catch((err) => {
+  //   res.status(401).send(err.message);
+  // });
 });
 
 router.put("/:userId/editProfilePicture", authUtils, (req, res) => {
@@ -193,7 +184,7 @@ router.put("/:userId/setGoal", authUtils, (req, res) => {
 
   // let goal = new Goal({caloriesGoal, waterGoal})
   Goal.findOneAndUpdate(
-    { userId: userId },
+    { user: userId },
     {
       $set: {
         caloriesGoal: caloriesGoal,
@@ -204,26 +195,30 @@ router.put("/:userId/setGoal", authUtils, (req, res) => {
   )
     .exec()
     .then((response) => {
+      console.log("Set goal response: ", response)
       Admin.create({
-        user: response._id,
+        user: userId,
         activity: "User Goal successfully changed",
         auditedAt: new Date(),
       })
-        .then((res) => {
-          console.log("Admin: User Goal successfully changed");
+        .then((response1) => {
+          console.log("Admin: User Goal successfully changed ", response1);
+          const resp = {
+            msg: "Goal successfully changed",
+            data: response,
+          };
+
+          res.status(200).send(JSON.stringify(resp));
         })
         .catch((err) => {
+          console.log("Admin Error:: ", err)
           res.status(401).send(err.message);
         });
 
-      const resp = {
-        msg: "Goal successfully changed",
-        data: response,
-      };
 
-      res.status(200).send(JSON.stringify(resp));
     })
     .catch((err) => {
+      console.log("Goal Error:: ", err)
       res.status(401).send(err.message);
     });
 });
@@ -284,10 +279,10 @@ router.put("/:userId/updateDaytoDayGoal", authUtils, (req, res) => {
   const { totalCalories, totalWaterGlasses } = req.body;
   const { userId } = req.params;
 
-  Goal.findOne({ userId: userId })
+  Goal.findOne({ user: userId })
     .exec()
     .then((response) => {
-      DayToDayGoal.findOne({ userId: userId })
+      DayToDayGoal.findOne({ user: userId })
         .exec()
         .then((response1) => {
           console.log("Update Day to day goal", response1);
@@ -312,7 +307,7 @@ router.put("/:userId/updateDaytoDayGoal", authUtils, (req, res) => {
             .exec()
             .then((response2) => {
               Admin.create({
-                user: response._id,
+                user: userId,
                 activity: "User DayToDayGoal successfully updated",
                 auditedAt: new Date(),
               })
@@ -344,16 +339,19 @@ router.put("/:userId/updateDaytoDayGoal", authUtils, (req, res) => {
 });
 
 router.get("/:userId/getDaytoDayGoal", authUtils, (req, res) => {
-  const { onDate } = req.body;
+  // const { onDate } = req.body;
+  console.log("Getting Day to day goal");
   const { userId } = req.params;
-
-  DayToDayGoal.findOne({ userId: userId, onDate: { $gte: new Date(onDate) } })
+  DayToDayGoal.findOne({
+    user: userId,
+    onDate: { $gte: new Date().setHours(0, 0, 0, 0) },
+  })
     .exec()
     .then((response) => {
-      //console.log("getDaytoDayGoal", response)
-      if (response.length === 0) {
+      // console.log("getDaytoDayGoal", response)
+      if (!response) {
         let dayToDayGoal = new DayToDayGoal({
-          userId: userId,
+          user: userId,
           caloriesGoalReached: Boolean(false),
           waterGoalReached: Boolean(false),
           totalCalories: 0,
@@ -395,7 +393,7 @@ router.get("/:userId/getDaytoDayGoal", authUtils, (req, res) => {
     });
 });
 
-router.get("/:userId/getECG", authUtils, (req, res) => {});
+router.get("/:userId/getECG", authUtils, (req, res) => { });
 
 router.put("/:userId/addWaterGlass", authUtils, (req, res) => {
   const { noOfGlasses, onDate } = req.body;
@@ -531,12 +529,15 @@ router.put("/:userId/addEmergencyContact", authUtils, (req, res) => {
 });
 
 
-router.get('/:userId/getEmergencyContacts', authUtils, (req,res)=>{
-    
-    const {userId}= req.params
 
-    Patient.findOne({userId: userId})
-    .populate({path:'emergencyContacts', select: ['firstName', 'phoneNumber', 'profilePicture']})
+router.get("/:userId/getEmergencyContacts", authUtils, (req, res) => {
+  const { userId } = req.params;
+
+  Patient.findOne({ userId: userId })
+    .populate({
+      path: "emergencyContacts",
+      select: ["firstName", "phoneNumber", "profilePicture"],
+    })
     .exec()
     .then((response) => {
       const resp = {
@@ -551,66 +552,65 @@ router.get('/:userId/getEmergencyContacts', authUtils, (req,res)=>{
 });
 
 router.put("/:userId/addDoctor", authUtils, (req, res) => {
-  const { toUser } = req.body;
+  const { toUser, description } = req.body;
   const { userId } = req.params;
 
-  Patient.findOneAndUpdate(
-    { userId: userId },
-    {
-      $push: {
-        doctors: toUser,
-      },
-    },
-    { new: true }
-  )
-    .exec()
-    .then((response2) => {
-      Doctor.findOneAndUpdate(
-        { userId: toUser },
-        {
-          $push: {
-            patients: userId,
-          },
-        },
-        { new: true }
-      )
-        .exec()
-        .then((response5) => {
-          Request.create({
-            fromUser: userId,
-            toUser: toUser,
-            status: "pending",
-            updatedAt: new Date(),
+  // Patient.findOneAndUpdate(
+  //   { userId: userId },
+  //   {
+  //     $push: {
+  //       doctors: toUser,
+  //     },
+  //   },
+  //   { new: true }
+  // )
+  //   .exec()
+  //   .then((response2) => {
+  //     Doctor.findOneAndUpdate(
+  //       { userId: toUser },
+  //       {
+  //         $push: {
+  //           patients: userId,
+  //         },
+  //       },
+  //       { new: true }
+  //     )
+  //       .exec()
+  //       .then((response5) => {
+  Request.findOne({ fromUser: userId, toUser: toUser }).then((response) => {
+    if (!response) {
+      Request.create({
+        fromUser: userId,
+        toUser: toUser,
+        status: "pending",
+        updatedAt: new Date(),
+      })
+        .then((response3) => {
+          Notification.create({
+            userId: toUser,
+            title: "Add Patient Request",
+            description: description,
+            createdAt: new Date(),
           })
-            .then((response3) => {
-              Notification.create({
-                userId: toUser,
-                title: "Add Doctor Request",
-                createdAt: new Date(),
+            .then((response4) => {
+              Admin.create({
+                user: userId,
+                activity: "User requested the doctor",
+                auditedAt: new Date(),
               })
-                .then((response4) => {
-                  Admin.create({
-                    user: userId,
-                    activity: "User added doctor",
-                    auditedAt: new Date(),
-                  })
-                    .then((res) => {
-                      console.log("Admin: User details successfully updated");
-                    })
-                    .catch((err) => {
-                      res.status(401).send(err.message);
-                    });
-
-                  const resp = {
-                    msg: "Successfully requested",
-                    data: {},
-                  };
-
-                  res.status(200).send(JSON.stringify(resp));
+                .then((res) => {
+                  console.log("Admin: User details successfully updated");
                 })
                 .catch((err) => {
                   res.status(401).send(err.message);
                 });
+
+              const resp = {
+                msg: "You requested the doctor successfully.",
+                data: {},
+              };
+
+              res.status(200).send(JSON.stringify(resp));
             })
             .catch((err) => {
               res.status(401).send(err.message);
@@ -619,66 +619,85 @@ router.put("/:userId/addDoctor", authUtils, (req, res) => {
         .catch((err) => {
           res.status(401).send(err.message);
         });
+    } else {
+      const resp = {
+        msg: "You already requested the doctor.",
+        data: {},
+      };
+
+      res.status(200).send(JSON.stringify(resp));
+    }
+  });
+  // })
+  //     .catch((err) => {
+  //       res.status(401).send(err.message);
+  //     });
+  // })
+  // .catch((err) => {
+  //   res.status(401).send(err.message);
+  // });
+});
+
+router.get("/:userId/getPatients", authUtils, (req, res) => {
+  const { userId } = req.params;
+
+  Doctor.findOne({ userId: userId })
+    .populate({
+      path: "patients",
+      select: ["firstName", "phoneNumber", "profilePicture"],
+    })
+    .exec()
+    .then((response) => {
+      const resp = {
+        msg: "Successfully fetched",
+        data: {
+          patients: response.patients,
+        },
+      };
+      res.status(200).send(JSON.stringify(resp));
     })
     .catch((err) => {
       res.status(401).send(err.message);
     });
 });
 
-router.get('/:userId/getPatients', authUtils, (req,res)=>{
-    
-    const {userId}= req.params
+router.get("/:userId/getDoctors", authUtils, (req, res) => {
+  const { userId } = req.params;
 
-    Doctor.findOne({userId: userId})
-    .populate({path:'patients', select: ['firstName', 'phoneNumber', 'profilePicture']})
+  Patient.findOne({ userId: userId })
+    .populate({
+      path: "doctors",
+      select: "firstName lastName phoneNumber profilePicture",
+    })
     .exec()
-        .then(response=>{
-            const resp = {
-                "msg": "Successfully fetched",
-                "data": {
-                    "patients":response.patients
-                }
-                }    
-            res.status(200).send(JSON.stringify(resp))
-        }).catch(err=>{
-            res.status(401).send(err.message)
-   })   
-})
+    .then((response) => {
+      const resp = {
+        msg: "Successfully fetched",
+        data: response.doctors,
+      };
+      res.status(200).send(JSON.stringify(resp));
+    })
+    .catch((err) => {
+      res.status(401).send(err.message);
+    });
+});
 
-router.get('/:userId/getDoctors', authUtils, (req,res)=>{
-    
-    const {userId}= req.params
-
-    Patient.findOne({userId: userId})
-    .populate({path:'doctors', select: ['firstName', 'phoneNumber', 'profilePicture']})
+router.get("/getAllDoctors", authUtils, (req, res) => {
+  console.log("all docs");
+  User.find({ type: "doctor" })
+    .select("_id firstName lastName phoneNumber profilePicture")
     .exec()
-        .then(response=>{
-            const resp = {
-                "msg": "Successfully fetched",
-                "data": {
-                    "doctors":response.doctors}
-                }    
-            res.status(200).send(JSON.stringify(resp))
-        }).catch(err=>{
-            res.status(401).send(err.message)
-   })   
-})
-
-router.get('/:userId/getAllDoctors', authUtils, (req,res)=>{
-    
-    Doctor.find()
-    .populate({path:'userId'})
-    .exec()
-        .then(response=>{
-            const resp = {
-                "msg": "Successfully fetched",
-                "data": {response}
-                }    
-            res.status(200).send(JSON.stringify(resp))
-        }).catch(err=>{
-            res.status(401).send(err.message)
-   })   
-})
+    .then((response) => {
+      const resp = {
+        msg: "Successfully fetched",
+        data: response,
+      };
+      res.status(200).send(JSON.stringify(resp));
+    })
+    .catch((err) => {
+      res.status(401).send(err.message);
+    });
+});
 
 router.get("/:userId/getWaterPerformance", authUtils, (req, res) => {
   const { userId } = req.params;
@@ -710,4 +729,3 @@ router.get("/:userId/getWaterPerformance", authUtils, (req, res) => {
 });
 
 module.exports = router;
-

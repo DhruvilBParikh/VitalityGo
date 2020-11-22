@@ -36,6 +36,7 @@ router.post("/signup", async (req, res) => {
                   totalWaterGlasses: 0,
                   caloriesGoalReached: Boolean(false),
                   waterGoalReached: Boolean(false),
+                  onDate: new Date()
                 })
                   .then((response4) => {
                     ECG.create({ user: response._id, rate: 0 })

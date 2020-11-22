@@ -25,7 +25,12 @@ import Nutrition from "./views/Nutrition/Nutrition";
 import Water from "./views/Water/Water";
 import ECG from "./views/ECG/ECG";
 import ContactInfo from "./views/SignUp/ContactInfo";
-import AddFoodModal from "./components/AddFoodModal/AddFoodModal";
+import AddFoodModal from "./views/AddFoodModal/AddFoodModal";
+import AddEmergency from "./views/EmergencyContact/AddEmergency";
+import AddFoodNext from "./views/AddFoodNext/AddFoodNext.js";
+import Toast from "react-native-toast-message";
+import EditProfile from "./views/EditProfile/EditProfile.js";
+import Notification from "./views/Notification/Notification.js";
 
 const Stack = createStackNavigator();
 
@@ -48,74 +53,100 @@ export default function App() {
   // }, []);
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {/* {state.userData !== null ? (
+    <>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="GetStarted"
+          screenOptions={{ headerShown: false }}
+        >
+          {/* {state.userData !== null ? (
           <> */}
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={Options.homeHeaderOptions}
-        />
-        <Stack.Screen
-          name="Nutrition"
-          component={Nutrition}
-          options={Options.nutritionHeaderOptions}
-        />
-        <Stack.Screen name="AddFood" component={AddFoodModal} />
-        <Stack.Screen name="Water" component={Water} />
-        <Stack.Screen
-          name="ECG"
-          component={ECG}
-          options={Options.ecgHeaderOptions}
-        />
-        {/* </>
+          <Stack.Screen
+            name="Home"
+            component={Home}
+            options={Options.homeHeaderOptions}
+          />
+          <Stack.Screen
+            name="Nutrition"
+            component={Nutrition}
+            options={Options.nutritionHeaderOptions}
+          />
+          <Stack.Screen name="AddFood" component={AddFoodModal} />
+          <Stack.Screen name="AddFoodNext" component={AddFoodNext} />
+          <Stack.Screen
+            name="Water"
+            component={Water}
+            options={Options.hydrationHeaderOptions}
+          />
+          <Stack.Screen
+            name="ECG"
+            component={ECG}
+            options={Options.ecgHeaderOptions}
+          />
+          <Stack.Screen
+            name="AddEmergency"
+            component={AddEmergency}
+            options={Options.addEmergencyHeaderOptions}
+          />
+          <Stack.Screen
+            name="EditProfile"
+            component={EditProfile}
+            options={Options.editProfileHeaderOptions}
+          />
+          <Stack.Screen
+            name="Notification"
+            component={Notification}
+            options={Options.notificationHeaderOptions}
+          />
+          {/* </>
         ) : (
           <> */}
-        <Stack.Screen name="GetStarted" component={GetStarted} />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={Options.signUpHeaderOptions}
-        />
-        <Stack.Screen
-          name="UserType"
-          component={UserType}
-          options={Options.signUpHeaderOptions}
-        />
-        <Stack.Screen
-          name="Credential"
-          component={Credential}
-          options={Options.signUpHeaderOptions}
-        />
-        <Stack.Screen
-          name="ContactInfo"
-          component={ContactInfo}
-          options={Options.signUpHeaderOptions}
-        />
-        <Stack.Screen
-          name="PersonalInformation"
-          component={PersonalInformation}
-          options={Options.signUpHeaderOptions}
-        />
-        <Stack.Screen
-          name="Gender"
-          component={Gender}
-          options={Options.signUpHeaderOptions}
-        />
-        <Stack.Screen
-          name="ProfilePictureMale"
-          component={ProfilePictureMale}
-          options={Options.signUpHeaderOptions}
-        />
-        <Stack.Screen
-          name="ProfilePictureFemale"
-          component={ProfilePictureFemale}
-          options={Options.signUpHeaderOptions}
-        />
-        {/* </>
+          <Stack.Screen name="GetStarted" component={GetStarted} />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={Options.signUpHeaderOptions}
+          />
+          <Stack.Screen
+            name="UserType"
+            component={UserType}
+            options={Options.signUpHeaderOptions}
+          />
+          <Stack.Screen
+            name="Credential"
+            component={Credential}
+            options={Options.signUpHeaderOptions}
+          />
+          <Stack.Screen
+            name="ContactInfo"
+            component={ContactInfo}
+            options={Options.signUpHeaderOptions}
+          />
+          <Stack.Screen
+            name="PersonalInformation"
+            component={PersonalInformation}
+            options={Options.signUpHeaderOptions}
+          />
+          <Stack.Screen
+            name="Gender"
+            component={Gender}
+            options={Options.signUpHeaderOptions}
+          />
+          <Stack.Screen
+            name="ProfilePictureMale"
+            component={ProfilePictureMale}
+            options={Options.signUpHeaderOptions}
+          />
+          <Stack.Screen
+            name="ProfilePictureFemale"
+            component={ProfilePictureFemale}
+            options={Options.signUpHeaderOptions}
+          />
+          {/* </>
         )} */}
-      </Stack.Navigator>
-    </NavigationContainer>
+        </Stack.Navigator>
+      </NavigationContainer>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
+    </>
   );
 }

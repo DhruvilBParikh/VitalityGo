@@ -1,16 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 
-export default function NutritionHeader() {
+export default function NotificationHeader() {
   return (
     <View style={styles.container}>
       <View />
       <View>
-        <Text style={styles.title}>Nutrition</Text>
-      </View>
-      {/* <TouchableOpacity activeOpacity={0.7}>
-        <Image source={require("../../assets/images/add-button.png")} />
-      </TouchableOpacity> */}
+        <Text style={styles.title}>Notifications</Text>
+      </View>   
     </View>
   );
 }
