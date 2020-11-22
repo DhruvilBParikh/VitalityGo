@@ -530,16 +530,6 @@ router.put("/:userId/addEmergencyContact", authUtils, (req, res) => {
     });
 });
 
-router.get("/:userId/getEmergencyContacts", authUtils, (req, res) => {
-  const { userId } = req.params;
-
-  Patient.findOne({ user: userId })
-    .populate({
-      path: "emergencyContacts",
-      select: ["firstName", "phoneNumber", "profilePicture"],
-    })
-})
-
 
 router.get('/:userId/getEmergencyContacts', authUtils, (req,res)=>{
     

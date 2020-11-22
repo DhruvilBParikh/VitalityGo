@@ -4,7 +4,6 @@ const authUtils = require('../utils/jwt-token')
 const jwt = require('jsonwebtoken')
 const router = express.Router()
 const User = mongoose.model('User')
-const authUtils = require('../utils/jwt-token')
 const Notification = mongoose.model('Notification')
 const Request = mongoose.model('Request')
 const config = require('config')
@@ -98,6 +97,25 @@ router.post('/sendNotification', authUtils, (req,res)=>{
     }).catch(err=>{
         res.status(401).send(err.message)
     })
+})
+
+router.get('/:userId/getPendingRequests', authUtils, (req,res)=>{
+
+    const { userId }= req.params
+
+    Request.find({toUser:userId, status:'pending'})
+    .populate({path:'toUser', select:['firstName', 'phoneNumber', 'profilePicture']})
+    .exec()
+    .then(response=>{
+        const resp = {
+            "msg": "",
+            "data": response
+        }
+        res.status(200).send(JSON.stringify(resp))
+    })
+    .catch(err=>{
+        res.status(401).send(err.message)
+    }) 
 })
 
 module.exports = router
