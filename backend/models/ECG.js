@@ -8,7 +8,7 @@ mongoose.set('useCreateIndex', true);
 var ECGSchema = mongooseBootstrapper({
 
     user: {type: ObjectId, ref:'User'},
-    timestamp: { type: Date },
+    ecg: [{type: Number}],
     rate: {type: Number}
 
 });

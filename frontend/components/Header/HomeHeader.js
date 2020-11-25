@@ -1,7 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
+import { useSelector } from "react-redux";
+import profileImage from "../../constants/profileImage"; 
 
 export default function HomeHeader() {
+  const state = useSelector(state => state)
   return (
     <View
       style={{
@@ -24,7 +27,7 @@ export default function HomeHeader() {
       <TouchableOpacity activeOpacity={0.7}>
         <Image
           style={{ width: 50, height: 50 }}
-          source={require("../../assets/images/male-avatar-1.png")}
+          source={profileImage[state.userData.profilePicture]}
         />
       </TouchableOpacity>
     </View>

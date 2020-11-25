@@ -361,7 +361,7 @@ router.put("/:userId/updateDaytoDayGoal", authUtils, (req, res) => {
   Goal.findOne({ user: userId })
     .exec()
     .then((response) => {
-      DayToDayGoal.findOne({ user: userId })
+      DayToDayGoal.findOne({ user: userId, onDate: {$gt: new Date().setHours(0,0,0,0)} })
         .exec()
         .then((response1) => {
           console.log("Update Day to day goal", response1);
@@ -663,7 +663,7 @@ router.put("/:userId/addDoctor", authUtils, (req, res) => {
   //     )
   //       .exec()
   //       .then((response5) => {
-  Request.findOne({ fromUser: userId, toUser: toUser }).then((response) => {
+  Request.findOne({ fromUser: userId, toUser: toUser, status:'pending' }).then((response) => {
     if (!response) {
       Request.create({
         fromUser: userId,
@@ -687,7 +687,7 @@ router.put("/:userId/addDoctor", authUtils, (req, res) => {
                 activity: "User requested the doctor",
                 auditedAt: new Date(),
               })
-                .then((res) => {
+                .then((response5) => {
                   console.log("Admin: User details successfully updated");
                   const resp = {
                     msg: "You requested the doctor successfully.",

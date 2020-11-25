@@ -54,8 +54,8 @@ export default function AddEmergency({ navigation }) {
   useEffect(() => {
     const doctorsMap = new Map();
     currentDoctors.map((d) => {
-      doctorsMap.set(d._id, d)
-    })
+      doctorsMap.set(d._id, d);
+    });
 
     const selection = [["Select Doctor", null]];
     allDoctors.map((d) => {
@@ -65,7 +65,7 @@ export default function AddEmergency({ navigation }) {
         temp.push(d._id);
         selection.push(temp);
       }
-    })
+    });
     console.log("Doctors: ", doctors);
     console.log("Selections::: ", selection, allDoctors.length);
     setDoctors(selection);
@@ -74,7 +74,11 @@ export default function AddEmergency({ navigation }) {
   const requestDoctor = () => {
     const data = {
       toUser: currentSelection,
-      description: state.userData.firstName + " " +state.userData.lastName + " requested to add you as a doctor"
+      description:
+        state.userData.firstName +
+        " " +
+        state.userData.lastName +
+        " requested to add you as a doctor",
     };
     axios
       .put(
@@ -142,17 +146,25 @@ export default function AddEmergency({ navigation }) {
                   padding: 10,
                 }}
               >
-                <View style={{ marginRight: 20, marginLeft: 20 }}>
+                <View style={{ marginRight: 20, marginLeft: 20, width: "15%" }}>
                   <Image
-                    style={{ width: 40, height: 40 }}
+                    style={{ width: 45, height: 45 }}
                     source={profileImage[doctor.profilePicture]}
                   />
                 </View>
-                <View style={{}}>
+                <View style={{ width: "85%" }}>
                   <Text style={{ fontSize: 17 }}>
                     {" "}
                     Dr. {doctor.firstName} {doctor.lastName}{" "}
                   </Text>
+                  <View style={{ flexDirection: "row", marginTop:5 }}>
+                    <Image
+
+                      source={require("../../assets/images/phone.png")}
+                      style={[appInputStyle.image,{width: 20, height:20, tintColor:'rgba(150,150,150,1)'}]}
+                    />
+                    <Text> {doctor.phoneNumber} </Text>
+                  </View>
                 </View>
               </View>
             );

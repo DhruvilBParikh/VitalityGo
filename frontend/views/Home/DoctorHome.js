@@ -39,7 +39,8 @@ const DoctorHome = ({ navigation }) => {
 
   const openPatientDetails = patientId => {
       navigation.navigate("PatientDetails", {
-        patientId
+        patientId,
+        data: []
       })
   }
 
@@ -89,13 +90,15 @@ const DoctorHome = ({ navigation }) => {
           );
         })}
       </View>
-      <AppButton
-        title="Notifications"
-        clickHandler={() => {
-          navigation.navigate("Notification");
-        }}
-      />
-      <AppButton title="Logout" clickHandler={handleLogout} />
+
+      <View style={styles.bottomNavigation}>
+        <TouchableOpacity style={styles.navTouchable} activeOpacity={0.7} onPress={() => navigation.navigate("Notification")}>
+          <Image style={styles.navigationImage} source={require('../../assets/images/notification.png')}/>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navTouchable} activeOpacity={0.7} onPress={handleLogout}>
+          <Image style={styles.navigationImage} source={require('../../assets/images/logout.png')}/>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -108,4 +111,22 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.background,
     alignItems: "center",
   },
+  bottomNavigation: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    position:'absolute',
+    bottom:0,
+    width:'100%',
+    paddingVertical:10,
+    elevation: 2,
+    backgroundColor: Colors.white
+  },
+  navigationImage: {
+    width:25,
+    height:25,
+    tintColor: Colors.accent
+  },
+  navTouchable: {
+    margin:15
+  }
 });

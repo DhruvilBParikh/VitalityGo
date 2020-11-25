@@ -4,7 +4,13 @@ import Colors from "../../constants/colors";
 import axios from "axios";
 import config from "../../constants/config";
 import { useSelector } from "react-redux";
-import { StackedBarChart, XAxis, YAxis } from "react-native-svg-charts";
+import {
+  Grid,
+  LineChart,
+  StackedBarChart,
+  XAxis,
+  YAxis,
+} from "react-native-svg-charts";
 import * as scale from "d3-scale";
 
 const PatientDeatils = ({ route, navigation }) => {
@@ -23,45 +29,6 @@ const PatientDeatils = ({ route, navigation }) => {
   weekday[4] = "Fri";
   weekday[5] = "Sat";
   weekday[6] = "Sun";
-  const data = [
-    {
-      month: new Date(2015, 0, 1)
-        .getDay()
-        .toLocaleString("en-us", { weekday: "long" }),
-      calories: 3840,
-      goal: 160,
-    },
-    {
-      month: new Date(2015, 1, 1).getDay(),
-      calories: 1600,
-      goal: 2400,
-    },
-    {
-      month: new Date(2015, 2, 1).getDay(),
-      calories: 460,
-      goal: 3540,
-    },
-    {
-      month: new Date(2015, 3, 1).getDay(),
-      calories: 3320,
-      goal: 680,
-    },
-    {
-      month: new Date(2015, 1, 1).getDay(),
-      calories: 1600,
-      goal: 2400,
-    },
-    {
-      month: new Date(2015, 2, 1).getDay(),
-      calories: 460,
-      goal: 3540,
-    },
-    {
-      month: new Date(2015, 3, 1).getDay(),
-      calories: 3320,
-      goal: 680,
-    },
-  ];
 
   const colors = ["#5a189a", "#e0aaff"];
   const waterColors = ["#0077b6", "#caf0f8"];
@@ -108,7 +75,7 @@ const PatientDeatils = ({ route, navigation }) => {
   console.log("Calories d t d: ", caloriesDayToDay);
   console.log("Water d t d: ", waterDayToDay);
   return (
-    <ScrollView>
+    <ScrollView contentContainerStyle={{flexGrow: 1}}>
       <View style={styles.container}>
         {/* Patient Info */}
         {patientInfo && (
@@ -175,68 +142,97 @@ const PatientDeatils = ({ route, navigation }) => {
           </View>
         )}
 
-        <View style={styles.card}>
-          <Text style={styles.title}>This Week Calories Gained</Text>
-          <View style={{ flexDirection: "row" }}>
-            <YAxis
-              style={{ width: "10%" }}
-              numberOfTicks={5}
-              data={[0, goal.caloriesGoal]}
-              contentInset={{ top: 35, bottom: 35 }}
-              svg={{ fontSize: 10, fill: "black" }}
-            />
-            <StackedBarChart
-              gridMax={goal.caloriesGoal}
-              gridMin={0}
-              style={{ height: 250, width: "90%" }}
-              keys={keys}
-              colors={colors}
-              data={caloriesDayToDay}
-              showGrid={false}
-              contentInset={{ top: 30, bottom: 30 }}
-            />
+        {route.params.data.length === 0 ? (
+          <>
+            <View style={styles.card}>
+              <Text style={styles.title}>This Week Calories Gained</Text>
+              <View style={{ flexDirection: "row" }}>
+                <YAxis
+                  style={{ width: "10%" }}
+                  numberOfTicks={5}
+                  data={[0, goal.caloriesGoal]}
+                  contentInset={{ top: 35, bottom: 35 }}
+                  svg={{ fontSize: 10, fill: "black" }}
+                />
+                <StackedBarChart
+                  gridMax={goal.caloriesGoal}
+                  gridMin={0}
+                  style={{ height: 250, width: "90%" }}
+                  keys={keys}
+                  colors={colors}
+                  data={caloriesDayToDay}
+                  showGrid={false}
+                  contentInset={{ top: 30, bottom: 30 }}
+                />
+              </View>
+
+              <XAxis
+                style={styles.xAxis}
+                data={caloriesDayToDay}
+                formatLabel={(value, index) =>
+                  weekday[caloriesDayToDay[value].day]
+                }
+                contentInset={{ left: 60, right: 20 }}
+                svg={{ fontSize: 10, fill: "black" }}
+              />
+            </View>
+
+            <View style={styles.card}>
+              <Text style={styles.title}>This Week Water Consumption</Text>
+              <View style={{ flexDirection: "row" }}>
+                <YAxis
+                  style={{ width: "10%" }}
+                  data={[0, goal.waterGoal]}
+                  numberOfTicks={4}
+                  contentInset={{ top: 35, bottom: 35 }}
+                  svg={{ fontSize: 10, fill: "black" }}
+                />
+                <StackedBarChart
+                  gridMax={goal.waterGoal}
+                  gridMin={0}
+                  style={{ height: 250, width: "90%" }}
+                  keys={waterKeys}
+                  colors={waterColors}
+                  data={waterDayToDay}
+                  showGrid={false}
+                  contentInset={{ top: 30, bottom: 30 }}
+                />
+              </View>
+
+              <XAxis
+                style={styles.xAxis}
+                data={waterDayToDay}
+                formatLabel={(value, index) =>
+                  weekday[waterDayToDay[value].day]
+                }
+                contentInset={{ left: 60, right: 20 }}
+                svg={{ fontSize: 10, fill: "black" }}
+              />
+            </View>
+          </>
+        ) : (
+          <View style={styles.card}>
+            <View style={styles.chartView}>
+              <YAxis
+                data={route.params.data}
+                contentInset={{ top: 20, bottom: 20 }}
+                svg={{
+                  fill: "grey",
+                  fontSize: 10,
+                }}
+                numberOfTicks={10}
+              />
+              <LineChart
+                style={styles.lineChart}
+                data={route.params.data}
+                svg={{ stroke: "rgb(134, 65, 244)" }}
+                contentInset={{ top: 20, bottom: 20 }}
+              >
+                <Grid />
+              </LineChart>
+            </View>
           </View>
-
-          <XAxis
-            style={styles.xAxis}
-            data={caloriesDayToDay}
-            formatLabel={(value, index) => weekday[caloriesDayToDay[value].day]}
-            contentInset={{ left: 60, right: 20 }}
-            svg={{ fontSize: 10, fill: "black" }}
-          />
-        </View>
-
-        <View style={styles.card}>
-          <Text style={styles.title}>This Week Water Consumption</Text>
-          <View style={{ flexDirection: "row" }}>
-            <YAxis
-              style={{ width: "10%" }}
-              data={[0, goal.waterGoal]}
-              numberOfTicks={4}
-              contentInset={{ top: 35, bottom: 35 }}
-              svg={{ fontSize: 10, fill: "black" }}
-            />
-            <StackedBarChart
-              gridMax={goal.waterGoal}
-              gridMin={0}
-              style={{ height: 250, width: "90%" }}
-              keys={waterKeys}
-              colors={waterColors}
-              data={waterDayToDay}
-              showGrid={false}
-              contentInset={{ top: 30, bottom: 30 }}
-            />
-          </View>
-
-          <XAxis
-            style={styles.xAxis}
-            data={waterDayToDay}
-            formatLabel={(value, index) => weekday[waterDayToDay[value].day]}
-            contentInset={{ left: 60, right: 20 }}
-            svg={{ fontSize: 10, fill: "black" }}
-          />
-        </View>
- 
+        )}
       </View>
     </ScrollView>
   );
@@ -287,5 +283,15 @@ const styles = StyleSheet.create({
   },
   xAxis: {
     marginTop: -15,
+  },
+  chartView: {
+    height: 300,
+    flexDirection: "row",
+    backgroundColor: "white",
+  },
+  lineChart: {
+    flex: 1,
+    marginLeft: 5,
+    marginRight: 5,
   },
 });

@@ -13,7 +13,8 @@ var NotificationSchema = mongooseBootstrapper({
     description: { type: String },
     responded: {type: Boolean},
     createdAt: { type: Date },
-    seenAt: { type: Date }
+    seenAt: { type: Date },
+    data: [{type: Number}]
 
 });
 

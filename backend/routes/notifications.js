@@ -14,9 +14,11 @@ const Admin = mongoose.model("Admin");
 router.get("/:userId/getNotifications", authUtils, (req, res) => {
   const { userId } = req.params;
 
-  Notification.find({ userId: userId, responded: false }).populate({
-    path: "fromUser"
-  })
+  Notification.find({ userId: userId, responded: false })
+    .populate({
+      path: "fromUser",
+    })
+    .sort([["createdAt", -1]])
     .exec()
     .then((response) => {
       const resp = {
@@ -44,6 +46,7 @@ router.put("/:notificationId/updateNotification", authUtils, (req, res) => {
   )
     .exec()
     .then((response) => {
+      console.log("Notification checked:", response);
       const resp = {
         msg: "Responded successfully changed",
         data: {},
@@ -55,7 +58,6 @@ router.put("/:notificationId/updateNotification", authUtils, (req, res) => {
       res.status(401).send(err.message);
     });
 });
-
 
 router.put("/:userId/respondStatus", authUtils, (req, res) => {
   const { toUser, status, description } = req.body;
@@ -72,10 +74,12 @@ router.put("/:userId/respondStatus", authUtils, (req, res) => {
   )
     .exec()
     .then((response2) => {
-
       Notification.create({
         title: "Request " + status,
-        desctiption: description,
+        description: description,
+        fromUser: userId,
+        userId: toUser,
+        responded: false,
         createdAt: new Date(),
       })
         .then((response4) => {
@@ -85,11 +89,17 @@ router.put("/:userId/respondStatus", authUtils, (req, res) => {
             auditedAt: new Date(),
           })
             .then((response5) => {
-              if (status === 'approved') {
-                Doctor.findOneAndUpdate({ userId: userId }, { $push: { patients: toUser } })
-                  .then(response6 => {
-                    Patient.findOneAndUpdate({ userId: toUser }, { $push: { doctors: userId } })
-                      .then(response7 => {
+              if (status === "approved") {
+                Doctor.findOneAndUpdate(
+                  { userId: userId },
+                  { $push: { patients: toUser } }
+                )
+                  .then((response6) => {
+                    Patient.findOneAndUpdate(
+                      { userId: toUser },
+                      { $push: { doctors: userId } }
+                    )
+                      .then((response7) => {
                         console.log("Admin: User changed the status");
                         const resp = {
                           msg: "Status successfully changed",
@@ -98,15 +108,21 @@ router.put("/:userId/respondStatus", authUtils, (req, res) => {
 
                         res.status(200).send(JSON.stringify(resp));
                       })
-                      .catch(err => {
+                      .catch((err) => {
                         res.status(401).send(err.message);
-                      })
+                      });
                   })
-                  .catch(err => {
+                  .catch((err) => {
                     res.status(401).send(err.message);
-                  })
-              }
+                  });
+              } else {
+                const resp = {
+                  msg: "Status successfully changed",
+                  data: {},
+                };
 
+                res.status(200).send(JSON.stringify(resp));
+              }
             })
             .catch((err) => {
               res.status(401).send(err.message);
@@ -121,16 +137,17 @@ router.put("/:userId/respondStatus", authUtils, (req, res) => {
     });
 });
 
-router.post(":fromUser/sendNotification", authUtils, (req, res) => {
-  const { toUser, title, description } = req.body;
+router.post("/:fromUser/sendNotification", authUtils, (req, res) => {
+  const { toUser, title, description, data } = req.body;
   const { fromUser } = req.params;
   Notification.create({
     userId: toUser,
     fromUser: fromUser,
     title: title,
     description: description,
+    data: data,
     createdAt: new Date(),
-    responded: false
+    responded: false,
   })
     .then((response) => {
       Admin.create({

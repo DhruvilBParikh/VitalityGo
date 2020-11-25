@@ -94,9 +94,12 @@ export default function Nutrition({ navigation }) {
   }, []);
 
   useEffect(() => {
-    setFatPercentage(parseInt((totalCalories / 3 / totalWeight) * 100));
-    setCarbPercentage(parseInt((totalCalories / 4 / totalWeight) * 100));
-    setProteinPercentage(parseInt((totalCalories / 2.5 / totalWeight) * 100));
+    console.log("total weight::::::::::", totalWeight )
+    console.log("total calories::::::::::", totalCalories )
+    console.log(parseInt((totalCalories / 3 / totalWeight) * 100))
+    setFatPercentage((totalCalories!==0) ? parseInt((totalCalories / 3 / totalWeight) * 100):0);
+    setCarbPercentage((totalCalories!==0) ? parseInt((totalCalories / 4 / totalWeight) * 100):0);
+    setProteinPercentage((totalCalories!==0) ? parseInt((totalCalories / 2.5 / totalWeight) * 100):0);
   }, [totalCalories, totalWeight]);
 
   return (

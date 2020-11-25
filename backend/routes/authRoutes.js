@@ -221,7 +221,7 @@ router.post("/login", async (req, res) => {
                 DayToDayGoal.findOne({ user: response._id })
                   .exec()
                   .then((response4) => {
-                    ECG.findOne({ user: response._id })
+                    ECG.find()
                       .exec()
                       .then((response5) => {
                         Admin.create({
@@ -252,7 +252,7 @@ router.post("/login", async (req, res) => {
                               waterGoal: response3.waterGoal
                                 ? response3.waterGoal
                                 : null,
-                              currentECG: " ",
+                              heartrate: response5[0].rate,
                               currentCaloriesGoal: response4
                                 ? response4.currentCaloriesGoal
                                 : null,

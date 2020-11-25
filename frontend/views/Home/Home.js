@@ -45,8 +45,8 @@ export default function Home({ navigation }) {
     }
   };
 
-  const handleAddContact = () => {
-    navigation.navigate("AddEmergency");
+  const navigate = (routeName) => {
+    navigation.navigate(routeName);
   };
 
   const handleLogout = () => {
@@ -57,104 +57,113 @@ export default function Home({ navigation }) {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
+    <View style={{flex:1}}>
+      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+        <View style={styles.container}>
+          <View style={styles.greetingContainer}>
+            <Text style={styles.greetingText}>
+              Greetings, {state.userData.firstName}{" "}
+            </Text>
+            <Text style={styles.motivationText}>
+              Take care of your body. It's the only place you have to live.
+            </Text>
+          </View>
 
-        <View style={styles.greetingContainer}>
-          <Text style={styles.greetingText}>
-            Greetings, {state.userData.firstName}{" "}
-          </Text>
-          <Text style={styles.motivationText}>
-            Take care of your body. It's the only place you have to live.
-        </Text>
+          <View>
+            {/* Nutrition */}
+            <TouchableOpacity
+              style={styles.whiteBackground}
+              onPress={() => navigation.navigate("Nutrition")}
+            >
+              <View style={{ width: 100, height: 80, alignItems: "center" }}>
+                <Image
+                  source={require("../../assets/images/home-nutrition.png")}
+                  style={{ width: 76, height: 75 }}
+                />
+              </View>
+              <View style={styles.summaryContainer}>
+                <Text style={styles.summaryTitle}> Nutrition </Text>
+                <View style={styles.progressContainer}>
+                  <Text style={{ color: "#BBADAD" }}>
+                    {" "}
+                    {totalCalories}/{state.patientData.caloriesGoal} cal{" "}
+                  </Text>
+                </View>
+                <Bar
+                  progress={totalCalories / state.patientData.caloriesGoal}
+                  width={200}
+                  color="#00D7A3"
+                />
+              </View>
+            </TouchableOpacity>
+
+            {/* Water */}
+            <TouchableOpacity
+              style={styles.whiteBackground}
+              onPress={() => navigation.navigate("Water")}
+            >
+              <View style={{ width: 100, height: 80, alignItems: "center" }}>
+                <Image
+                  source={require("../../assets/images/home-water.png")}
+                  style={{ width: 49, height: 71 }}
+                />
+              </View>
+              <View style={styles.summaryContainer}>
+                <Text style={styles.summaryTitle}> Water </Text>
+                <View style={styles.progressContainer}>
+                  <Text style={{ color: "#BBADAD" }}>
+                    {" "}
+                    {totalGlasses}/{state.patientData.waterGoal} glasses{" "}
+                  </Text>
+                </View>
+                <Bar
+                  progress={totalGlasses / state.patientData.waterGoal}
+                  width={200}
+                  color="#00D7A3"
+                />
+              </View>
+            </TouchableOpacity>
+
+            {/* ECG */}
+            <TouchableOpacity
+              style={[styles.whiteBackground, { borderBottomWidth: 1 }]}
+              onPress={() => navigation.navigate("ECG")}
+            >
+              <View style={{ width: 100, height: 80, alignItems: "center" }}>
+                <Image
+                  source={require("../../assets/images/home-ecg.png")}
+                  style={{ width: 69, height: 72 }}
+                />
+              </View>
+              <View style={styles.summaryContainer}>
+                <Text style={styles.summaryTitle}> ECG </Text>
+                <View style={styles.progressContainer}>
+                  <Text style={{ color: "#BBADAD" }}> {state.patientData.heartrate} bpm </Text>
+                  <Text style={{ color: "#BBADAD", fontSize: 12 }}>
+                    {" "}
+                    65 bpm resting heart rate{" "}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
         </View>
-
-        <View>
-          {/* Nutrition */}
-          <TouchableOpacity
-            style={styles.whiteBackground}
-            onPress={() => navigation.navigate("Nutrition")}
-          >
-            <View style={{ width: 100, height: 80, alignItems: "center" }}>
-              <Image
-                source={require("../../assets/images/home-nutrition.png")}
-                style={{ width: 76, height: 75 }}
-              />
-            </View>
-            <View style={styles.summaryContainer}>
-              <Text style={styles.summaryTitle}> Nutrition </Text>
-              <View style={styles.progressContainer}>
-                <Text style={{ color: "#BBADAD" }}>
-                  {" "}
-                  {totalCalories}/{state.patientData.caloriesGoal} cal{" "}
-                </Text>
-              </View>
-              <Bar
-                progress={totalCalories / state.patientData.caloriesGoal}
-                width={200}
-                color="#00D7A3"
-              />
-            </View>
-          </TouchableOpacity>
-
-          {/* Water */}
-          <TouchableOpacity
-            style={styles.whiteBackground}
-            onPress={() => navigation.navigate("Water")}
-          >
-            <View style={{ width: 100, height: 80, alignItems: "center" }}>
-              <Image
-                source={require("../../assets/images/home-water.png")}
-                style={{ width: 49, height: 71 }}
-              />
-            </View>
-            <View style={styles.summaryContainer}>
-              <Text style={styles.summaryTitle}> Water </Text>
-              <View style={styles.progressContainer}>
-                <Text style={{ color: "#BBADAD" }}>
-                  {" "}
-                  {totalGlasses}/{state.patientData.waterGoal} glasses{" "}
-                </Text>
-              </View>
-              <Bar
-                progress={totalGlasses / state.patientData.waterGoal}
-                width={200}
-                color="#00D7A3"
-              />
-            </View>
-          </TouchableOpacity>
-
-          {/* ECG */}
-          <TouchableOpacity
-            style={[styles.whiteBackground, { borderBottomWidth: 1 }]}
-            onPress={() => navigation.navigate("ECG")}
-          >
-            <View style={{ width: 100, height: 80, alignItems: "center" }}>
-              <Image
-                source={require("../../assets/images/home-ecg.png")}
-                style={{ width: 69, height: 72 }}
-              />
-            </View>
-            <View style={styles.summaryContainer}>
-              <Text style={styles.summaryTitle}> ECG </Text>
-              <View style={styles.progressContainer}>
-                <Text style={{ color: "#BBADAD" }}> 72 bpm </Text>
-                <Text style={{ color: "#BBADAD", fontSize: 12 }}>
-                  {" "}
-                65 bpm resting heart rate{" "}
-                </Text>
-              </View>
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        <AppButton title="Add Emergency Contact" clickHandler={handleAddContact} />
-        <AppButton title="Logout" clickHandler={handleLogout} />
-        <AppButton title="Edit Profile" clickHandler={() => { navigation.navigate('EditProfile') }} />
-        <AppButton title="Notifications" clickHandler={() => { navigation.navigate('Notification') }} />
-
+      </ScrollView>
+      <View style={styles.bottomNavigation}>
+        <TouchableOpacity style={styles.navTouchable} activeOpacity={0.7} onPress={() => navigate('AddEmergency')}>
+          <Image style={styles.navigationImage} source={require('../../assets/images/add-contact.png')}/>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navTouchable} activeOpacity={0.7} onPress={() => navigate('EditProfile')}>
+          <Image style={styles.navigationImage} source={require('../../assets/images/user-icon.png')}/>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navTouchable} activeOpacity={0.7} onPress={() => navigate('Notification')}>
+          <Image style={styles.navigationImage} source={require('../../assets/images/notification.png')}/>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.navTouchable} activeOpacity={0.7} onPress={handleLogout}>
+          <Image style={styles.navigationImage} source={require('../../assets/images/logout.png')}/>
+        </TouchableOpacity>
       </View>
-    </ScrollView>
+    </View>
   );
 }
 
@@ -163,10 +172,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.background,
     alignItems: "center",
+    justifyContent: 'center'
   },
   greetingContainer: {
     marginHorizontal: 45,
-    marginVertical: 40,
+    marginTop: -100,
+    marginBottom: 60,
   },
   greetingText: {
     color: Colors.text,
@@ -185,8 +196,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     backgroundColor: "white",
     alignItems: "flex-start",
-    paddingVertical: 10,
-    paddingHorizontal: 50,
+    paddingVertical: 20,
+    paddingHorizontal: 80,
     width: "100%",
   },
   summaryContainer: {
@@ -201,5 +212,23 @@ const styles = StyleSheet.create({
   progressContainer: {
     marginTop: 10,
   },
-
+  bottomNavigation: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    position:'absolute',
+    bottom:0,
+    width:'100%',
+    paddingVertical:10,
+    elevation: 2,
+    backgroundColor: Colors.white
+  },
+  navigationImage: {
+    width:25,
+    height:25,
+    tintColor: Colors.accent
+  },
+  navTouchable: {
+    margin:15,
+    flex:1
+  }
 });

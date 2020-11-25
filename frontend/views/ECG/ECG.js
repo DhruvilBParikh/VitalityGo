@@ -4,19 +4,29 @@ import { View, StyleSheet } from "react-native";
 import { Table, Rows, Row } from "react-native-table-component";
 import Colors from "../../constants/colors";
 import Toast from "react-native-toast-message";
+import config from "../../constants/config";
+import { useSelector } from "react-redux";
+import axios from "react-native-axios/lib/axios";
 
 export default function ECG() {
+  const state = useSelector(state => state)
   const [data, setData] = useState([]);
   const [start, setStart] = useState(0);
   const timeInterval = 500;
   const plotSize = 1000;
   const skipSize = 50;
-  const [variability, setVariability] = useState(getRandomArbitrary(30, 40, 'int'))
-  const [restingHR, setRestingHR] = useState(getRandomArbitrary(65, 72, 'int'))
-  const [walkingHR, setWalkingHR] = useState(getRandomArbitrary(97, 104, 'int'))
-  const [stressLevel, setStressLevel] = useState(getRandomArbitrary(7.1, 7.9, 'decimal'))
-  const [isNotificationSent, setIsNotificationSent] = useState(false)
-  const threshold = 0.80
+  const [variability, setVariability] = useState(
+    getRandomArbitrary(30, 40, "int")
+  );
+  const [restingHR, setRestingHR] = useState(getRandomArbitrary(65, 72, "int"));
+  const [walkingHR, setWalkingHR] = useState(
+    getRandomArbitrary(97, 104, "int")
+  );
+  const [stressLevel, setStressLevel] = useState(
+    getRandomArbitrary(7.1, 7.9, "decimal")
+  );
+  const [isNotificationSent, setIsNotificationSent] = useState(false);
+  const threshold = 0.8;
 
   const contentInset = { top: 20, bottom: 20 };
 
@@ -10025,7 +10035,6 @@ export default function ECG() {
     ];
     setData(ecgData);
     const interval = setInterval(() => {
-
       setStart((prev) => prev + skipSize);
     }, timeInterval);
 
@@ -10036,41 +10045,76 @@ export default function ECG() {
 
   useEffect(() => {
     const statsInterval = setInterval(() => {
-      setVariability(getRandomArbitrary(30, 40, 'int'))
-      setRestingHR(getRandomArbitrary(65, 72, 'int'))
-      setWalkingHR(getRandomArbitrary(97, 104, 'int'))
-      setStressLevel(getRandomArbitrary(7.1, 7.9, 'decimal'))
-    }, 10000)
+      setVariability(getRandomArbitrary(30, 40, "int"));
+      setRestingHR(getRandomArbitrary(65, 72, "int"));
+      setWalkingHR(getRandomArbitrary(97, 104, "int"));
+      setStressLevel(getRandomArbitrary(7.1, 7.9, "decimal"));
+    }, 10000);
     return () => {
-      clearInterval(statsInterval)
-    }
-
-  }, [])
+      clearInterval(statsInterval);
+    };
+  }, []);
 
   useEffect(() => {
-    if(!isNotificationSent) {
+    if (!isNotificationSent) {
+      
       let range = data.slice(
         start % data.length,
         (start % data.length) + plotSize
-      )
-      if(Math.max(...range).toFixed(2) >= threshold) {
+      );
+      if (Math.max(...range).toFixed(2) >= threshold) {
         //send notification
-        Toast.show({
-          text1: "Report sent",
-          text2: "Sent report to your doctor.",
-        });
-        setIsNotificationSent(true)
+        setIsNotificationSent(true);  
+        axios
+        .get(`${config.basepath}/api/users/${state.userData._id}/getDoctors`, {
+          headers: { Authorization: `Bearer ${state.token}` },
+        })
+        .then((response) => {
+          console.log("Get my doctors response: ", response.data.data);
+          let promises = []
+          for (let i = 0; i < response.data.data.length; i++) {
+            
+            promises.push(
+              axios.post(`${config.basepath}/api/notifications/${state.userData._id}/sendNotification`, 
+                {
+                  toUser: response.data.data[i]._id,
+                  title: "Patient's Report",
+                  description: `Sudden spike in the heart rate of ${state.userData.firstName} ${state.userData.lastName} was recorded at ${new Date().toLocaleString()}`,
+                  data: range
+                },
+                { headers: { Authorization: `Bearer ${state.token}` },
+                })
+                .then((response2) => {
+                  if(response2.status===200) {
+                    console.log("Sent notification to ", response.data.data[i].firstName)
+                  }
+                })
+                .catch(err=>{
+                  console.log("Error Sending Notification")
+                })
+            )
+          }
+          console.log("promises length::", promises.length)
+          Promise.all(promises).then(() => {
+            Toast.show({
+              text1: "Sudden spike in heartrate detected",
+              text2: "Report sent to your doctor(s).",
+            });
+            
+          });
+          
+          
+        })
+        .catch((err) => console.log("Get my doctors error: ", err));
+        
       }
     }
-      
-        
-  }, [start])
+  }, [start]);
 
   function getRandomArbitrary(min, max, type) {
-    return type === "decimal" ?
-      parseFloat(Math.random() * (max - min) + min).toFixed(2)
-      :
-      Math.floor(Math.random() * (max - min) + min)
+    return type === "decimal"
+      ? parseFloat(Math.random() * (max - min) + min).toFixed(2)
+      : Math.floor(Math.random() * (max - min) + min);
   }
 
   return (
@@ -10087,7 +10131,7 @@ export default function ECG() {
             fontSize: 10,
           }}
           numberOfTicks={10}
-        // formatLabel={(value) => `${value}mV`}
+          // formatLabel={(value) => `${value}mV`}
         />
         <LineChart
           style={styles.lineChart}
@@ -10103,24 +10147,44 @@ export default function ECG() {
       </View>
 
       <View style={styles.container}>
-        <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-          <Row data={[
-            "Heart Rate",
-            "Heart Rate \nVariability",
-            "Resting \nHeart Rate",
-            "Walking \nHeart Rate",
-          ]} style={styles.head} textStyle={styles.textHeader} />
-          <Rows data={[["72 bpm", variability + " ms", restingHR + " bpm", walkingHR + " bpm"]]} style={styles.dataBackground} textStyle={styles.textData} />
+        <Table borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}>
+          <Row
+            data={[
+              "Heart Rate",
+              "Heart Rate \nVariability",
+              "Resting \nHeart Rate",
+              "Walking \nHeart Rate",
+            ]}
+            style={styles.head}
+            textStyle={styles.textHeader}
+          />
+          <Rows
+            data={[
+              [
+                "72 bpm",
+                variability + " ms",
+                restingHR + " bpm",
+                walkingHR + " bpm",
+              ],
+            ]}
+            style={styles.dataBackground}
+            textStyle={styles.textData}
+          />
         </Table>
       </View>
 
       <View style={styles.statsContainer}>
-        <Table borderStyle={{ borderWidth: 2, borderColor: '#c8e1ff' }}>
-          <Row data={[
-            "Stress Level",
-            "Glucose Level"
-          ]} style={styles.statsHead} textStyle={styles.statsTextHeader} />
-          <Rows data={[[stressLevel + " PSS", "95 mg/dL"]]} style={styles.dataBackground} textStyle={styles.statsTextData} />
+        <Table borderStyle={{ borderWidth: 2, borderColor: "#c8e1ff" }}>
+          <Row
+            data={["Stress Level", "Glucose Level"]}
+            style={styles.statsHead}
+            textStyle={styles.statsTextHeader}
+          />
+          <Rows
+            data={[[stressLevel + " PSS", "95 mg/dL"]]}
+            style={styles.dataBackground}
+            textStyle={styles.statsTextData}
+          />
         </Table>
       </View>
     </View>
@@ -10142,20 +10206,28 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     marginVertical: 10,
     justifyContent: "space-around",
-    borderWidth: 1
+    borderWidth: 1,
   },
   tableRows: {
     padding: 10,
-    borderColor: Colors.text
+    borderColor: Colors.text,
   },
-  container: { padding: 10, paddingTop: 30, backgroundColor: Colors.backgroundColor },
-  head: { height: 80, backgroundColor: '#f1f8ff' },
+  container: {
+    padding: 10,
+    paddingTop: 30,
+    backgroundColor: Colors.backgroundColor,
+  },
+  head: { height: 80, backgroundColor: "#f1f8ff" },
   textHeader: { height: 40, fontSize: 15, margin: 6, alignSelf: "center" },
   textData: { height: 28, fontSize: 15, margin: 6, alignSelf: "center" },
-  statsContainer: { padding: 10, paddingTop: 30, backgroundColor: Colors.backgroundColor, marginBottom: 30 },
-  statsHead: { height: 60, backgroundColor: '#f1f8ff' },
+  statsContainer: {
+    padding: 10,
+    paddingTop: 30,
+    backgroundColor: Colors.backgroundColor,
+    marginBottom: 30,
+  },
+  statsHead: { height: 60, backgroundColor: "#f1f8ff" },
   statsTextHeader: { height: 25, fontSize: 15, margin: 6, alignSelf: "center" },
   statsTextData: { height: 28, fontSize: 15, margin: 6, alignSelf: "center" },
-  dataBackground: { backgroundColor: Colors.white }
+  dataBackground: { backgroundColor: Colors.white },
 });
-

@@ -4,7 +4,7 @@ import { View, Text, StyleSheet } from "react-native";
 export default function AddEmergencyHeader() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Add Emergency Contact</Text>
+      <Text style={styles.title}>Add Doctor</Text>
     </View>
   );
 }
